@@ -39,7 +39,6 @@ import islas.abril.pocketdishes.ui.theme.typoColorLightBrown
 import returnRandomRecipe
 
 @Composable
-//tiene que recibir una lista
 fun favouriteRecipeCard(recipe: Recipe){
 
     Card(
@@ -104,7 +103,7 @@ fun favouriteRecipeCard(recipe: Recipe){
 
 }
 
-@Preview (showBackground = true)
+@Preview (showBackground = false)
 @Composable
 fun previewCard(){
     favouriteRecipeCard(

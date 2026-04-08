@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -20,16 +22,22 @@ import returnRandomRecipe
 
 @Composable
 fun recipeTags(tagList:List<Tag>){
-    Row(modifier = Modifier.padding(3.dp)) {
+    Row(
+        modifier = Modifier
+            .padding(3.dp),
+            verticalAlignment = Alignment.CenterVertically
+
+
+    ) {
         tagList.forEach { tag ->
             Box(
-                Modifier
+                modifier = Modifier
                     .padding(end = 5.dp)
                     .shadow(5.dp, RoundedCornerShape(3.dp))
                     .clip(RoundedCornerShape(5.dp))
                     .background(tag.color)
-                    .padding(horizontal = 8.dp, vertical = 2.dp)
-
+                    .size(80.dp, 25.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text= tag.name,

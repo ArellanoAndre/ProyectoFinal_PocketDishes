@@ -15,6 +15,8 @@ val typoColorBeige = Color(0xFFAA958B)
 val typoColorLightBrown = Color(0xFFA2632F)
 val backgroundOrange = Color(0xFFFEBA82)
 val white = Color(0xFFFFFFFF)
+val lightPeach = Color(0xFFFFF8F3)
+
 val darkGray = Color(0xFF49454F)
 
 //Colores Dark Theme
