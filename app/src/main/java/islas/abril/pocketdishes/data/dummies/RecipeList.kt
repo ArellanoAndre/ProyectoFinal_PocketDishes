@@ -8,7 +8,9 @@ val DummyRecipes = listOf(
 
     Recipe(
         name = "Chicken Teriyaki Bowl",
-        Description = "Sweet and savory chicken with rice and veggies.",
+        description = "Sweet and savory chicken with rice and veggies.",
+        author= "Adrián Macías",
+        source="",
         image = R.drawable.chicken_teriyaki,
         prepTime = 35,
         tags = listOf(getTag(3), getTag(9)), // Quick, Dinner
@@ -30,7 +32,9 @@ val DummyRecipes = listOf(
 
     Recipe(
         name = "Vegetarian Curry",
-        Description = "Sweet and savory japanese curry with rice and veggies.",
+        description = "Sweet and savory japanese curry with rice and veggies.",
+        author= "Abril Islas",
+        source="",
         image = R.drawable.curry,
         prepTime = 45,
         tags = listOf(getTag(2), getTag(9)),
@@ -53,7 +57,9 @@ val DummyRecipes = listOf(
 
     Recipe(
         name = "Classic Cheeseburger",
-        Description = "Juicy beef burger with melted cheese.",
+        description = "Juicy beef burger with melted cheese.",
+        author= "Jorge Cuevas",
+        source="",
         image = R.drawable.cheeseburger,
         prepTime = 25,
         tags = listOf(getTag(9)), // Dinner

@@ -43,7 +43,7 @@ import returnRandomRecipe
 fun favouriteRecipeCard(recipe: Recipe){
 
     Card(
-        elevation = CardDefaults.cardElevation(6.dp),
+        elevation = CardDefaults.cardElevation(7.dp),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = backgroundOrange,
