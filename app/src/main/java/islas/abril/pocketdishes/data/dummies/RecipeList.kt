@@ -77,3 +77,7 @@ val DummyRecipes = listOf(
 fun returnRandomRecipe(): Recipe {
     return DummyRecipes.random()
 }
+
+fun returnRecipes():List<Recipe>{
+    return DummyRecipes
+}

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PocketDishes</string>
+    <string name="home_message">New Recipes,everyday. </string>
 </resources>

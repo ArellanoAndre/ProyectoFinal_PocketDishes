@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -50,12 +51,12 @@ fun favouriteRecipeCard(recipe: Recipe){
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .size(402.dp,100.dp)
+            .size(402.dp,105.dp)
             .clickable { /* navigate */ },
     )
     {
-        Row( modifier = Modifier.padding(15.dp)
-            .fillMaxWidth(),
+        Row( modifier = Modifier.padding(top=15.dp,start=15.dp, bottom=2.dp, end=15.dp)
+            .fillMaxSize(),
         ){
 
             Image(
@@ -84,8 +85,7 @@ fun favouriteRecipeCard(recipe: Recipe){
                     text= recipe.category.random(),
                     color = typoColorLightBrown,
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 2.dp)
+                    fontWeight = FontWeight.Bold
 
                 )
                 recipeTags((recipe.tags))

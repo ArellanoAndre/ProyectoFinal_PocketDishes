@@ -34,7 +34,7 @@ fun recipeTags(tagList:List<Tag>){
                 modifier = Modifier
                     .padding(end = 5.dp)
                     .shadow(5.dp, RoundedCornerShape(3.dp))
-                    .clip(RoundedCornerShape(5.dp))
+                    .clip(RoundedCornerShape(7.dp))
                     .background(tag.color)
                     .size(80.dp, 25.dp),
                 contentAlignment = Alignment.Center
