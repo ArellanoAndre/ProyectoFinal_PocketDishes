@@ -48,7 +48,7 @@ fun homescreen() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundLightTheme)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
         ) {
             //barra iconos
