@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "equipo3.pocketdishes"
+    namespace = "islas.abril.pocketdishes"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "equipo3.pocketdishes"
+        applicationId = "islas.abril.pocketdishes"
         minSdk = 27
         targetSdk = 36
         versionCode = 1
@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.text)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
