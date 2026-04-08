@@ -30,7 +30,7 @@ import islas.abril.pocketdishes.ui.theme.secondaryGreen
 
 
 @Composable
-fun BottomNavigationMenu(){
+fun BottomNavigationMenu(modifier: Modifier = Modifier){
     Row(
         modifier = Modifier
             .fillMaxWidth()

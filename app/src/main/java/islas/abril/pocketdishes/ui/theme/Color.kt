@@ -19,6 +19,8 @@ val lightPeach = Color(0xFFFFF8F3)
 
 val darkGray = Color(0xFF49454F)
 
+val darkerGrey = Color(0xFF1D1B20)
+
 //Colores Dark Theme
 val backgroundDarkTheme = Color(0xFF1E1A17)
 //se mantiene el mismo naranja como color primario

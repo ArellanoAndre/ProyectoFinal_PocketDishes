@@ -25,7 +25,9 @@ val DummyRecipes = listOf(
             "Mix everything with teriyaki sauce."
         ),
         category = listOf("Dinner", "Asian Food"),
-        secretRecipe = false
+        secretRecipe = false,
+        author = "Jorge Cuevas",
+        rating = 3.0f
     ),
 
     Recipe(
@@ -48,7 +50,9 @@ val DummyRecipes = listOf(
             "Mix everything with teriyaki sauce."
         ),
         category = listOf("Dinner", "Asian Food"),
-        secretRecipe = false
+        secretRecipe = false,
+        author = "Jorge Cuevas",
+        rating = 3.0f
     ),
 
     Recipe(
@@ -70,7 +74,9 @@ val DummyRecipes = listOf(
             "Serve hot."
         ),
         category = listOf("Fast Food", "Dinner"),
-        secretRecipe = true
+        secretRecipe = true,
+        author = "Jorge Cuevas",
+        rating = 3.0f
     ),
 )
 

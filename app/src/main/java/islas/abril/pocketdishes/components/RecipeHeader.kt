@@ -34,26 +34,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.recipeTags
+import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.data.Tag
 import islas.abril.pocketdishes.data.getTag
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import islas.abril.pocketdishes.ui.theme.darkGray
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
+import returnRandomRecipe
 
 
 //PREVIEW TEMPORAL CON DATOS MOCK
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    RecipeHeader("Cheeseburger", "Jorge Cuevas",listOf(getTag(8), getTag(3)),"3.0")
+    RecipeHeader(returnRandomRecipe())
 }
 
 @Composable
 fun RecipeHeader(
-    title: String,
-    author: String,
-    tags: List<Tag>,
-    rating: String
+    recipe: Recipe
 ) {
     //tamaño del header
     Box(
@@ -64,7 +63,7 @@ fun RecipeHeader(
 
         //imagen de fondo
         Image(
-            painter = painterResource(R.drawable.cheeseburger),
+            painter = painterResource(recipe.image),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -153,9 +152,9 @@ fun RecipeHeader(
             ) {
                 // TITULO
                 Text(
-                    text = title,
+                    text = recipe.name,
                     color = Color.White,
-                    fontSize = 30.sp,
+                    fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -169,7 +168,7 @@ fun RecipeHeader(
                 ) {
                     //rating (texto)
                     Text(
-                        text = rating,
+                        text = recipe.rating.toString(),
                         color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Medium
@@ -185,7 +184,7 @@ fun RecipeHeader(
             }
             // AUTOR
             Text(
-                "By $author",
+                "By ${recipe.author}",
                 color = Color.White.copy(0.8f) // para transparentar un poco el texto
             )
 
@@ -193,7 +192,7 @@ fun RecipeHeader(
 
             // TAGS
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                recipeTags(tags)
+                recipeTags(recipe.tags)
             }
 
             Spacer(modifier = Modifier.height(6.dp))
