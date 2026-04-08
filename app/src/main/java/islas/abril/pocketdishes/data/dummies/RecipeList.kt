@@ -4,7 +4,7 @@ import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.data.enums.Units
 import islas.abril.pocketdishes.data.getTag
 
-val moreDummyRecipes = listOf(
+val DummyRecipes = listOf(
 
     Recipe(
         name = "Chicken Teriyaki Bowl",
@@ -73,3 +73,7 @@ val moreDummyRecipes = listOf(
         secretRecipe = true
     ),
 )
+
+fun returnRandomRecipe(): Recipe {
+    return DummyRecipes.random()
+}
