@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.data.Recipe
+import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import islas.abril.pocketdishes.ui.theme.darkGray
 import islas.abril.pocketdishes.ui.theme.mainOrange
@@ -76,7 +78,7 @@ fun favouriteRecipeCard(recipe: Recipe){
             ){
                 Text(
                     text=recipe.name,
-                    color = typoColorBrown,
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 2.dp)
@@ -106,7 +108,9 @@ fun favouriteRecipeCard(recipe: Recipe){
 @Preview (showBackground = false)
 @Composable
 fun previewCard(){
-    favouriteRecipeCard(
-        returnRandomRecipe()
-    )
+    PocketDishesTheme {
+        favouriteRecipeCard(
+            returnRandomRecipe()
+        )
+    }
 }

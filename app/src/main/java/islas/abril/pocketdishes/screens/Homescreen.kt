@@ -31,16 +31,17 @@ import androidx.compose.ui.Alignment
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.favouriteRecipeCard
+import islas.abril.pocketdishes.components.header
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
-import islas.abril.pocketdishes.ui.theme.backgroundLightTheme
-import islas.abril.pocketdishes.ui.theme.mainOrange
-import islas.abril.pocketdishes.ui.theme.secondaryGreen
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import returnRecipes
 
 @Composable
 fun homescreen() {
     androidx.compose.material3.Scaffold(
+        topBar = {
+            header()
+                },
         bottomBar = {
             BottomNavigationMenu()
         }
@@ -51,37 +52,14 @@ fun homescreen() {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
         ) {
-            //barra iconos
-            Row(
-                modifier = Modifier
-                    .padding(top=30.dp, end=25.dp)
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-
-                Icon(
-                    painter = painterResource(id = R.drawable.search_24px),
-                    contentDescription = "search",
-                    tint = mainOrange,
-                    modifier = Modifier.size(30.dp)
-                        .clickable { /* navigate */ }
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.more_vert_24px),
-                    contentDescription = "more",
-                    tint = mainOrange,
-                    modifier = Modifier.size(30.dp)
-                        .clickable { /* navigate */ }
-                )
-
-            }
             Column(
                 modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp, top=75.dp)
+                    .padding(start = 20.dp, end = 20.dp)
             ) {
                 Text(
                     text = "New Recipes, \neveryday.",
                     style = MaterialTheme.typography.titleLarge,
-                    color = mainOrange
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Row(
                     modifier = Modifier
@@ -128,21 +106,21 @@ fun homescreen() {
                 ) {
                     Text(
                         text = "My recipes",
-                        color = secondaryGreen,
+                        color = MaterialTheme.colorScheme.secondary,
                         fontWeight = FontWeight.Medium,
                         fontSize = 25.sp
                     )
                     Icon(
                         painter = painterResource(id = R.drawable.filter_alt_24px),
                         contentDescription = "more",
-                        tint = secondaryGreen,
+                        tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(27.dp)
                             .clickable { /* navigate */ }
                     )
                     Icon(
                         painter = painterResource(id = R.drawable.favorite_24px),
                         contentDescription = "more",
-                        tint = secondaryGreen,
+                        tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(27.dp)
                             .clickable { /* navigate */ }
                     )
