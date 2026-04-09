@@ -29,6 +29,10 @@ val tertiaryIndigoDT =  Color(0xFF222952)
 val darkGreen = Color(0xFF2A3C28)
 val darkGreenTypo =  Color(0xFF60C868)
 
+val lightGray =  Color(0xFFE0E0E0)
+
+val orangeButton = Color(0xFFFD7200)
+
 //Colores Etiquetas
 val tagHealthy = Color(0xFFA8E6CF)
 val tagVegan = Color(0xFFCDEAC0)

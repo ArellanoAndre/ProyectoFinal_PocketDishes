@@ -33,10 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import islas.abril.pocketdishes.R
-import islas.abril.pocketdishes.components.recipeTags
 import islas.abril.pocketdishes.data.Recipe
-import islas.abril.pocketdishes.data.Tag
-import islas.abril.pocketdishes.data.getTag
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import islas.abril.pocketdishes.ui.theme.darkGray
 import islas.abril.pocketdishes.ui.theme.secondaryGreen

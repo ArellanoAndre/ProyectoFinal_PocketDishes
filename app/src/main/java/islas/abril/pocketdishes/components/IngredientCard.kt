@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -25,19 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import islas.abril.pocketdishes.ui.theme.darkGray
+import islas.abril.pocketdishes.data.Ingredients
 import islas.abril.pocketdishes.ui.theme.lightIndigo
 import islas.abril.pocketdishes.ui.theme.tertiaryIndigo
 
-/**
- * ATRIBUTOS TEMPORALES
- */
-
 @Composable
 fun IngredientCard(
-    name: String,
-    detail: String,
-    image: Int?
+    ingredient: Ingredients
 ) {
     Row (
         modifier = Modifier
@@ -55,7 +48,7 @@ fun IngredientCard(
                 .background(Color.White)
         ) {
 
-            image?.let {
+            ingredient.image?.let {
                 Image(
                     painter = painterResource(id = it),
                     contentDescription = null,
@@ -69,10 +62,14 @@ fun IngredientCard(
 
         Column(
             modifier = Modifier.padding(5.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp) // 🔥 espacio entre elementos
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(name, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = tertiaryIndigo)
-            Text(detail, fontSize = 14.sp, color = darkGray)
+            Text(ingredient.name, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = tertiaryIndigo)
+            Text(
+                text = "${ingredient.amount} - ${ingredient.unit}",
+                fontSize = 14.sp,
+                color = Color.DarkGray
+            )
         }
     }
 }
