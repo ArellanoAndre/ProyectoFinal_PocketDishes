@@ -32,6 +32,7 @@ import islas.abril.pocketdishes.ui.theme.tertiaryIndigo
 fun IngredientCard(
     ingredient: Ingredients
 ) {
+    // contenedor
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +48,7 @@ fun IngredientCard(
                 .clip(RoundedCornerShape(12.dp))
                 .background(Color.White)
         ) {
-
+            //imagen
             ingredient.image?.let {
                 Image(
                     painter = painterResource(id = it),
@@ -60,6 +61,7 @@ fun IngredientCard(
 
         Spacer(modifier = Modifier.width(15.dp))
 
+        // textos (nombre, unidad y cantidad)
         Column(
             modifier = Modifier.padding(5.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)

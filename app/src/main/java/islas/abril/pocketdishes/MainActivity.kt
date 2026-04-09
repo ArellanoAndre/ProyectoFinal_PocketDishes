@@ -12,15 +12,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import islas.abril.pocketdishes.screens.RecipeDetailContent
 import islas.abril.pocketdishes.screens.homescreen
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
+import returnRandomRecipe
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            homescreen()
+            /** homescreen() **/
+            RecipeDetailContent(returnRandomRecipe())
         }
     }
 }
