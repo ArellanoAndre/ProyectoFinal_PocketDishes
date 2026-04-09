@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -19,13 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
+import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.IngredientCard
 import islas.abril.pocketdishes.components.InstructionStepItem
 import islas.abril.pocketdishes.components.PrepTime
 import islas.abril.pocketdishes.components.RecipeHeader
 import islas.abril.pocketdishes.components.Tabs
 import islas.abril.pocketdishes.data.Recipe
+import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 import islas.abril.pocketdishes.ui.theme.backgroundLightTheme
 import returnRandomRecipe
 
@@ -52,14 +57,17 @@ fun RecipeDetailContent(recipe: Recipe) {
             modifier = Modifier.fillMaxSize()
         ) {
 
+            //HEADER
             RecipeHeader(
                 recipe
             )
 
             Spacer(modifier = Modifier.height(5.dp))
 
+            //PREP TIME
             PrepTime(recipe.prepTime)
 
+            // TABS (INGREDIENTES Y INSTRUCCIONES)
             Tabs(
                 selected = selectedTab,
                 onChange = { selectedTab = it }
@@ -100,10 +108,21 @@ fun RecipeDetailContent(recipe: Recipe) {
                 }
             }
 
-            // menu de navegacion...
-
-
-
+        }
+        // MENU DE NAVEGACION
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(LightGreenMenu) // para que no se vean las imagenes de los ingredientes debajo del menu (si son muchas y requieren scroll)
+        ) {
+            Box(
+                modifier = Modifier.navigationBarsPadding() // padding para que no se cubra por el menu de navegacion del telefono
+            ) {
+                BottomNavigationMenu()
+            }
         }
     }
 }
+
+
