@@ -38,6 +38,7 @@ import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import islas.abril.pocketdishes.ui.theme.darkGray
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
 import returnRandomRecipe
+import kotlin.math.roundToInt
 
 
 //PREVIEW TEMPORAL CON DATOS MOCK
@@ -194,16 +195,22 @@ fun RecipeHeader(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // fila para estrellas (rating) actualmente esta hardcodeado *PENDIENTE DE HACER DINAMICO*
+            // maximo de estrellas
+            val maxStars = 5
+            // numero de estrellas a llenar (segun el rating usando coerce in para verificar que este entre 0 y 5)
+            val filledStars = recipe.rating.coerceIn(0f, 5f).roundToInt()
+            // numero de estrellas vacias (se resta el numero de estrellas llenas al maximo de estrellas)
+            val emptyStars = maxStars - filledStars
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(
-                    0.5.dp,
+                    -5.dp,
                     Alignment.End
                 )
             ) {
-                // Estrellas llenas
-                repeat(3) {
+                //estrellas llenas
+                repeat(filledStars) {
                     Icon(
                         painter = painterResource(id = R.drawable.star_filled),
                         contentDescription = null,
@@ -211,8 +218,9 @@ fun RecipeHeader(
                         modifier = Modifier.size(28.dp)
                     )
                 }
-                // Estrellas vacias
-                repeat(2) {
+
+                //estrellas vacías
+                repeat(emptyStars) {
                     Icon(
                         painter = painterResource(id = R.drawable.star_outlined),
                         contentDescription = null,

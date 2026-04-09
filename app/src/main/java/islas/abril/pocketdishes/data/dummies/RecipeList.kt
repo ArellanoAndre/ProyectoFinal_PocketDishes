@@ -52,7 +52,7 @@ val DummyRecipes = listOf(
         category = listOf("Dinner", "Asian Food"),
         secretRecipe = false,
         author = "Jorge Cuevas",
-        rating = 3.0f
+        rating = 4.0f
     ),
 
     Recipe(
@@ -76,7 +76,7 @@ val DummyRecipes = listOf(
         category = listOf("Fast Food", "Dinner"),
         secretRecipe = true,
         author = "Jorge Cuevas",
-        rating = 3.0f
+        rating = 1.0f
     ),
 )
 
