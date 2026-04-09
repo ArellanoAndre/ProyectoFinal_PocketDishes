@@ -19,6 +19,8 @@ val lightPeach = Color(0xFFFFF8F3)
 
 val darkGray = Color(0xFF49454F)
 
+val darkerGrey = Color(0xFF1D1B20)
+
 //Colores Dark Theme
 val backgroundDarkTheme = Color(0xFF1E1A17)
 //se mantiene el mismo naranja como color primario
@@ -26,6 +28,10 @@ val secondaryGreenDT = Color(0xFF9BE3B8)
 val tertiaryIndigoDT =  Color(0xFF222952)
 val darkGreen = Color(0xFF2A3C28)
 val darkGreenTypo =  Color(0xFF60C868)
+
+val lightGray =  Color(0xFFE0E0E0)
+
+val orangeButton = Color(0xFFFD7200)
 
 //Colores Etiquetas
 val tagHealthy = Color(0xFFA8E6CF)

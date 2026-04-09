@@ -11,5 +11,7 @@ data class Recipe(
     var ingredients: List<Ingredients>,
     var steps: List<String>,
     var category: List<String>,
-    var secretRecipe: Boolean
+    var secretRecipe: Boolean,
+    var author: String,
+    var rating: Float
 )
