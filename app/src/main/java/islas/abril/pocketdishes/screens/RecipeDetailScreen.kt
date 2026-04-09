@@ -38,11 +38,11 @@ import returnRandomRecipe
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    RecipeDetailContent(returnRandomRecipe())
+    RecipeDetailScreen(returnRandomRecipe(), onBackClick = {})
 }
 
 @Composable
-fun RecipeDetailContent(recipe: Recipe) {
+fun RecipeDetailScreen(recipe: Recipe, onBackClick: () -> Unit) {
 
     // para la funcionalidad de los tabs entre ingredientes y instrucciones
     var selectedTab by remember { mutableStateOf(0) }
@@ -59,7 +59,8 @@ fun RecipeDetailContent(recipe: Recipe) {
 
             //HEADER
             RecipeHeader(
-                recipe
+                recipe,
+                onBackClick
             )
 
             Spacer(modifier = Modifier.height(5.dp))

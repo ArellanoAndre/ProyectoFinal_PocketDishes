@@ -45,12 +45,13 @@ import kotlin.math.roundToInt
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    RecipeHeader(returnRandomRecipe())
+    RecipeHeader(returnRandomRecipe(), onBackClick = { })
 }
 
 @Composable
 fun RecipeHeader(
-    recipe: Recipe
+    recipe: Recipe,
+    onBackClick: () -> Unit
 ) {
     //tamaño del header
     Box(
@@ -86,7 +87,7 @@ fun RecipeHeader(
                 .size(40.dp) // tamaño
                 .background(backgroundOrange.copy(0.9f), CircleShape) //background (circulo)
                 .clip(CircleShape)
-                .clickable { /* navigate */ }
+                .clickable { onBackClick() }
                 .align(Alignment.TopStart),
             contentAlignment = Alignment.Center
         ) {
