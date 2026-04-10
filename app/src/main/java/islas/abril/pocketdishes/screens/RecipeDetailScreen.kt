@@ -78,14 +78,13 @@ fun RecipeDetailScreen(recipe: Recipe, onBackClick: () -> Unit) {
             Spacer(modifier = Modifier.height(15.dp))
 
             Crossfade (targetState = selectedTab) { tab ->
-
                 when (tab) {
 
                     // INGREDIENTES
                     0 -> {
                         LazyColumn(
                             modifier = Modifier.weight(1f),
-                            contentPadding = PaddingValues(bottom = 100.dp)
+                            contentPadding = PaddingValues(bottom = 160.dp)
                         )  {
                             items(recipe.ingredients) { ingredient ->
                                 IngredientCard(
@@ -99,7 +98,7 @@ fun RecipeDetailScreen(recipe: Recipe, onBackClick: () -> Unit) {
                     1 -> {
                         LazyColumn(
                             modifier = Modifier.weight(1f),
-                            contentPadding = PaddingValues(bottom = 100.dp)
+                            contentPadding = PaddingValues(bottom = 160.dp)
                         )  {
                             itemsIndexed(recipe.steps) { index, step ->
                                 InstructionStepItem(index, step)
