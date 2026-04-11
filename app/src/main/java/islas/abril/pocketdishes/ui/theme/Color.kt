@@ -11,6 +11,7 @@ val LightGreenMenu = Color(0xFFD9F9D7)
 val lightOrange = Color(0xFFFF8A2B)
 val lightIndigo = Color(0xFFCCD6FF)
 val typoColorBrown = Color(0xFF47281A)
+
 val typoColorBeige = Color(0xFFAA958B)
 val typoColorLightBrown = Color(0xFFA2632F)
 val backgroundOrange = Color(0xFFFEBA82)
@@ -44,5 +45,9 @@ val tagLowCarb = Color(0xFFB5EAD7)
 val tagBreakfast = Color(0xFFFFDAC1)
 val tagLunch = Color(0xFFC7CEEA)
 val tagDinner = Color(0xFFE2C2FF)
+
+val darkBrown = Color(0xFF422B1E)
+val gradientStart = Color(0xFFFFCC99)       // inicio del degradado
+val gradientEnd = Color(0xFFFF9966)         // fin del degradado
 
 

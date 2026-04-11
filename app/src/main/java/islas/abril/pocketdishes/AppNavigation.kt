@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import islas.abril.pocketdishes.screens.LoginScreen
 import islas.abril.pocketdishes.screens.RecipeDetailScreen
 import islas.abril.pocketdishes.screens.homescreen
 import returnRecipes
@@ -13,8 +14,21 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val allRecipes = returnRecipes()
 
-    NavHost(navController = navController, startDestination = "home") {
-        // Pantalla Principal
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") {
+            LoginScreen(
+                onLoginSuccess = {
+                    // al logearse redirige al home
+                    navController.navigate("home") {
+                        // Se borra el historial para que no pueda volver al login con el boton
+                        // pendiente agregar boton de logout o algo asi
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onNavigateToRegister = { /* registro (PENDIENTE) */ }
+            )
+        }
+
         composable("home") {
             homescreen(navController)
         }
