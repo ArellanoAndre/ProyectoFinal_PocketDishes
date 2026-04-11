@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.screens.LoginScreen
 import islas.abril.pocketdishes.screens.RecipeDetailScreen
+import islas.abril.pocketdishes.screens.RegisterScreen
 import islas.abril.pocketdishes.screens.homescreen
 import returnRecipes
 
@@ -25,12 +26,23 @@ fun AppNavigation() {
                         popUpTo("login") { inclusive = true }
                     }
                 },
-                onNavigateToRegister = { /* registro (PENDIENTE) */ }
+                onNavigateToRegister = { navController.navigate("register") }
             )
         }
 
         composable("home") {
             homescreen(navController)
+        }
+
+        composable("register") {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    navController.navigate("login")
+                },
+                onBackToLogin = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         // Pantalla de Detalle de receta (recibe el nombre como argumento)
