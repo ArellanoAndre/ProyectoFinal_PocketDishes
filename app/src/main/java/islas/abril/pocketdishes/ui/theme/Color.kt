@@ -47,7 +47,7 @@ val tagLunch = Color(0xFFC7CEEA)
 val tagDinner = Color(0xFFE2C2FF)
 
 val darkBrown = Color(0xFF422B1E)
-val gradientStart = Color(0xFFFFCC99)       // inicio del degradado
-val gradientEnd = Color(0xFFFF9966)         // fin del degradado
+val gradientStart = Color(0xFFFAEADC)       // inicio del degradado
+val gradientEnd = Color(0xFFFC8E33)         // fin del degradado
 
 

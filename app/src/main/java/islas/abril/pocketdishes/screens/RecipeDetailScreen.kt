@@ -23,6 +23,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.IngredientCard
 import islas.abril.pocketdishes.components.InstructionStepItem
@@ -38,11 +40,12 @@ import returnRandomRecipe
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    RecipeDetailScreen(returnRandomRecipe(), onBackClick = {})
+    val navController = rememberNavController()
+    RecipeDetailScreen(returnRandomRecipe(), onBackClick = {}, navController)
 }
 
 @Composable
-fun RecipeDetailScreen(recipe: Recipe, onBackClick: () -> Unit) {
+fun RecipeDetailScreen(recipe: Recipe, onBackClick: () -> Unit, navController: NavController) {
 
     // para la funcionalidad de los tabs entre ingredientes y instrucciones
     var selectedTab by remember { mutableStateOf(0) }
@@ -119,7 +122,7 @@ fun RecipeDetailScreen(recipe: Recipe, onBackClick: () -> Unit) {
             Box(
                 modifier = Modifier.navigationBarsPadding() // padding para que no se cubra por el menu de navegacion del telefono
             ) {
-                BottomNavigationMenu()
+                BottomNavigationMenu(navController = navController)
             }
         }
     }

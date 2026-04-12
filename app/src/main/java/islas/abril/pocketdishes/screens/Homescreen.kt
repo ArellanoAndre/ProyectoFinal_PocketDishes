@@ -55,7 +55,7 @@ fun homescreen(navController: NavController) {
                     .fillMaxWidth()
             ) {
                 Box(modifier = Modifier.navigationBarsPadding()) {
-                    BottomNavigationMenu()
+                    BottomNavigationMenu(navController = navController)
                 }
             }
         }
@@ -109,7 +109,7 @@ fun homescreen(navController: NavController) {
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         modifier = Modifier
-                        .clickable{}
+                        .clickable{ navController.navigate("explore") }
                     )
                 }
                 Row(
