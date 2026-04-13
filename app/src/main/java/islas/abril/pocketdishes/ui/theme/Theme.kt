@@ -18,7 +18,8 @@ private val LightColorScheme = lightColorScheme(
     secondary = secondaryGreen,
     tertiary = tertiaryIndigo,
     background = backgroundLightTheme,
-    outline= typoColorBrown
+    outline= typoColorBrown,
+    tertiaryContainer = lightPeach
 )
 private val DarkColorScheme = darkColorScheme(
     primary = mainOrange,
@@ -26,6 +27,7 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = tertiaryIndigoDT,
     background = backgroundDarkTheme,
     outline = lightOrange
+    //tertiaryContainer = lightPeach
 )
 
 @Composable

@@ -57,7 +57,7 @@ fun PocketDishesApp() {
         }
 
         composable("profile") {
-            UserProfileScreen()
+            UserProfileScreen(navController = navController)
         }
     }
 }
