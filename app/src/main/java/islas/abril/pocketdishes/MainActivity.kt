@@ -1,42 +1,63 @@
 package islas.abril.pocketdishes
 
-import android.net.wifi.hotspot2.pps.HomeSp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import islas.abril.pocketdishes.screens.homescreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import islas.abril.pocketdishes.auth.LoginScreen
+import islas.abril.pocketdishes.auth.RegisterScreen
+import islas.abril.pocketdishes.auth.UserProfileScreen
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
-            homescreen()
+            PocketDishesTheme {
+                PocketDishesApp()
+            }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun PocketDishesApp() {
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PocketDishesTheme {
-        Greeting("Android")
+    NavHost(
+        navController = navController,
+        startDestination = "login"
+    ) {
+        composable("login") {
+            LoginScreen(
+                onLoginClick = {
+                    navController.navigate("profile")
+                },
+                onRegisterClick = {
+                    navController.navigate("register")
+                }
+            )
+        }
+
+        composable("register") {
+            RegisterScreen(
+                onRegisterClick = {
+                    navController.navigate("login")
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable("profile") {
+            UserProfileScreen()
+        }
     }
 }
