@@ -31,6 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
@@ -43,10 +45,10 @@ import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import islas.abril.pocketdishes.ui.theme.white
 
 @Composable
-fun UserProfileScreen() {
+fun UserProfileScreen(navController: NavController) {
     Scaffold(
         bottomBar = {
-            BottomNavigationMenu()
+            BottomNavigationMenu(navController = navController)
         }
     ) { innerPadding ->
 
@@ -234,6 +236,7 @@ fun UserProfileScreen() {
 @Composable
 fun UserProfileScreenPreview() {
     PocketDishesTheme {
-        UserProfileScreen()
+        val navController = rememberNavController()
+        UserProfileScreen(navController = navController)
     }
 }
