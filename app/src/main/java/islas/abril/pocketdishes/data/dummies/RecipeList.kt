@@ -27,7 +27,8 @@ val DummyRecipes = listOf(
             "Mix everything with teriyaki sauce."
         ),
         category = listOf("Dinner", "Asian Food"),
-        secretRecipe = false
+        secretRecipe = false,
+        rating = 3.0f
     ),
 
     Recipe(
@@ -52,7 +53,8 @@ val DummyRecipes = listOf(
             "Mix everything with teriyaki sauce."
         ),
         category = listOf("Dinner", "Asian Food"),
-        secretRecipe = false
+        secretRecipe = false,
+        rating = 4.0f
     ),
 
     Recipe(
@@ -76,7 +78,8 @@ val DummyRecipes = listOf(
             "Serve hot."
         ),
         category = listOf("Fast Food", "Dinner"),
-        secretRecipe = true
+        secretRecipe = true,
+        rating = 1.0f
     ),
 )
 

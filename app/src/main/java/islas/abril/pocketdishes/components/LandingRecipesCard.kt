@@ -42,7 +42,7 @@ import islas.abril.pocketdishes.ui.theme.typoColorLightBrown
 import returnRandomRecipe
 
 @Composable
-fun favouriteRecipeCard(recipe: Recipe){
+fun favouriteRecipeCard(recipe: Recipe, onCardClick: () -> Unit){
 
     Card(
         elevation = CardDefaults.cardElevation(7.dp),
@@ -54,7 +54,7 @@ fun favouriteRecipeCard(recipe: Recipe){
         modifier = Modifier
             .fillMaxWidth()
             .size(402.dp,105.dp)
-            .clickable { /* navigate */ },
+            .clickable { onCardClick() },
     )
     {
         Row( modifier = Modifier.padding(top=15.dp,start=15.dp, bottom=2.dp, end=15.dp)
@@ -110,7 +110,9 @@ fun favouriteRecipeCard(recipe: Recipe){
 fun previewCard(){
     PocketDishesTheme {
         favouriteRecipeCard(
-            returnRandomRecipe()
+            recipe = returnRandomRecipe(),
+            onCardClick = {}
         )
+
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,13 +25,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
 
 
 @Composable
-fun BottomNavigationMenu(){
+fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,7 +46,7 @@ fun BottomNavigationMenu(){
 
     {
         Row(
-            modifier = Modifier.clickable { /* navigate */ },
+            modifier = Modifier.clickable { /* AGREGAR RECETA */ },
             verticalAlignment = Alignment.CenterVertically
         ){
                 Box(
@@ -81,21 +85,21 @@ fun BottomNavigationMenu(){
             contentDescription = "Explore recipes",
             tint = secondaryGreen,
             modifier = Modifier.size(35.dp)
-            .clickable { /* navigate */ }
+            .clickable { navigateTo(navController, "explore") }
         )
         Icon(
             painter = painterResource(id = R.drawable.home_24px),
             contentDescription = "Home button",
             tint = secondaryGreen,
             modifier = Modifier.size(35.dp)
-            .clickable { /* navigate */ }
+                .clickable { navigateTo(navController, "home") }
         )
         Icon(
             painter = painterResource(id = R.drawable.ic_profile),
             contentDescription = "User profile",
             tint = secondaryGreen,
             modifier = Modifier.size(35.dp)
-            .clickable { /* navigate */ }
+            .clickable { navigateTo(navController, "profile") }
         )
 
 
@@ -103,8 +107,24 @@ fun BottomNavigationMenu(){
 
 }
 
+/**
+ * Funcion auxiliar para navegar de forma limpia
+ * Evita duplicar pantallas en la pila de navegacion.
+ */
+private fun navigateTo(navController: NavController, route: String) {
+    navController.navigate(route) {
+        // Evita multiples copias de la misma pantalla
+        launchSingleTop = true
+        restoreState = true
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun previewMenu(){
-    BottomNavigationMenu()
+    val navController = rememberNavController()
+    BottomNavigationMenu(navController = navController)
 }

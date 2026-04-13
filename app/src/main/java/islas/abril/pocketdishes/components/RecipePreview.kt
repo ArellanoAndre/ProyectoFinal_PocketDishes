@@ -24,6 +24,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.ui.theme.lightPeach
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
@@ -31,7 +33,7 @@ import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import returnRandomRecipe
 
 @Composable
-fun RecipePreviewCard(recipe: Recipe) {
+fun RecipePreviewCard(recipe: Recipe, navController: NavController) {
     Card(
         elevation = CardDefaults.cardElevation(6.dp),
         shape = RoundedCornerShape(20.dp),
@@ -42,7 +44,7 @@ fun RecipePreviewCard(recipe: Recipe) {
         modifier = Modifier
             .fillMaxWidth()
             .size(268.dp,200.dp)
-            .clickable { /* navigate */ },
+            .clickable { navController.navigate("detail/${recipe.name}") },
     ){
         Column(
             modifier = Modifier
@@ -100,7 +102,8 @@ fun RecipePreviewCard(recipe: Recipe) {
 @Preview (showBackground = false)
 @Composable
 fun RecipePreview(){
+    val navController = rememberNavController()
     RecipePreviewCard(
-        returnRandomRecipe()
+        returnRandomRecipe(), navController
     )
 }

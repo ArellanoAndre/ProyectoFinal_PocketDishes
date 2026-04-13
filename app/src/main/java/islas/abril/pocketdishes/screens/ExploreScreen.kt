@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,29 +26,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.RecipePreviewCard
 import islas.abril.pocketdishes.components.header
 import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.data.recipeCategories
+import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
-import islas.abril.pocketdishes.ui.theme.lightOrange
 import islas.abril.pocketdishes.ui.theme.mainOrange
-import islas.abril.pocketdishes.ui.theme.secondaryGreen
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import returnRecipes
 
 @Composable
-fun ExploreScreen(recipeList: List<Recipe>) {
+fun ExploreScreen(recipeList: List<Recipe>, navController: NavController) {
 
     androidx.compose.material3.Scaffold(
         topBar = {
             header()
         },
         bottomBar = {
-            BottomNavigationMenu()
+            // LO PUSE ADENTRO DE UN BOX CON NAVIGATION BARS PADDING PARA QUE NO CHOQUE CON EL MENU DEL TELEFONO
+            Box(
+                modifier = Modifier
+                    .background(LightGreenMenu)
+                    .fillMaxWidth()
+            ) {
+                Box(modifier = Modifier.navigationBarsPadding()) {
+                    BottomNavigationMenu(navController = navController)
+                }
+            }
         }
     ) { innerPadding ->
         Box(
@@ -125,7 +136,7 @@ fun ExploreScreen(recipeList: List<Recipe>) {
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
                                     items(returnRecipes()){
-                                        RecipePreviewCard(it)
+                                        RecipePreviewCard(it, navController)
                                     }
 
                                 }
@@ -143,6 +154,7 @@ fun ExploreScreen(recipeList: List<Recipe>) {
 @Composable
 fun previewExploreScreen(){
     PocketDishesTheme {
-        ExploreScreen(returnRecipes())
+        val navController = rememberNavController()
+        ExploreScreen(returnRecipes(), navController)
     }
 }

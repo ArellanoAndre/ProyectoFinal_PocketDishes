@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,22 +30,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.favouriteRecipeCard
 import islas.abril.pocketdishes.components.header
+import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import returnRecipes
 
 @Composable
-fun homescreen() {
+fun homescreen(navController: NavController) {
     androidx.compose.material3.Scaffold(
         topBar = {
             header()
                 },
         bottomBar = {
-            BottomNavigationMenu()
+            // LO PUSE ADENTRO DE UN BOX CON NAVIGATION BARS PADDING PARA QUE NO CHOQUE CON EL MENU DEL TELEFONO
+            Box(
+                modifier = Modifier
+                    .background(LightGreenMenu)
+                    .fillMaxWidth()
+            ) {
+                Box(modifier = Modifier.navigationBarsPadding()) {
+                    BottomNavigationMenu(navController = navController)
+                }
+            }
         }
     ) { innerPadding ->
         Box(
@@ -95,7 +109,7 @@ fun homescreen() {
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         modifier = Modifier
-                        .clickable{}
+                        .clickable{ navController.navigate("explore") }
                     )
                 }
                 Row(
@@ -135,8 +149,13 @@ fun homescreen() {
                     ),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(recipes) {
-                        favouriteRecipeCard(it)
+                    items(recipes) { recipe ->
+                        favouriteRecipeCard(
+                            recipe = recipe,
+                            onCardClick = {
+                                navController.navigate("detail/${recipe.name}")
+                            }
+                        )
                     }
                 }
             }
@@ -147,6 +166,7 @@ fun homescreen() {
 @Composable
 fun homescreenPreview(){
     PocketDishesTheme {
-        homescreen()
+        val navController = rememberNavController()
+        homescreen(navController = navController)
     }
 }
