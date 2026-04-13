@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,6 +31,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
+import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
 
 
@@ -39,14 +41,14 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .background(LightGreenMenu)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(top=35.dp, start = 20.dp, end = 20.dp)
             ,horizontalArrangement = Arrangement.SpaceBetween
     )
 
     {
         Row(
-            modifier = Modifier.clickable { /* AGREGAR RECETA */ },
+            modifier = Modifier.clickable {  navigateTo(navController, "addrecipe") },
             verticalAlignment = Alignment.CenterVertically
         ){
                 Box(
@@ -61,7 +63,7 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add_recipe),
                         contentDescription = "Agregar receta",
-                        tint = secondaryGreen,
+                        tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(27.dp)
 
                     )
@@ -72,7 +74,7 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
 
             Text(
                 text="New recipe",
-                color= secondaryGreen,
+                color= MaterialTheme.colorScheme.secondary,
                 fontSize = 25.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -83,21 +85,21 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
         Icon(
             painter = painterResource(id = R.drawable.ic_explore),
             contentDescription = "Explore recipes",
-            tint = secondaryGreen,
+            tint= MaterialTheme.colorScheme.secondary,
             modifier = Modifier.size(35.dp)
             .clickable { navigateTo(navController, "explore") }
         )
         Icon(
             painter = painterResource(id = R.drawable.home_24px),
             contentDescription = "Home button",
-            tint = secondaryGreen,
+            tint= MaterialTheme.colorScheme.secondary,
             modifier = Modifier.size(35.dp)
                 .clickable { navigateTo(navController, "home") }
         )
         Icon(
             painter = painterResource(id = R.drawable.ic_profile),
             contentDescription = "User profile",
-            tint = secondaryGreen,
+            tint= MaterialTheme.colorScheme.secondary,
             modifier = Modifier.size(35.dp)
             .clickable { navigateTo(navController, "profile") }
         )
@@ -107,10 +109,6 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
 
 }
 
-/**
- * Funcion auxiliar para navegar de forma limpia
- * Evita duplicar pantallas en la pila de navegacion.
- */
 private fun navigateTo(navController: NavController, route: String) {
     navController.navigate(route) {
         // Evita multiples copias de la misma pantalla
@@ -125,6 +123,8 @@ private fun navigateTo(navController: NavController, route: String) {
 @Preview(showBackground = true)
 @Composable
 fun previewMenu(){
-    val navController = rememberNavController()
-    BottomNavigationMenu(navController = navController)
+    PocketDishesTheme() {
+        val navController = rememberNavController()
+        BottomNavigationMenu(navController = navController)
+    }
 }

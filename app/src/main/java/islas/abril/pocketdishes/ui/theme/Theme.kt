@@ -11,6 +11,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 
 
 private val LightColorScheme = lightColorScheme(
@@ -19,14 +20,19 @@ private val LightColorScheme = lightColorScheme(
     tertiary = tertiaryIndigo,
     background = backgroundLightTheme,
     outline= typoColorBrown,
-    tertiaryContainer = lightPeach
+    tertiaryContainer = lightPeach,
+    secondaryContainer = LightGreenMenu,
+    onTertiary = lightIndigo
 )
 private val DarkColorScheme = darkColorScheme(
     primary = mainOrange,
     secondary = secondaryGreenDT,
     tertiary = tertiaryIndigoDT,
     background = backgroundDarkTheme,
-    outline = lightOrange
+    outline = lightOrange,
+    secondaryContainer = darkGreen,
+    onTertiary = tertiaryIndigoDT
+
     //tertiaryContainer = lightPeach
 )
 

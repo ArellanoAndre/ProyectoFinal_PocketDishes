@@ -10,6 +10,7 @@ import islas.abril.pocketdishes.screens.LoginScreen
 import islas.abril.pocketdishes.screens.ProfileScreen
 import islas.abril.pocketdishes.screens.RecipeDetailScreen
 import islas.abril.pocketdishes.screens.RegisterScreen
+import islas.abril.pocketdishes.screens.addRecipeScreen
 import islas.abril.pocketdishes.screens.homescreen
 import returnRecipes
 
@@ -88,6 +89,11 @@ fun AppNavigation(
                     navController = navController
                 )
             }
+        }
+
+        // --- NEW RECIPE ---
+        composable("addrecipe") { backStackEntry ->
+            addRecipeScreen(navController)
         }
     }
 }

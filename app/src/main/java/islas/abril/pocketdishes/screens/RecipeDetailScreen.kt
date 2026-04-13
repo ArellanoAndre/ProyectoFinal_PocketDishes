@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import islas.abril.pocketdishes.components.RecipeHeader
 import islas.abril.pocketdishes.components.Tabs
 import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
+import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.backgroundLightTheme
 import returnRandomRecipe
 
@@ -40,8 +42,10 @@ import returnRandomRecipe
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    val navController = rememberNavController()
-    RecipeDetailScreen(returnRandomRecipe(), onBackClick = {}, navController)
+    PocketDishesTheme() {
+        val navController = rememberNavController()
+        RecipeDetailScreen(returnRandomRecipe(), onBackClick = {}, navController)
+    }
 }
 
 @Composable
@@ -53,7 +57,7 @@ fun RecipeDetailScreen(recipe: Recipe, onBackClick: () -> Unit, navController: N
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundLightTheme)
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         Column(
