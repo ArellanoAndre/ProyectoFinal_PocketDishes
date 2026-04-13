@@ -45,6 +45,8 @@ import islas.abril.pocketdishes.components.header
 import islas.abril.pocketdishes.data.Profile
 import islas.abril.pocketdishes.data.dummies.returnProfile
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
+import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
+import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import islas.abril.pocketdishes.ui.theme.darkBrown
 import islas.abril.pocketdishes.ui.theme.gradientEnd
 import islas.abril.pocketdishes.ui.theme.gradientStart
@@ -73,28 +75,6 @@ fun ProfileScreen(
 
     ) { paddingValues ->
 
-            // ENCABEZADO
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "Welcome,\n${profile.name}.",
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = mainOrange,
-                    lineHeight = 36.sp,
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_lock),
-                    contentDescription = "Logout",
-                    tint = orangeButton,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable { onLogout() }
-                )
-            }
 
         Box(
             modifier = Modifier
@@ -106,6 +86,7 @@ fun ProfileScreen(
                 )
                 .padding(paddingValues)
         ) {
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -113,8 +94,30 @@ fun ProfileScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.statusBarsPadding())
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(50.dp))
+                // ENCABEZADO
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Welcome,\n${profile.name}.",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_lock),
+                        contentDescription = "Logout",
+                        tint = orangeButton,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable { onLogout() }
+                          //  .background(backgroundOrange)
+                    )
+                }
 
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // IMAGEN DE PERFIL
                 Column(
@@ -216,9 +219,11 @@ fun ProfileScreen(
 @Preview (showBackground = true)
 @Composable
 fun previewProfile(){
-    ProfileScreen(
+    PocketDishesTheme() {
+        ProfileScreen(
             profile = returnProfile(),
             navController = rememberNavController(),
             onLogout = {}
         )
+    }
 }
