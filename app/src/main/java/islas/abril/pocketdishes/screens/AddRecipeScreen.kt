@@ -18,13 +18,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.*
+import islas.abril.pocketdishes.data.Ingredients
 import islas.abril.pocketdishes.data.RecipeTags
 import islas.abril.pocketdishes.data.Tag
 import islas.abril.pocketdishes.data.recipeCategories
+import islas.abril.pocketdishes.data.enums.Units
 import islas.abril.pocketdishes.ui.theme.*
 
 @Composable
@@ -35,7 +36,18 @@ fun AddRecipeScreen(navController: NavController) {
     var selectedCategory by remember { mutableStateOf("") }
 
     var prepTime by remember { mutableStateOf("") }
+
     val selectedTags = remember { mutableStateListOf<Tag>() }
+    var selectedTagName by remember { mutableStateOf("") }
+
+    // 🔥 INGREDIENTES
+    var ingredientName by remember { mutableStateOf("") }
+    var ingredientAmount by remember { mutableStateOf("") }
+    var ingredientUnit by remember { mutableStateOf(Units.GR) }
+
+    val ingredientsList = remember { mutableStateListOf<Ingredients>() }
+
+    val tagNames = RecipeTags.map { it.name }
 
     Scaffold(
         topBar = { headerV2() },
@@ -80,7 +92,6 @@ fun AddRecipeScreen(navController: NavController) {
 
                 Column(modifier = Modifier.padding(16.dp)) {
 
-                    // 🔹 INPUTS
                     textField("Name", recipeName, { recipeName = it }, "Homemade Pizza")
 
                     textField(
@@ -94,8 +105,6 @@ fun AddRecipeScreen(navController: NavController) {
 
                     // 🔹 IMAGEN
                     Text("Upload a picture", fontWeight = FontWeight.SemiBold)
-
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     Box(
                         modifier = Modifier
@@ -117,66 +126,37 @@ fun AddRecipeScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // 🔹 PREP TIME + TAGS
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
 
-                        // PREP TIME
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Prep time", fontWeight = FontWeight.Medium)
+                            Text("Prep time")
 
-                            Box(
-                                modifier = Modifier
-                                    .padding(top = 5.dp)
-                                    .background(Color(0xFFF3F3F3), RoundedCornerShape(10.dp))
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = if (prepTime.isEmpty()) "30 minutes" else prepTime,
-                                    color = Color.Gray
-                                )
-                            }
+                            textField(
+                                "",
+                                prepTime,
+                                { prepTime = it },
+                                "30 minutes"
+                            )
                         }
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        // TAGS
                         Column(modifier = Modifier.weight(1f)) {
 
-                            Text("Tags", fontWeight = FontWeight.Medium)
+                            Text("Tags")
 
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(top = 5.dp)
-                            ) {
+                            combobox(
+                                "Select tag",
+                                tagNames,
+                                selectedTagName
+                            ) { selectedName ->
 
-                                Box(
-                                    modifier = Modifier
-                                        .background(Color(0xFFF3F3F3), RoundedCornerShape(10.dp))
-                                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                                ) {
-                                    Text("Add tag", color = Color.Gray)
-                                }
+                                selectedTagName = ""
 
-                                Spacer(modifier = Modifier.width(6.dp))
+                                val tag = RecipeTags.find { it.name == selectedName }
 
-                                Box(
-                                    modifier = Modifier
-                                        .size(28.dp)
-                                        .background(
-                                            MaterialTheme.colorScheme.primary,
-                                            RoundedCornerShape(6.dp)
-                                        )
-                                        .clickable {
-                                            val randomTag = RecipeTags.random()
-                                            if (!selectedTags.contains(randomTag)) {
-                                                selectedTags.add(randomTag)
-                                            }
-                                        },
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text("+", color = Color.White)
+                                if (tag != null && !selectedTags.contains(tag)) {
+                                    selectedTags.add(tag)
                                 }
                             }
                         }
@@ -184,7 +164,7 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // 🔹 TAGS SELECCIONADOS
+                    // 🔹 TAGS
                     Row {
                         selectedTags.forEach { tag ->
                             Row(
@@ -195,16 +175,12 @@ fun AddRecipeScreen(navController: NavController) {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
 
-                                Text(
-                                    text = tag.name,
-                                    color = Color.White,
-                                    fontSize = 12.sp
-                                )
+                                Text(tag.name, color = Color.White)
 
                                 Spacer(modifier = Modifier.width(5.dp))
 
                                 Text(
-                                    text = "x",
+                                    "x",
                                     color = Color.White,
                                     modifier = Modifier.clickable {
                                         selectedTags.remove(tag)
@@ -216,12 +192,64 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(15.dp))
 
-                    // 🔹 CATEGORY
+                    // 🔥 INGREDIENTES
+                    Text("Ingredients", fontWeight = FontWeight.Bold)
+
+                    textField("Name", ingredientName, { ingredientName = it }, "Dough")
+                    textField("Amount", ingredientAmount, { ingredientAmount = it }, "300")
+
+                    combobox(
+                        "Unit",
+                        Units.values().map { it.name },
+                        ingredientUnit.name
+                    ) {
+                        ingredientUnit = Units.valueOf(it)
+                    }
+
+                    Button(
+                        onClick = {
+                            if (ingredientName.isNotBlank() && ingredientAmount.isNotBlank()) {
+
+                                ingredientsList.add(
+                                    Ingredients(
+                                        name = ingredientName,
+                                        amount = ingredientAmount.toInt(),
+                                        unit = ingredientUnit,
+                                        image = R.drawable.pizza
+                                    )
+                                )
+
+                                ingredientName = ""
+                                ingredientAmount = ""
+                            }
+                        }
+                    ) {
+                        Text("Add Ingredient")
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    ingredientsList.forEachIndexed { index, ingredient ->
+
+                        Column {
+
+                            IngredientCard(ingredient)
+
+                            Text(
+                                "Remove",
+                                color = Color.Red,
+                                modifier = Modifier.clickable {
+                                    ingredientsList.removeAt(index)
+                                }
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(15.dp))
+
                     combobox("Categories", recipeCategories, selectedCategory) {
                         selectedCategory = it
                     }
-
-                    Spacer(modifier = Modifier.height(20.dp))
                 }
             }
         }

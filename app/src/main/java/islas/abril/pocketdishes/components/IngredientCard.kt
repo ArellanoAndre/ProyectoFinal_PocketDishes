@@ -82,7 +82,7 @@ fun IngredientCard(
                     color = tertiaryIndigo
                 )
                 Text(
-                    text = "${ingredient.amount} - ${ingredient.unit}",
+                    text = "${ingredient.amount} ${ingredient.unit.name}",
                     fontSize = 14.sp,
                     color = Color.DarkGray
                 )
