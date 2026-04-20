@@ -34,13 +34,11 @@ fun AddRecipeScreen(navController: NavController) {
     var recipeName by remember { mutableStateOf("") }
     var recipeDescription by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
-
     var prepTime by remember { mutableStateOf("") }
 
     val selectedTags = remember { mutableStateListOf<Tag>() }
     var selectedTagName by remember { mutableStateOf("") }
 
-    // 🔥 INGREDIENTES
     var ingredientName by remember { mutableStateOf("") }
     var ingredientAmount by remember { mutableStateOf("") }
     var ingredientUnit by remember { mutableStateOf(Units.GR) }
@@ -68,13 +66,13 @@ fun AddRecipeScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(gradientStart, gradientEnd)
                     )
                 )
                 .padding(20.dp)
-                .verticalScroll(rememberScrollState())
         ) {
 
             Text(
@@ -87,7 +85,7 @@ fun AddRecipeScreen(navController: NavController) {
 
             Card(
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE6CF))
             ) {
 
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -109,13 +107,13 @@ fun AddRecipeScreen(navController: NavController) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(120.dp)
-                            .background(Color(0xFFF3F3F3), RoundedCornerShape(16.dp))
-                            .padding(10.dp)
+                            .height(130.dp)
+                            .background(Color.White, RoundedCornerShape(16.dp))
+                            .padding(8.dp)
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.pizza),
-                            contentDescription = "Recipe",
+                            contentDescription = null,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(12.dp)),
@@ -125,36 +123,26 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // 🔹 PREP TIME + TAGS
-                    Row(modifier = Modifier.fillMaxWidth()) {
-
+                    // 🔹 PREP + TAGS
+                    Row {
                         Column(modifier = Modifier.weight(1f)) {
                             Text("Prep time")
-
-                            textField(
-                                "",
-                                prepTime,
-                                { prepTime = it },
-                                "30 minutes"
-                            )
+                            textField("", prepTime, { prepTime = it }, "30 min")
                         }
 
                         Spacer(modifier = Modifier.width(10.dp))
 
                         Column(modifier = Modifier.weight(1f)) {
-
                             Text("Tags")
 
                             combobox(
                                 "Select tag",
                                 tagNames,
                                 selectedTagName
-                            ) { selectedName ->
-
+                            ) {
                                 selectedTagName = ""
 
-                                val tag = RecipeTags.find { it.name == selectedName }
-
+                                val tag = RecipeTags.find { t -> t.name == it }
                                 if (tag != null && !selectedTags.contains(tag)) {
                                     selectedTags.add(tag)
                                 }
@@ -164,7 +152,7 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // 🔹 TAGS
+                    // 🔹 TAG CHIPS
                     Row {
                         selectedTags.forEach { tag ->
                             Row(
@@ -174,74 +162,121 @@ fun AddRecipeScreen(navController: NavController) {
                                     .padding(horizontal = 10.dp, vertical = 4.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-
                                 Text(tag.name, color = Color.White)
 
-                                Spacer(modifier = Modifier.width(5.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
 
-                                Text(
-                                    "x",
+                                Text("x",
                                     color = Color.White,
                                     modifier = Modifier.clickable {
                                         selectedTags.remove(tag)
-                                    }
-                                )
+                                    })
                             }
                         }
                     }
 
                     Spacer(modifier = Modifier.height(15.dp))
 
-                    // 🔥 INGREDIENTES
+                    // 🔥 INGREDIENTES PRO
                     Text("Ingredients", fontWeight = FontWeight.Bold)
 
-                    textField("Name", ingredientName, { ingredientName = it }, "Dough")
-                    textField("Amount", ingredientAmount, { ingredientAmount = it }, "300")
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                    combobox(
-                        "Unit",
-                        Units.values().map { it.name },
-                        ingredientUnit.name
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFD9B3))
                     ) {
-                        ingredientUnit = Units.valueOf(it)
-                    }
+                        Column(modifier = Modifier.padding(12.dp)) {
 
-                    Button(
-                        onClick = {
-                            if (ingredientName.isNotBlank() && ingredientAmount.isNotBlank()) {
+                            Row {
+                                textField("Name", ingredientName, { ingredientName = it }, "Dough")
+                                Spacer(modifier = Modifier.width(6.dp))
+                                textField("", ingredientAmount, { ingredientAmount = it }, "300")
+                            }
 
-                                ingredientsList.add(
-                                    Ingredients(
-                                        name = ingredientName,
-                                        amount = ingredientAmount.toInt(),
-                                        unit = ingredientUnit,
-                                        image = R.drawable.pizza
-                                    )
-                                )
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                                ingredientName = ""
-                                ingredientAmount = ""
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                                combobox(
+                                    "Unit",
+                                    Units.values().map { it.name },
+                                    ingredientUnit.name
+                                ) {
+                                    ingredientUnit = Units.valueOf(it)
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .background(
+                                            MaterialTheme.colorScheme.primary,
+                                            RoundedCornerShape(10.dp)
+                                        )
+                                        .clickable {
+                                            if (ingredientName.isNotBlank() && ingredientAmount.isNotBlank()) {
+
+                                                ingredientsList.add(
+                                                    Ingredients(
+                                                        name = ingredientName,
+                                                        amount = ingredientAmount.toInt(),
+                                                        unit = ingredientUnit,
+                                                        image = R.drawable.pizza
+                                                    )
+                                                )
+
+                                                ingredientName = ""
+                                                ingredientAmount = ""
+                                            }
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text("+", color = Color.White)
+                                }
                             }
                         }
-                    ) {
-                        Text("Add Ingredient")
                     }
 
                     Spacer(modifier = Modifier.height(10.dp))
 
+                    // 🔹 LISTA INGREDIENTES
                     ingredientsList.forEachIndexed { index, ingredient ->
 
-                        Column {
+                        Card(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFC999))
+                        ) {
 
-                            IngredientCard(ingredient)
+                            Row(
+                                modifier = Modifier.padding(10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                            Text(
-                                "Remove",
-                                color = Color.Red,
-                                modifier = Modifier.clickable {
-                                    ingredientsList.removeAt(index)
+                                Image(
+                                    painter = painterResource(id = ingredient.image ?: R.drawable.pizza),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(RoundedCornerShape(10.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+
+                                Spacer(modifier = Modifier.width(10.dp))
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(ingredient.name, fontWeight = FontWeight.Bold)
+                                    Text("${ingredient.amount} ${ingredient.unit.name}")
                                 }
-                            )
+
+                                Text("✕",
+                                    color = Color.Red,
+                                    modifier = Modifier.clickable {
+                                        ingredientsList.removeAt(index)
+                                    })
+                            }
                         }
                     }
 
@@ -250,6 +285,8 @@ fun AddRecipeScreen(navController: NavController) {
                     combobox("Categories", recipeCategories, selectedCategory) {
                         selectedCategory = it
                     }
+
+                    Spacer(modifier = Modifier.height(120.dp))
                 }
             }
         }
