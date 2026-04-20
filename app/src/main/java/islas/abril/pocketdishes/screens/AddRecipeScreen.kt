@@ -1,72 +1,41 @@
 package islas.abril.pocketdishes.screens
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
-import islas.abril.pocketdishes.components.BottomNavigationMenu
-import islas.abril.pocketdishes.components.combobox
-import islas.abril.pocketdishes.components.headerV2
-import islas.abril.pocketdishes.components.textField
-import islas.abril.pocketdishes.data.enums.Units
+import islas.abril.pocketdishes.components.*
+import islas.abril.pocketdishes.data.RecipeTags
+import islas.abril.pocketdishes.data.Tag
 import islas.abril.pocketdishes.data.recipeCategories
-import islas.abril.pocketdishes.ui.theme.LightGreenMenu
-import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
-import islas.abril.pocketdishes.ui.theme.backgroundOrange
-import islas.abril.pocketdishes.ui.theme.gradientEnd
-import islas.abril.pocketdishes.ui.theme.gradientStart
-import islas.abril.pocketdishes.ui.theme.lightOrange
-import islas.abril.pocketdishes.ui.theme.lightPeach
-import islas.abril.pocketdishes.ui.theme.typoColorBrown
+import islas.abril.pocketdishes.ui.theme.*
+
 @Composable
 fun AddRecipeScreen(navController: NavController) {
 
-    // 🔥 ESTADOS (LO MÁS IMPORTANTE)
     var recipeName by remember { mutableStateOf("") }
     var recipeDescription by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
+
+    var prepTime by remember { mutableStateOf("") }
+    val selectedTags = remember { mutableStateListOf<Tag>() }
 
     Scaffold(
         topBar = { headerV2() },
@@ -93,6 +62,7 @@ fun AddRecipeScreen(navController: NavController) {
                     )
                 )
                 .padding(20.dp)
+                .verticalScroll(rememberScrollState())
         ) {
 
             Text(
@@ -107,15 +77,11 @@ fun AddRecipeScreen(navController: NavController) {
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
             ) {
+
                 Column(modifier = Modifier.padding(16.dp)) {
 
-                    // ✅ YA FUNCIONAL
-                    textField(
-                        "Name",
-                        recipeName,
-                        { recipeName = it },
-                        "Homemade pizza"
-                    )
+                    // 🔹 INPUTS
+                    textField("Name", recipeName, { recipeName = it }, "Homemade Pizza")
 
                     textField(
                         "Description",
@@ -124,18 +90,10 @@ fun AddRecipeScreen(navController: NavController) {
                         "Write a description"
                     )
 
-                    // --- IMAGE ---
-                    Text(
-                        "Upload a picture",
-                        color = typoColorBrown,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(
-                            start = 10.dp,
-                            top = 5.dp,
-                            bottom = 10.dp
-                        )
-                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // 🔹 IMAGEN
+                    Text("Upload a picture", fontWeight = FontWeight.SemiBold)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -143,45 +101,129 @@ fun AddRecipeScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(120.dp)
-                            .clickable {}
-                            .background(backgroundOrange, RoundedCornerShape(12.dp)),
-                        contentAlignment = Alignment.Center
+                            .background(Color(0xFFF3F3F3), RoundedCornerShape(16.dp))
+                            .padding(10.dp)
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_add_recipe),
-                            contentDescription = "Add"
+                        Image(
+                            painter = painterResource(id = R.drawable.pizza),
+                            contentDescription = "Recipe",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop
                         )
                     }
 
-                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                    // ✅ YA FUNCIONAL
-                    combobox(
-                        "Categories",
-                        recipeCategories,
-                        selectedCategory,
-                        { selectedCategory = it }
-                    )
+                    // 🔹 PREP TIME + TAGS
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                        // PREP TIME
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("Prep time", fontWeight = FontWeight.Medium)
 
-                    Text(
-                        text = "Ingredients",
-                        fontWeight = FontWeight.Bold
-                    )
+                            Box(
+                                modifier = Modifier
+                                    .padding(top = 5.dp)
+                                    .background(Color(0xFFF3F3F3), RoundedCornerShape(10.dp))
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                            ) {
+                                Text(
+                                    text = if (prepTime.isEmpty()) "30 minutes" else prepTime,
+                                    color = Color.Gray
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        // TAGS
+                        Column(modifier = Modifier.weight(1f)) {
+
+                            Text("Tags", fontWeight = FontWeight.Medium)
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(top = 5.dp)
+                            ) {
+
+                                Box(
+                                    modifier = Modifier
+                                        .background(Color(0xFFF3F3F3), RoundedCornerShape(10.dp))
+                                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                                ) {
+                                    Text("Add tag", color = Color.Gray)
+                                }
+
+                                Spacer(modifier = Modifier.width(6.dp))
+
+                                Box(
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .background(
+                                            MaterialTheme.colorScheme.primary,
+                                            RoundedCornerShape(6.dp)
+                                        )
+                                        .clickable {
+                                            val randomTag = RecipeTags.random()
+                                            if (!selectedTags.contains(randomTag)) {
+                                                selectedTags.add(randomTag)
+                                            }
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text("+", color = Color.White)
+                                }
+                            }
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(10.dp))
+
+                    // 🔹 TAGS SELECCIONADOS
+                    Row {
+                        selectedTags.forEach { tag ->
+                            Row(
+                                modifier = Modifier
+                                    .padding(end = 6.dp)
+                                    .background(tag.color, RoundedCornerShape(12.dp))
+                                    .padding(horizontal = 10.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Text(
+                                    text = tag.name,
+                                    color = Color.White,
+                                    fontSize = 12.sp
+                                )
+
+                                Spacer(modifier = Modifier.width(5.dp))
+
+                                Text(
+                                    text = "x",
+                                    color = Color.White,
+                                    modifier = Modifier.clickable {
+                                        selectedTags.remove(tag)
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    // 🔹 CATEGORY
+                    combobox("Categories", recipeCategories, selectedCategory) {
+                        selectedCategory = it
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun addRecipePreview(){
-    PocketDishesTheme {
-        val navController = rememberNavController()
-        AddRecipeScreen(navController = navController)
     }
 }

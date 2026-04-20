@@ -3,18 +3,7 @@ package islas.abril.pocketdishes.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -40,7 +29,6 @@ import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.ReadOnlyProfileField
-import islas.abril.pocketdishes.components.header
 import islas.abril.pocketdishes.data.Profile
 import islas.abril.pocketdishes.data.dummies.returnProfile
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
@@ -62,38 +50,13 @@ fun ProfileScreen(
                 modifier = Modifier
                     .background(LightGreenMenu)
                     .fillMaxWidth()
-
             ) {
                 Box(modifier = Modifier.navigationBarsPadding()) {
                     BottomNavigationMenu(navController = navController)
                 }
             }
         }
-
     ) { paddingValues ->
-
-            // ENCABEZADO
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "Welcome,\n${profile.name}.",
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = mainOrange,
-                    lineHeight = 36.sp,
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_lock),
-                    contentDescription = "Logout",
-                    tint = orangeButton,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable { onLogout() }
-                )
-            }
 
         Box(
             modifier = Modifier
@@ -105,17 +68,43 @@ fun ProfileScreen(
                 )
                 .padding(paddingValues)
         ) {
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 35.dp)
                     .verticalScroll(rememberScrollState())
             ) {
+
                 Spacer(modifier = Modifier.statusBarsPadding())
                 Spacer(modifier = Modifier.height(20.dp))
 
+                // HEADER
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Welcome,\n${profile.name}.",
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = mainOrange,
+                        lineHeight = 36.sp,
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_lock),
+                        contentDescription = "Logout",
+                        tint = orangeButton,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable { onLogout() }
+                    )
+                }
 
-                // IMAGEN DE PERFIL
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // IMAGEN PERFIL
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
@@ -136,13 +125,13 @@ fun ProfileScreen(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .padding(top = 8.dp)
-                            .clickable { /* Accion para cambiar foto */ }
+                            .clickable { }
                     )
                 }
 
                 Spacer(modifier = Modifier.height(25.dp))
 
-                // ACCOUNT INFO (todavia no se pueden editar las cosas)
+                // ACCOUNT INFO
                 Text(
                     text = "Account info",
                     fontSize = 22.sp,
@@ -169,13 +158,13 @@ fun ProfileScreen(
                         tint = darkBrown,
                         modifier = Modifier
                             .size(24.dp)
-                            .clickable { /* Abrir edicion */ }
+                            .clickable { }
                     )
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                // ESTADISTSICAS
+                // ESTADÍSTICAS
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
@@ -198,26 +187,51 @@ fun ProfileScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(130.dp))
+                Spacer(modifier = Modifier.height(150.dp))
             }
 
-            // MENU DE NAVEGACION
+            // 🔥 BOTÓN FINAL (ARREGLADO BIEN)
             Box(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(LightGreenMenu)
-            )
+                    .align(Alignment.BottomStart)
+                    .padding(start = 20.dp, bottom = 90.dp)
+                    .background(LightGreenMenu, RoundedCornerShape(12.dp))
+                    .clickable {
+                        navController.navigate("add_recipe") {
+                            launchSingleTop = true
+                        }
+                    }
+                    .padding(horizontal = 16.dp, vertical = 10.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_add_recipe),
+                        contentDescription = "Add Recipe",
+                        tint = darkBrown,
+                        modifier = Modifier.size(24.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "New recipe",
+                        color = darkBrown,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                }
+            }
         }
     }
 }
 
-@Preview (showBackground = true)
+@Preview(showBackground = true)
 @Composable
-fun previewProfile(){
+fun previewProfile() {
     ProfileScreen(
-            profile = returnProfile(),
-            navController = rememberNavController(),
-            onLogout = {}
-        )
+        profile = returnProfile(),
+        navController = rememberNavController(),
+        onLogout = {}
+    )
 }
