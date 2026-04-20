@@ -34,7 +34,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -56,13 +61,16 @@ import islas.abril.pocketdishes.ui.theme.lightOrange
 import islas.abril.pocketdishes.ui.theme.lightPeach
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
 @Composable
-fun addRecipeScreen(navController: NavController) {
-    androidx.compose.material3.Scaffold(
-        topBar = {
-            headerV2()
-        },
+fun AddRecipeScreen(navController: NavController) {
+
+    // 🔥 ESTADOS (LO MÁS IMPORTANTE)
+    var recipeName by remember { mutableStateOf("") }
+    var recipeDescription by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf("") }
+
+    Scaffold(
+        topBar = { headerV2() },
         bottomBar = {
-            // LO PUSE ADENTRO DE UN BOX CON NAVIGATION BARS PADDING PARA QUE NO CHOQUE CON EL MENU DEL TELEFONO
             Box(
                 modifier = Modifier
                     .background(LightGreenMenu)
@@ -84,7 +92,6 @@ fun addRecipeScreen(navController: NavController) {
                         colors = listOf(gradientStart, gradientEnd)
                     )
                 )
-                //.verticalScroll(scrollState)
                 .padding(20.dp)
         ) {
 
@@ -102,11 +109,25 @@ fun addRecipeScreen(navController: NavController) {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
 
-                    textField("Name", "", {}, "")
-                    textField("Description", "", {}, "")
+                    // ✅ YA FUNCIONAL
+                    textField(
+                        "Name",
+                        recipeName,
+                        { recipeName = it },
+                        "Homemade pizza"
+                    )
 
+                    textField(
+                        "Description",
+                        recipeDescription,
+                        { recipeDescription = it },
+                        "Write a description"
+                    )
+
+                    // --- IMAGE ---
                     Text(
-                        "Upload a picture", color = typoColorBrown,
+                        "Upload a picture",
+                        color = typoColorBrown,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(
@@ -115,7 +136,9 @@ fun addRecipeScreen(navController: NavController) {
                             bottom = 10.dp
                         )
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -129,20 +152,16 @@ fun addRecipeScreen(navController: NavController) {
                             contentDescription = "Add"
                         )
                     }
+
                     Spacer(modifier = Modifier.padding(top = 10.dp))
 
+                    // ✅ YA FUNCIONAL
                     combobox(
                         "Categories",
                         recipeCategories,
-                        "",
-                        {}
+                        selectedCategory,
+                        { selectedCategory = it }
                     )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                    }
 
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -153,18 +172,16 @@ fun addRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
                 }
-
             }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
 fun addRecipePreview(){
     PocketDishesTheme {
         val navController = rememberNavController()
-        addRecipeScreen(navController = navController)
+        AddRecipeScreen(navController = navController)
     }
 }

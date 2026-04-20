@@ -11,15 +11,16 @@ import islas.abril.pocketdishes.screens.ProfileScreen
 import islas.abril.pocketdishes.screens.RecipeDetailScreen
 import islas.abril.pocketdishes.screens.RegisterScreen
 import islas.abril.pocketdishes.screens.homescreen
+import islas.abril.pocketdishes.screens.AddRecipeScreen
 import returnRecipes
 
 @Composable
-fun AppNavigation(
-) {
+fun AppNavigation() {
     val navController = rememberNavController()
     val allRecipes = returnRecipes()
 
     NavHost(navController = navController, startDestination = "login") {
+
         // --- LOGIN ---
         composable("login") {
             LoginScreen(
@@ -51,7 +52,6 @@ fun AppNavigation(
 
         // --- PROFILE ---
         composable("profile") {
-            // Obtenemos los datos mock
             val userProfile = returnProfile()
 
             ProfileScreen(
@@ -88,6 +88,13 @@ fun AppNavigation(
                     navController = navController
                 )
             }
+        }
+
+        // --- ADD RECIPE (NUEVO) ---
+        composable("add_recipe") {
+            AddRecipeScreen(
+                navController = navController
+            )
         }
     }
 }
