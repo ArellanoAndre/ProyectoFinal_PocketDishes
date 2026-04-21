@@ -1,5 +1,8 @@
 package islas.abril.pocketdishes.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.*
 import islas.abril.pocketdishes.data.Ingredients
@@ -30,6 +34,15 @@ import islas.abril.pocketdishes.ui.theme.*
 
 @Composable
 fun AddRecipeScreen(navController: NavController) {
+
+    // 🔥 NUEVO: imagen seleccionada
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+    }
 
     var recipeName by remember { mutableStateOf("") }
     var recipeDescription by remember { mutableStateOf("") }
@@ -101,24 +114,44 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // 🔹 IMAGEN
+                    // 🔥 UPLOAD IMAGE
                     Text("Upload a picture", fontWeight = FontWeight.SemiBold)
 
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(130.dp)
-                            .background(Color.White, RoundedCornerShape(16.dp))
-                            .padding(8.dp)
+                            .height(140.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White)
+                            .clickable {
+                                launcher.launch("image/*") // 🔥 abre galería
+                            },
+                        contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.pizza),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(12.dp)),
-                            contentScale = ContentScale.Crop
-                        )
+
+                        if (imageUri != null) {
+                            // 🔥 IMAGEN DEL USUARIO
+                            Image(
+                                painter = rememberAsyncImagePainter(imageUri),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            // 🔥 IMAGEN DEFAULT
+                            Image(
+                                painter = painterResource(id = R.drawable.pizza),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+
+                            Text(
+                                "+",
+                                color = Color.White,
+                                style = MaterialTheme.typography.headlineMedium
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -175,118 +208,7 @@ fun AddRecipeScreen(navController: NavController) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(15.dp))
-
-                    // 🔥 INGREDIENTES PRO
-                    Text("Ingredients", fontWeight = FontWeight.Bold)
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFD9B3))
-                    ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-
-                            Row {
-                                textField("Name", ingredientName, { ingredientName = it }, "Dough")
-                                Spacer(modifier = Modifier.width(6.dp))
-                                textField("", ingredientAmount, { ingredientAmount = it }, "300")
-                            }
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-
-                                combobox(
-                                    "Unit",
-                                    Units.values().map { it.name },
-                                    ingredientUnit.name
-                                ) {
-                                    ingredientUnit = Units.valueOf(it)
-                                }
-
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .background(
-                                            MaterialTheme.colorScheme.primary,
-                                            RoundedCornerShape(10.dp)
-                                        )
-                                        .clickable {
-                                            if (ingredientName.isNotBlank() && ingredientAmount.isNotBlank()) {
-
-                                                ingredientsList.add(
-                                                    Ingredients(
-                                                        name = ingredientName,
-                                                        amount = ingredientAmount.toInt(),
-                                                        unit = ingredientUnit,
-                                                        image = R.drawable.pizza
-                                                    )
-                                                )
-
-                                                ingredientName = ""
-                                                ingredientAmount = ""
-                                            }
-                                        },
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text("+", color = Color.White)
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    // 🔹 LISTA INGREDIENTES
-                    ingredientsList.forEachIndexed { index, ingredient ->
-
-                        Card(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFC999))
-                        ) {
-
-                            Row(
-                                modifier = Modifier.padding(10.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-
-                                Image(
-                                    painter = painterResource(id = ingredient.image ?: R.drawable.pizza),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(60.dp)
-                                        .clip(RoundedCornerShape(10.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
-
-                                Spacer(modifier = Modifier.width(10.dp))
-
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(ingredient.name, fontWeight = FontWeight.Bold)
-                                    Text("${ingredient.amount} ${ingredient.unit.name}")
-                                }
-
-                                Text("✕",
-                                    color = Color.Red,
-                                    modifier = Modifier.clickable {
-                                        ingredientsList.removeAt(index)
-                                    })
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(15.dp))
-
-                    combobox("Categories", recipeCategories, selectedCategory) {
-                        selectedCategory = it
-                    }
-
-                    Spacer(modifier = Modifier.height(120.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
             }
         }
