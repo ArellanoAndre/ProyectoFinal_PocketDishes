@@ -3,179 +3,137 @@ package islas.abril.pocketdishes.screens
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.*
-import islas.abril.pocketdishes.data.Ingredients
-import islas.abril.pocketdishes.data.RecipeTags
-import islas.abril.pocketdishes.data.Tag
-import islas.abril.pocketdishes.data.recipeCategories
+import islas.abril.pocketdishes.data.*
+import islas.abril.pocketdishes.data.dummies.IngredientList
 import islas.abril.pocketdishes.data.enums.Units
 import islas.abril.pocketdishes.ui.theme.*
 
 @Composable
 fun AddRecipeScreen(navController: NavController) {
 
-    // 🔥 NUEVO: imagen seleccionada
+    // 🔹 Imagen
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        imageUri = uri
-    }
+        ActivityResultContracts.GetContent()
+    ) { uri -> imageUri = uri }
 
+    // 🔹 Inputs
     var recipeName by remember { mutableStateOf("") }
     var recipeDescription by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("") }
     var prepTime by remember { mutableStateOf("") }
 
+    // 🔹 Tags
     val selectedTags = remember { mutableStateListOf<Tag>() }
     var selectedTagName by remember { mutableStateOf("") }
 
-    var ingredientName by remember { mutableStateOf("") }
-    var ingredientAmount by remember { mutableStateOf("") }
-    var ingredientUnit by remember { mutableStateOf(Units.GR) }
-
-    val ingredientsList = remember { mutableStateListOf<Ingredients>() }
-
     val tagNames = RecipeTags.map { it.name }
+
+    // 🔥 Ingredientes
+    val ingredientsList = remember { mutableStateListOf<Ingredients>() }
+    var selectedIngredient by remember { mutableStateOf<Ingredients?>(null) }
+    var ingredientAmount by remember { mutableStateOf("") }
+    var expandedIngredient by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { headerV2() },
-        bottomBar = {
-            Box(
-                modifier = Modifier
-                    .background(LightGreenMenu)
-                    .fillMaxWidth()
-            ) {
-                Box(modifier = Modifier.navigationBarsPadding()) {
-                    BottomNavigationMenu(navController = navController)
-                }
-            }
-        }
-    ) { innerPadding ->
+        bottomBar = { BottomNavigationMenu(navController = navController) }
+    ) { padding ->
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+                .padding(padding)
                 .verticalScroll(rememberScrollState())
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(gradientStart, gradientEnd)
+                        listOf(gradientStart, gradientEnd)
                     )
                 )
                 .padding(20.dp)
         ) {
 
-            Text(
-                text = "Add a recipe",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Text("Add a recipe", color = Color(0xFFFF7A00))
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // 🔶 CARD PRINCIPAL
             Card(
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE6CF))
+                colors = CardDefaults.cardColors(Color(0xFFFFE6CF))
             ) {
 
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(Modifier.padding(16.dp)) {
 
                     textField("Name", recipeName, { recipeName = it }, "Homemade Pizza")
 
-                    textField(
-                        "Description",
-                        recipeDescription,
-                        { recipeDescription = it },
-                        "Write a description"
-                    )
+                    textField("Description", recipeDescription, { recipeDescription = it }, "Write a description")
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // 🔥 UPLOAD IMAGE
-                    Text("Upload a picture", fontWeight = FontWeight.SemiBold)
+                    Text("Upload a picture")
 
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(140.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White)
-                            .clickable {
-                                launcher.launch("image/*") // 🔥 abre galería
-                            },
-                        contentAlignment = Alignment.Center
+                            .clickable { launcher.launch("image/*") }
                     ) {
 
                         if (imageUri != null) {
-                            // 🔥 IMAGEN DEL USUARIO
-                            Image(
-                                painter = rememberAsyncImagePainter(imageUri),
+                            AsyncImage(
+                                model = imageUri,
                                 contentDescription = null,
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            // 🔥 IMAGEN DEFAULT
                             Image(
-                                painter = painterResource(id = R.drawable.pizza),
+                                painter = painterResource(R.drawable.pizza),
                                 contentDescription = null,
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
-
-                            Text(
-                                "+",
-                                color = Color.White,
-                                style = MaterialTheme.typography.headlineMedium
-                            )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    // 🔹 PREP + TAGS
                     Row {
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(Modifier.weight(1f)) {
                             Text("Prep time")
                             textField("", prepTime, { prepTime = it }, "30 min")
                         }
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(Modifier.weight(1f)) {
                             Text("Tags")
 
-                            combobox(
-                                "Select tag",
-                                tagNames,
-                                selectedTagName
-                            ) {
-                                selectedTagName = ""
+                            combobox("Select tag", tagNames, selectedTagName) {
+                                selectedTagName = it
 
-                                val tag = RecipeTags.find { t -> t.name == it }
+                                val tag = RecipeTags.find { tag ->
+                                    tag.name == selectedTagName
+                                }
+
                                 if (tag != null && !selectedTags.contains(tag)) {
                                     selectedTags.add(tag)
                                 }
@@ -185,32 +143,131 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // 🔹 TAG CHIPS
-                    Row {
-                        selectedTags.forEach { tag ->
-                            Row(
+                    recipeTags(selectedTags)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 🔥 INGREDIENTES
+            Text("Ingredients", color = Color.White)
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(Color(0xFFFF9F4A))
+            ) {
+
+                Column(Modifier.padding(12.dp)) {
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+
+                        // SELECT INGREDIENT
+                        Box(Modifier.weight(1f)) {
+
+                            Text(
+                                selectedIngredient?.name ?: "Select",
                                 modifier = Modifier
-                                    .padding(end = 6.dp)
-                                    .background(tag.color, RoundedCornerShape(12.dp))
-                                    .padding(horizontal = 10.dp, vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                    .background(Color.White, RoundedCornerShape(12.dp))
+                                    .padding(12.dp)
+                                    .fillMaxWidth()
+                                    .clickable { expandedIngredient = true }
+                            )
+
+                            DropdownMenu(
+                                expanded = expandedIngredient,
+                                onDismissRequest = { expandedIngredient = false }
                             ) {
-                                Text(tag.name, color = Color.White)
-
-                                Spacer(modifier = Modifier.width(4.dp))
-
-                                Text("x",
-                                    color = Color.White,
-                                    modifier = Modifier.clickable {
-                                        selectedTags.remove(tag)
-                                    })
+                                IngredientList.forEach { ingredient ->
+                                    DropdownMenuItem(
+                                        text = { Text(ingredient.name) },
+                                        onClick = {
+                                            selectedIngredient = ingredient
+                                            expandedIngredient = false
+                                        }
+                                    )
+                                }
                             }
+                        }
+
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        // CANTIDAD
+                        TextField(
+                            value = ingredientAmount,
+                            onValueChange = { ingredientAmount = it },
+                            placeholder = { Text("1") },
+                            modifier = Modifier.width(70.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        // UNIDAD
+                        Box(
+                            modifier = Modifier
+                                .background(Color.White, RoundedCornerShape(10.dp))
+                                .padding(8.dp)
+                        ) {
+                            Text(selectedIngredient?.unit?.name ?: "GR")
+                        }
+
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        // BOTON AGREGAR
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(Color.Green, RoundedCornerShape(10.dp))
+                                .clickable {
+
+                                    val amount = ingredientAmount.toIntOrNull()
+
+                                    if (selectedIngredient != null && amount != null) {
+
+                                        ingredientsList.add(
+                                            Ingredients(
+                                                name = selectedIngredient!!.name,
+                                                image = selectedIngredient!!.image,
+                                                amount = amount,
+                                                unit = selectedIngredient!!.unit
+                                            )
+                                        )
+
+                                        ingredientAmount = ""
+                                        selectedIngredient = null
+                                    }
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("✔", color = Color.White)
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // 🔥 LISTA MOSTRADA
+                    ingredientsList.forEachIndexed { index, ingredient ->
+
+                        Box {
+                            IngredientCard(ingredient)
+
+                            Text(
+                                "x",
+                                color = Color.Red,
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(8.dp)
+                                    .clickable {
+                                        ingredientsList.removeAt(index)
+                                    }
+                            )
+                        }
+                    }
                 }
             }
+
+            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }
