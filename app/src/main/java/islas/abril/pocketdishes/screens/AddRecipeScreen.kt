@@ -28,29 +28,31 @@ import islas.abril.pocketdishes.ui.theme.*
 @Composable
 fun AddRecipeScreen(navController: NavController) {
 
-    // 🔹 Imagen
+    // Imagen seleccionada por el usuario (null si no hay)
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
+    // Lanzador para abrir la galería y recibir la imagen
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri -> imageUri = uri }
 
-    // 🔹 Inputs
+    // Datos básicos de la receta
     var recipeName by remember { mutableStateOf("") }
     var recipeDescription by remember { mutableStateOf("") }
     var prepTime by remember { mutableStateOf("") }
 
-    // 🔹 Tags
+    // Tags seleccionados (lista mutable para agregar/remover)
     val selectedTags = remember { mutableStateListOf<Tag>() }
     var selectedTagName by remember { mutableStateOf("") }
 
+    // Lista de nombres de tags disponibles para el combo box
     val tagNames = RecipeTags.map { it.name }
 
-    // 🔥 Ingredientes
+    // Lista de ingredientes agregados a la receta
     val ingredientsList = remember { mutableStateListOf<Ingredients>() }
-    var selectedIngredient by remember { mutableStateOf<Ingredients?>(null) }
-    var ingredientAmount by remember { mutableStateOf("") }
-    var expandedIngredient by remember { mutableStateOf(false) }
+    var selectedIngredient by remember { mutableStateOf<Ingredients?>(null) }  // Ingrediente temporal antes de agregar
+    var ingredientAmount by remember { mutableStateOf("") }  // Cantidad como texto (se valida después)
+    var expandedIngredient by remember { mutableStateOf(false) }  // Controla si el dropdown está abierto
 
     Scaffold(
         topBar = { headerV2() },
@@ -60,7 +62,7 @@ fun AddRecipeScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState())  // Permite scroll si el contenido es muy largo
                 .background(
                     Brush.verticalGradient(
                         listOf(gradientStart, gradientEnd)
@@ -73,7 +75,7 @@ fun AddRecipeScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 🔶 CARD PRINCIPAL
+            // Card principal con nombre, descripción, imagen y tags
             Card(
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(Color(0xFFFFE6CF))
@@ -82,13 +84,13 @@ fun AddRecipeScreen(navController: NavController) {
                 Column(Modifier.padding(16.dp)) {
 
                     textField("Name", recipeName, { recipeName = it }, "Homemade Pizza")
-
                     textField("Description", recipeDescription, { recipeDescription = it }, "Write a description")
 
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text("Upload a picture")
 
+                    // Caja clickeable que abre la galería y muestra la imagen seleccionada o una por defecto
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -98,6 +100,7 @@ fun AddRecipeScreen(navController: NavController) {
                     ) {
 
                         if (imageUri != null) {
+                            // Coil carga la imagen desde la URI
                             AsyncImage(
                                 model = imageUri,
                                 contentDescription = null,
@@ -105,6 +108,7 @@ fun AddRecipeScreen(navController: NavController) {
                                 contentScale = ContentScale.Crop
                             )
                         } else {
+                            // Imagen por defecto mientras no se sube ninguna
                             Image(
                                 painter = painterResource(R.drawable.pizza),
                                 contentDescription = null,
@@ -117,6 +121,7 @@ fun AddRecipeScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Row {
+                        // Columna izquierda: tiempo de preparación
                         Column(Modifier.weight(1f)) {
                             Text("Prep time")
                             textField("", prepTime, { prepTime = it }, "30 min")
@@ -124,16 +129,19 @@ fun AddRecipeScreen(navController: NavController) {
 
                         Spacer(modifier = Modifier.width(10.dp))
 
+                        // Columna derecha: selector de tags
                         Column(Modifier.weight(1f)) {
                             Text("Tags")
 
                             combobox("Select tag", tagNames, selectedTagName) {
                                 selectedTagName = it
 
+                                // Busca el tag completo por su nombre
                                 val tag = RecipeTags.find { tag ->
                                     tag.name == selectedTagName
                                 }
 
+                                // Evita duplicados antes de agregar
                                 if (tag != null && !selectedTags.contains(tag)) {
                                     selectedTags.add(tag)
                                 }
@@ -143,13 +151,14 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
+                    // Muestra los tags seleccionados como "chips"
                     recipeTags(selectedTags)
                 }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 🔥 INGREDIENTES
+            // Sección de ingredientes
             Text("Ingredients", color = Color.White)
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -161,18 +170,21 @@ fun AddRecipeScreen(navController: NavController) {
 
                 Column(Modifier.padding(12.dp)) {
 
+                    // Fila para seleccionar ingrediente, cantidad y agregar
                     Row(verticalAlignment = Alignment.CenterVertically) {
 
-                        // SELECT INGREDIENT
+                        // Dropdown para elegir ingrediente
                         Box(Modifier.weight(1f)) {
 
                             Text(
-                                selectedIngredient?.name ?: "Select",
+                                selectedIngredient?.name ?: "Select",  // Muestra "Select" si no hay nada seleccionado
                                 modifier = Modifier
                                     .background(Color.White, RoundedCornerShape(12.dp))
                                     .padding(12.dp)
                                     .fillMaxWidth()
-                                    .clickable { expandedIngredient = true }
+                                    .clickable {
+                                        expandedIngredient = !expandedIngredient // ✅ FIX
+                                    }
                             )
 
                             DropdownMenu(
@@ -193,17 +205,20 @@ fun AddRecipeScreen(navController: NavController) {
 
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        // CANTIDAD
+                        // Campo para la cantidad (texto, se valida después)
                         TextField(
                             value = ingredientAmount,
-                            onValueChange = { ingredientAmount = it },
+                            onValueChange = {
+                                ingredientAmount = it
+                                expandedIngredient = false // ✅ FIX
+                            },
                             placeholder = { Text("1") },
                             modifier = Modifier.width(70.dp)
                         )
 
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        // UNIDAD
+                        // Muestra la unidad del ingrediente seleccionado (GR, KG, ML, etc.)
                         Box(
                             modifier = Modifier
                                 .background(Color.White, RoundedCornerShape(10.dp))
@@ -214,13 +229,12 @@ fun AddRecipeScreen(navController: NavController) {
 
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        // BOTON AGREGAR
+                        // Botón verde para agregar ingrediente a la lista
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
                                 .background(Color.Green, RoundedCornerShape(10.dp))
                                 .clickable {
-
                                     val amount = ingredientAmount.toIntOrNull()
 
                                     if (selectedIngredient != null && amount != null) {
@@ -246,7 +260,7 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // 🔥 LISTA MOSTRADA
+                    // Lista de ingredientes ya agregados, cada uno con una "x" para eliminar
                     ingredientsList.forEachIndexed { index, ingredient ->
 
                         Box {
