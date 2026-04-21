@@ -6,7 +6,7 @@ import islas.abril.pocketdishes.data.Profile
 // Función mock para generar el perfil de prueba
 fun returnProfile(): Profile {
     return Profile(
-        name = "Abril Islas",
+        name = "Jane Doe",
         birthDate = "15/12/2005",
         imageRes = R.drawable.profilepicture,
         statsGraphRes = R.drawable.graph
