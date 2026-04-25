@@ -1,131 +1,96 @@
 package islas.abril.pocketdishes.screens
 
-
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import islas.abril.pocketdishes.components.BottomNavigationMenu
-import islas.abril.pocketdishes.components.IngredientCard
-import islas.abril.pocketdishes.components.InstructionStepItem
-import islas.abril.pocketdishes.components.PrepTime
-import islas.abril.pocketdishes.components.RecipeHeader
-import islas.abril.pocketdishes.components.Tabs
+import islas.abril.pocketdishes.components.*
 import islas.abril.pocketdishes.data.Recipe
-import islas.abril.pocketdishes.ui.theme.LightGreenMenu
-import islas.abril.pocketdishes.ui.theme.backgroundLightTheme
-import returnRandomRecipe
-
-//PREVIEW TEMPORAL CON DATOS MOCK
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    val navController = rememberNavController()
-    RecipeDetailScreen(returnRandomRecipe(), onBackClick = {}, navController)
-}
+import islas.abril.pocketdishes.ui.theme.*
 
 @Composable
-fun RecipeDetailScreen(recipe: Recipe, onBackClick: () -> Unit, navController: NavController) {
+fun RecipeDetailScreen(
+    recipe: Recipe,
+    onBackClick: () -> Unit,
+    navController: NavController
+) {
 
-    // para la funcionalidad de los tabs entre ingredientes y instrucciones
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableStateOf(1) }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundLightTheme)
     ) {
 
-        Column(
-            modifier = Modifier.fillMaxSize()
+        // 🔹 Aquí puedes tener tu header si ya lo tienes
+        headerV2()
+
+        // 🔹 Tabs (puedes ajustarlos si ya tienes diseño)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            TabButton("Info", selectedTab == 0) { selectedTab = 0 }
+            TabButton("Steps", selectedTab == 1) { selectedTab = 1 }
+        }
 
-            //HEADER
-            RecipeHeader(
-                recipe,
-                onBackClick
-            )
+        Crossfade(targetState = selectedTab) { tab ->
 
-            Spacer(modifier = Modifier.height(5.dp))
+            when (tab) {
 
-            //PREP TIME
-            PrepTime(recipe.prepTime)
-
-            // TABS (INGREDIENTES Y INSTRUCCIONES)
-            Tabs(
-                selected = selectedTab,
-                onChange = { selectedTab = it }
-            )
-
-            // ingredientes... y instrucciones...
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Crossfade (targetState = selectedTab) { tab ->
-                when (tab) {
-
-                    // INGREDIENTES
-                    0 -> {
-                        LazyColumn(
-                            modifier = Modifier.weight(1f),
-                            contentPadding = PaddingValues(bottom = 160.dp)
-                        )  {
-                            items(recipe.ingredients) { ingredient ->
-                                IngredientCard(
-                                    ingredient
-                                )
-                            }
-                        }
+                // 🔶 INFO (puedes personalizarlo)
+                0 -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        Text("Recipe Info", style = MaterialTheme.typography.titleLarge)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Name: ${recipe.name}")
+                        Text("Description: ${recipe.description}")
+                        Text("Prep Time: ${recipe.prepTime}")
                     }
+                }
 
-                    // INSTRUCCIONES
-                    1 -> {
-                        LazyColumn(
-                            modifier = Modifier.weight(1f),
-                            contentPadding = PaddingValues(bottom = 160.dp)
-                        )  {
-                            itemsIndexed(recipe.steps) { index, step ->
-                                InstructionStepItem(index, step)
-                            }
+                // 🔥 STEPS (CORREGIDO)
+                1 -> {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        contentPadding = PaddingValues(bottom = 120.dp)
+                    ) {
+
+                        itemsIndexed(recipe.steps) { index, step ->
+
+                            InstructionStepItem(
+                                index = index,
+                                step = step,
+                                onDelete = {
+                                    // vacío porque aquí solo se visualiza
+                                }
+                            )
                         }
                     }
                 }
             }
-
         }
-        // MENU DE NAVEGACION
+
+        // 🔻 Bottom menu (si ya lo usas)
         Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter as Alignment.Horizontal)
                 .fillMaxWidth()
-                .background(LightGreenMenu) // para que no se vean las imagenes de los ingredientes debajo del menu (si son muchas y requieren scroll)
+                .background(Color(0xFFDFF5E1))
         ) {
-            Box(
-                modifier = Modifier.navigationBarsPadding() // padding para que no se cubra por el menu de navegacion del telefono
-            ) {
-                BottomNavigationMenu(navController = navController)
-            }
+            BottomNavigationMenu(navController = navController)
         }
     }
 }
-
-

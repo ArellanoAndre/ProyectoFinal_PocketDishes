@@ -1,6 +1,7 @@
 package islas.abril.pocketdishes.screens
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -22,37 +24,40 @@ import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.*
 import islas.abril.pocketdishes.data.*
 import islas.abril.pocketdishes.data.dummies.IngredientList
-import islas.abril.pocketdishes.data.enums.Units
-import islas.abril.pocketdishes.ui.theme.*
 
 @Composable
 fun AddRecipeScreen(navController: NavController) {
 
-    // Imagen seleccionada por el usuario (null si no hay)
+    val context = LocalContext.current
+
+    // 🔥 IMAGE
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Lanzador para abrir la galería y recibir la imagen
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri -> imageUri = uri }
 
-    // Datos básicos de la receta
+    // 🔥 BASIC INFO
     var recipeName by remember { mutableStateOf("") }
     var recipeDescription by remember { mutableStateOf("") }
     var prepTime by remember { mutableStateOf("") }
 
-    // Tags seleccionados (lista mutable para agregar/remover)
+    // 🔥 TAGS
     val selectedTags = remember { mutableStateListOf<Tag>() }
     var selectedTagName by remember { mutableStateOf("") }
-
-    // Lista de nombres de tags disponibles para el combo box
     val tagNames = RecipeTags.map { it.name }
 
-    // Lista de ingredientes agregados a la receta
+    // 🔥 INGREDIENTS
     val ingredientsList = remember { mutableStateListOf<Ingredients>() }
-    var selectedIngredient by remember { mutableStateOf<Ingredients?>(null) }  // Ingrediente temporal antes de agregar
-    var ingredientAmount by remember { mutableStateOf("") }  // Cantidad como texto (se valida después)
-    var expandedIngredient by remember { mutableStateOf(false) }  // Controla si el dropdown está abierto
+    var selectedIngredient by remember { mutableStateOf<Ingredients?>(null) }
+    var ingredientAmount by remember { mutableStateOf("") }
+    var expandedIngredient by remember { mutableStateOf(false) }
+
+    // 🔥 STEPS (STRING)
+    val stepsList = remember { mutableStateListOf<String>() }
+    var showStepDialog by remember { mutableStateOf(false) }
+    var stepTitle by remember { mutableStateOf("") }
+    var stepDescription by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = { headerV2() },
@@ -62,23 +67,30 @@ fun AddRecipeScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(padding)
-                .verticalScroll(rememberScrollState())  // Permite scroll si el contenido es muy largo
+                .verticalScroll(rememberScrollState())
                 .background(
                     Brush.verticalGradient(
-                        listOf(gradientStart, gradientEnd)
+                        listOf(
+                            Color(0xFFFFE0C2),
+                            Color(0xFFFF9A4D)
+                        )
                     )
                 )
-                .padding(20.dp)
+                .padding(16.dp)
         ) {
 
-            Text("Add a recipe", color = Color(0xFFFF7A00))
+            Text(
+                "Add a recipe",
+                color = Color(0xFFFF7A00),
+                style = MaterialTheme.typography.titleLarge
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Card principal con nombre, descripción, imagen y tags
+            // 🔶 MAIN CARD
             Card(
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(Color(0xFFFFE6CF))
+                colors = CardDefaults.cardColors(Color(0xFFFFE9D6))
             ) {
 
                 Column(Modifier.padding(16.dp)) {
@@ -86,21 +98,19 @@ fun AddRecipeScreen(navController: NavController) {
                     textField("Name", recipeName, { recipeName = it }, "Homemade Pizza")
                     textField("Description", recipeDescription, { recipeDescription = it }, "Write a description")
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                    Text("Upload a picture")
+                    Text("Upload a picture", color = Color.Gray)
 
-                    // Caja clickeable que abre la galería y muestra la imagen seleccionada o una por defecto
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(140.dp)
+                            .height(150.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .clickable { launcher.launch("image/*") }
                     ) {
 
                         if (imageUri != null) {
-                            // Coil carga la imagen desde la URI
                             AsyncImage(
                                 model = imageUri,
                                 contentDescription = null,
@@ -108,7 +118,6 @@ fun AddRecipeScreen(navController: NavController) {
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            // Imagen por defecto mientras no se sube ninguna
                             Image(
                                 painter = painterResource(R.drawable.pizza),
                                 contentDescription = null,
@@ -118,30 +127,25 @@ fun AddRecipeScreen(navController: NavController) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Row {
-                        // Columna izquierda: tiempo de preparación
+
                         Column(Modifier.weight(1f)) {
-                            Text("Prep time")
+                            Text("Prep time", color = Color.Gray)
                             textField("", prepTime, { prepTime = it }, "30 min")
                         }
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        // Columna derecha: selector de tags
                         Column(Modifier.weight(1f)) {
-                            Text("Tags")
+                            Text("Tags", color = Color.Gray)
 
                             combobox("Select tag", tagNames, selectedTagName) {
                                 selectedTagName = it
 
-                                // Busca el tag completo por su nombre
-                                val tag = RecipeTags.find { tag ->
-                                    tag.name == selectedTagName
-                                }
+                                val tag = RecipeTags.find { it.name == selectedTagName }
 
-                                // Evita duplicados antes de agregar
                                 if (tag != null && !selectedTags.contains(tag)) {
                                     selectedTags.add(tag)
                                 }
@@ -151,40 +155,35 @@ fun AddRecipeScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // Muestra los tags seleccionados como "chips"
                     recipeTags(selectedTags)
                 }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Sección de ingredientes
+            // 🔶 INGREDIENTS
             Text("Ingredients", color = Color.White)
 
             Spacer(modifier = Modifier.height(10.dp))
 
             Card(
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(Color(0xFFFF9F4A))
+                colors = CardDefaults.cardColors(Color(0xFFFFA85A))
             ) {
 
                 Column(Modifier.padding(12.dp)) {
 
-                    // Fila para seleccionar ingrediente, cantidad y agregar
                     Row(verticalAlignment = Alignment.CenterVertically) {
 
-                        // Dropdown para elegir ingrediente
                         Box(Modifier.weight(1f)) {
 
                             Text(
-                                selectedIngredient?.name ?: "Select",  // Muestra "Select" si no hay nada seleccionado
+                                selectedIngredient?.name ?: "Select",
                                 modifier = Modifier
                                     .background(Color.White, RoundedCornerShape(12.dp))
                                     .padding(12.dp)
                                     .fillMaxWidth()
-                                    .clickable {
-                                        expandedIngredient = !expandedIngredient // ✅ FIX
-                                    }
+                                    .clickable { expandedIngredient = !expandedIngredient }
                             )
 
                             DropdownMenu(
@@ -205,20 +204,15 @@ fun AddRecipeScreen(navController: NavController) {
 
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        // Campo para la cantidad (texto, se valida después)
                         TextField(
                             value = ingredientAmount,
-                            onValueChange = {
-                                ingredientAmount = it
-                                expandedIngredient = false // ✅ FIX
-                            },
+                            onValueChange = { ingredientAmount = it },
                             placeholder = { Text("1") },
                             modifier = Modifier.width(70.dp)
                         )
 
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        // Muestra la unidad del ingrediente seleccionado (GR, KG, ML, etc.)
                         Box(
                             modifier = Modifier
                                 .background(Color.White, RoundedCornerShape(10.dp))
@@ -229,12 +223,12 @@ fun AddRecipeScreen(navController: NavController) {
 
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        // Botón verde para agregar ingrediente a la lista
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color.Green, RoundedCornerShape(10.dp))
+                                .background(Color(0xFF00C853), RoundedCornerShape(10.dp))
                                 .clickable {
+
                                     val amount = ingredientAmount.toIntOrNull()
 
                                     if (selectedIngredient != null && amount != null) {
@@ -258,20 +252,19 @@ fun AddRecipeScreen(navController: NavController) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                    // Lista de ingredientes ya agregados, cada uno con una "x" para eliminar
                     ingredientsList.forEachIndexed { index, ingredient ->
 
                         Box {
                             IngredientCard(ingredient)
 
                             Text(
-                                "x",
+                                "✕",
                                 color = Color.Red,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
-                                    .padding(8.dp)
+                                    .padding(6.dp)
                                     .clickable {
                                         ingredientsList.removeAt(index)
                                     }
@@ -281,7 +274,133 @@ fun AddRecipeScreen(navController: NavController) {
                 }
             }
 
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 🔶 STEPS
+            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                Text(
+                    "Steps",
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Box(
+                    modifier = Modifier
+                        .size(26.dp)
+                        .background(Color(0xFFFF7A00), RoundedCornerShape(6.dp))
+                        .clickable { showStepDialog = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("+", color = Color.White)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            stepsList.forEachIndexed { index, step ->
+
+                InstructionStepItem(
+                    index = index,
+                    step = step,
+                    onDelete = {
+                        stepsList.removeAt(index)
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 🔶 SAVE BUTTON
+            Button(
+                onClick = {
+                    Toast.makeText(context, "Recipe Saved", Toast.LENGTH_SHORT).show()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF5A2D1B)
+                )
+            ) {
+                Text("SAVE", color = Color.White)
+            }
+
             Spacer(modifier = Modifier.height(100.dp))
         }
+    }
+
+    // 🔥 POPUP (FIGMA STYLE)
+    if (showStepDialog) {
+        AlertDialog(
+            onDismissRequest = { showStepDialog = false },
+            containerColor = Color(0xFFF5F5F5),
+            shape = RoundedCornerShape(20.dp),
+
+            title = {
+                Text(
+                    text = "Add a new step",
+                    color = Color(0xFFFF7A00)
+                )
+            },
+
+            text = {
+                Column {
+
+                    OutlinedTextField(
+                        value = stepTitle,
+                        onValueChange = { stepTitle = it },
+                        placeholder = { Text("Title") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.LightGray,
+                            focusedBorderColor = Color.LightGray
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    OutlinedTextField(
+                        value = stepDescription,
+                        onValueChange = { stepDescription = it },
+                        placeholder = { Text("Insert a description here") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.LightGray,
+                            focusedBorderColor = Color.LightGray
+                        )
+                    )
+                }
+            },
+
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (stepDescription.isNotBlank()) {
+                            stepsList.add(stepDescription)
+                            stepTitle = ""
+                            stepDescription = ""
+                            showStepDialog = false
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+
+                    shape = RoundedCornerShape(12.dp),
+
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF5A2D1B)
+                    )
+                ) {
+                    Text("SAVE", color = Color.White)
+                }
+            },
+
+            dismissButton = {}
+        )
     }
 }
