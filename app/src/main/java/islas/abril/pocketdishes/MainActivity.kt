@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             PocketDishesTheme {
-                PocketDishesApp()
+                AppNavigation()
             }
         }
     }
@@ -28,36 +28,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PocketDishesApp() {
-    val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = "login"
-    ) {
-        composable("login") {
-            LoginScreen(
-                onLoginClick = {
-                    navController.navigate("profile")
-                },
-                onRegisterClick = {
-                    navController.navigate("register")
-                }
-            )
-        }
-
-        composable("register") {
-            RegisterScreen(
-                onRegisterClick = {
-                    navController.navigate("login")
-                },
-                onBackClick = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable("profile") {
-            UserProfileScreen(navController = navController)
-        }
-    }
 }

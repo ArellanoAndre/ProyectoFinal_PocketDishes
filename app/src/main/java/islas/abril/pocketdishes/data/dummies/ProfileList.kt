@@ -8,7 +8,7 @@ fun returnProfile(): Profile {
     return Profile(
         name = "Abril Islas",
         birthDate = "15/12/2005",
-        imageRes = R.drawable.rice,
+        imageRes = R.drawable.profilepicture,
         statsGraphRes = R.drawable.graph
     )
 }

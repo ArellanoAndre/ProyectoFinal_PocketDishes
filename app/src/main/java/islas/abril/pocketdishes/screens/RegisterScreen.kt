@@ -29,11 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import islas.abril.pocketdishes.components.GenderDropdown
 import islas.abril.pocketdishes.components.LoginTextField
+import islas.abril.pocketdishes.components.showDatePicker
 import islas.abril.pocketdishes.ui.theme.darkBrown
 import islas.abril.pocketdishes.ui.theme.gradientEnd
 import islas.abril.pocketdishes.ui.theme.gradientStart
@@ -53,6 +55,7 @@ fun RegisterScreen(
     var gender by remember { mutableStateOf("Female") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -79,7 +82,7 @@ fun RegisterScreen(
                     .verticalScroll(rememberScrollState()), //para que quepan todos los campos
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 // Titulo
                 Text(
@@ -132,12 +135,23 @@ fun RegisterScreen(
                     horizontalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
-                        LoginTextField(
-                            label = "Birth date",
-                            value = birthDate,
-                            onValueChange = { birthDate = it },
-                            placeholder = "dd/mm/yyyy"
-                        )
+                        // Deshabilitamos la escritura directa y activamos el click
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showDatePicker(context) { birthDate = it }
+                            }
+                        ) {
+                            // Usamos ReadOnly para que parezca un campo de texto pero no abra el teclado
+                            LoginTextField(
+                                label = "Birth date",
+                                value = birthDate,
+                                onValueChange = {}, // Vacío porque no se escribe
+                                placeholder = "Select date",
+                                enabled = false, // Evita que gane el foco del teclado
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                     Box(modifier = Modifier.weight(1f)) {
                         GenderDropdown(

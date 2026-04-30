@@ -23,9 +23,11 @@ fun LoginTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = label,
             color = darkBrown,
@@ -36,6 +38,7 @@ fun LoginTextField(
         TextField(
             value = value,
             onValueChange = onValueChange,
+            enabled = enabled,
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(placeholder, color = Color.LightGray) },
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
@@ -44,7 +47,10 @@ fun LoginTextField(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledContainerColor = Color.White,
+                disabledIndicatorColor = Color.Transparent,
+                disabledTextColor = Color.Black
             )
         )
     }

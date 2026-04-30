@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +44,7 @@ import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.ReadOnlyProfileField
 import islas.abril.pocketdishes.components.header
+import islas.abril.pocketdishes.components.showDatePicker
 import islas.abril.pocketdishes.data.Profile
 import islas.abril.pocketdishes.data.dummies.returnProfile
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
@@ -56,23 +60,23 @@ fun ProfileScreen(
     navController: NavController,
     onLogout: () -> Unit
 ) {
-    Scaffold(
-        bottomBar = {
-            Box(
-                modifier = Modifier
-                    .background(LightGreenMenu)
-                    .fillMaxWidth()
+    val context = LocalContext.current
+    // background con gradient
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush = Brush.verticalGradient(colors = listOf(gradientStart, gradientEnd)))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 35.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Spacer(modifier = Modifier.statusBarsPadding())
+            Spacer(modifier = Modifier.height(20.dp))
 
-            ) {
-                Box(modifier = Modifier.navigationBarsPadding()) {
-                    BottomNavigationMenu(navController = navController)
-                }
-            }
-        }
-
-    ) { paddingValues ->
-
-            // ENCABEZADO
+            //  Encabezado
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -84,130 +88,133 @@ fun ProfileScreen(
                     fontWeight = FontWeight.ExtraBold,
                     color = mainOrange,
                     lineHeight = 36.sp,
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_lock),
-                    contentDescription = "Logout",
-                    tint = orangeButton,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable { onLogout() }
-                )
-            }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(gradientStart, gradientEnd)
-                    )
-                )
-                .padding(paddingValues)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 35.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Spacer(modifier = Modifier.statusBarsPadding())
-                Spacer(modifier = Modifier.height(20.dp))
-
-
-                // IMAGEN DE PERFIL
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Image(
-                        painter = painterResource(id = profile.imageRes),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier
-                            .fillMaxWidth(0.9f)
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(30.dp)),
-                        contentScale = ContentScale.Fit
-                    )
-                    Text(
-                        text = "Update profile picture",
-                        color = orangeButton,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .clickable { /* Accion para cambiar foto */ }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(25.dp))
-
-                // ACCOUNT INFO (todavia no se pueden editar las cosas)
-                Text(
-                    text = "Account info",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = orangeButton
+                    modifier = Modifier.weight(1f)
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
-
+                // Contenedor para los iconos a la derecha
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
-                    Box(modifier = Modifier.weight(1.5f)) {
-                        ReadOnlyProfileField(label = "Name", value = profile.name)
-                    }
-                    Box(modifier = Modifier.weight(1f)) {
-                        ReadOnlyProfileField(label = "Birth date", value = profile.birthDate)
-                    }
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_edit),
-                        contentDescription = "Edit info",
-                        tint = darkBrown,
+                        painter = painterResource(id = R.drawable.ic_lock),
+                        contentDescription = "Lock",
+                        tint = orangeButton,
                         modifier = Modifier
-                            .size(24.dp)
-                            .clickable { /* Abrir edicion */ }
+                            .size(35.dp)
+                            .clickable { /* Sin funcion por ahora (Recetas Secreta) */ }
+                    )
+
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                        contentDescription = "Logout",
+                        tint = orangeButton,
+                        modifier = Modifier
+                            .size(35.dp)
+                            .clickable { onLogout() }
                     )
                 }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                // ESTADISTSICAS
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(25.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
-                ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Text(
-                            text = "Monthly statistics...",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = orangeButton
-                        )
-                        Spacer(modifier = Modifier.height(15.dp))
-                        Image(
-                            painter = painterResource(id = profile.statsGraphRes),
-                            contentDescription = "Stats Graph",
-                            modifier = Modifier.fillMaxWidth(),
-                            contentScale = ContentScale.FillWidth
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(130.dp))
             }
 
-            // MENU DE NAVEGACION
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(LightGreenMenu)
+            Spacer(modifier = Modifier.height(30.dp))
+
+            // pfp
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Image(
+                    painter = painterResource(id = profile.imageRes),
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(30.dp)),
+                    contentScale = ContentScale.Fit
+                )
+                Text(
+                    text = "Update profile picture",
+                    color = orangeButton,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clickable { /* Accion */ }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(25.dp))
+
+            // Info
+            Text(
+                text = "Account info",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = orangeButton
             )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                Box(modifier = Modifier.weight(1.5f)) {
+                    ReadOnlyProfileField(label = "Name", value = profile.name)
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    ReadOnlyProfileField(
+                        label = "Birth date",
+                        value = profile.birthDate,
+                        modifier = Modifier.clickable {
+                            showDatePicker(context) { nuevaFecha ->
+                                // Accion
+                            }
+                        }
+                    )
+                }
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_edit),
+                    contentDescription = "Edit info",
+                    tint = darkBrown,
+                    modifier = Modifier.size(24.dp).clickable { }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            // Estadisticas
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(25.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text(text = "Monthly statistics...", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = orangeButton)
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Image(
+                        painter = painterResource(id = profile.statsGraphRes),
+                        contentDescription = "Stats Graph",
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
+                    )
+                }
+            }
+
+            // Spacer (para que se pueda hacer scroll)
+            Spacer(modifier = Modifier.height(160.dp))
+        }
+
+        // Menu de navegacion
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(LightGreenMenu)
+                .navigationBarsPadding()
+        ) {
+            BottomNavigationMenu(navController = navController)
         }
     }
 }
