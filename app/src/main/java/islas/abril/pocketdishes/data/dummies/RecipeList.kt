@@ -7,7 +7,7 @@ import islas.abril.pocketdishes.data.getTag
 val DummyRecipes = listOf(
 
     Recipe(
-        name = "Chicken Teriyaki Bowl",
+        name = "Chicken Teriyaki",
         description = "Sweet and savory chicken with rice and veggies.",
         author= "Adrián Macías",
         source="",

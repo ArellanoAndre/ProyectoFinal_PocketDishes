@@ -18,15 +18,15 @@ private val LightColorScheme = lightColorScheme(
     secondary = secondaryGreen,
     tertiary = tertiaryIndigo,
     background = backgroundLightTheme,
-    outline= typoColorBrown,
+    outline= darkBrown,
     tertiaryContainer = lightPeach
 )
 private val DarkColorScheme = darkColorScheme(
     primary = mainOrange,
     secondary = secondaryGreenDT,
-    tertiary = tertiaryIndigoDT,
+    tertiary = tertiaryIndigo,
     background = backgroundDarkTheme,
-    outline = lightOrange
+    outline = lightPeach
     //tertiaryContainer = lightPeach
 )
 

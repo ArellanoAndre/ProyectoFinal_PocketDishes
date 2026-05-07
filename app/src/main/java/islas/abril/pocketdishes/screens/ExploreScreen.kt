@@ -84,9 +84,11 @@ fun ExploreScreen(recipeList: List<Recipe>, navController: NavController) {
                     Row(
                         modifier = Modifier.clickable{ /* navigate */ }
                         .padding(start=20.dp)
+                        ,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Categories",
+                            text = "Filters",
                             color = MaterialTheme.colorScheme.secondary,
                             style = MaterialTheme.typography.labelMedium
                         )
@@ -105,17 +107,17 @@ fun ExploreScreen(recipeList: List<Recipe>, navController: NavController) {
                             .clickable { /* navigate */ }
                     )
                 }
-                Spacer(modifier = Modifier.padding(5.dp))
+                Spacer(modifier = Modifier.padding(15.dp))
                 Text(
-                    text = "Popular lately...",
+                    text = "All categories",
                     fontSize = 30.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.padding(start=20.dp)
                 )
 
                 LazyColumn(
-                    modifier = Modifier.padding(top=30.dp)
+                    modifier = Modifier.padding(top=15.dp)
                 ) {
                     items(recipeCategories) {
                         Row(

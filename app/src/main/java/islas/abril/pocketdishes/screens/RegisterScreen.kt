@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,11 +32,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import islas.abril.pocketdishes.components.GenderDropdown
 import islas.abril.pocketdishes.components.LoginTextField
 import islas.abril.pocketdishes.components.showDatePicker
+import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.darkBrown
 import islas.abril.pocketdishes.ui.theme.gradientEnd
 import islas.abril.pocketdishes.ui.theme.gradientStart
@@ -62,7 +65,7 @@ fun RegisterScreen(
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(gradientStart, gradientEnd)
+                    colors = listOf(mainOrange,MaterialTheme.colorScheme.background)
                 )
             ),
         contentAlignment = Alignment.Center
@@ -72,7 +75,7 @@ fun RegisterScreen(
                 .fillMaxWidth(0.9f)
                 .fillMaxHeight(0.85f), // Un poco más alta que la de login
             shape = RoundedCornerShape(30.dp),
-            colors = CardDefaults.cardColors(containerColor = lightPeach),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
             elevation = CardDefaults.cardElevation(7.dp)
         ) {
             Column(
@@ -104,7 +107,7 @@ fun RegisterScreen(
                     text = "Create account",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = darkBrown
+                    color = MaterialTheme.colorScheme.outline
                 )
 
                 Spacer(modifier = Modifier.height(45.dp))
@@ -200,7 +203,7 @@ fun RegisterScreen(
                 // Boton para volver al Login si ya tiene cuenta
                 Text(
                     text = "Already have an account? Log In",
-                    color = darkBrown.copy(alpha = 0.6f),
+                    color = mainOrange.copy(alpha = 0.6f),
                     fontSize = 14.sp,
                     modifier = Modifier.clickable() { onBackToLogin() }
                 )
@@ -208,5 +211,13 @@ fun RegisterScreen(
                 Spacer(modifier = Modifier.height(30.dp))
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun previewRegister(){
+    PocketDishesTheme() {
+    RegisterScreen({},{})
     }
 }

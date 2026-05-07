@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,9 +28,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import islas.abril.pocketdishes.components.LoginTextField
+import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.darkBrown
 import islas.abril.pocketdishes.ui.theme.gradientEnd
 import islas.abril.pocketdishes.ui.theme.gradientStart
@@ -53,7 +56,7 @@ fun LoginScreen(
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(gradientStart, gradientEnd)
+                    colors = listOf(mainOrange,MaterialTheme.colorScheme.background)
                 )
             ),
         contentAlignment = Alignment.Center
@@ -64,7 +67,7 @@ fun LoginScreen(
                 .fillMaxWidth(0.85f)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(30.dp),
-            colors = CardDefaults.cardColors(containerColor = lightPeach),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
             elevation = CardDefaults.cardElevation(7.dp)
         ) {
             Column(
@@ -94,7 +97,7 @@ fun LoginScreen(
                     text = "Log In",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = darkBrown
+                    color = MaterialTheme.colorScheme.outline
                 )
 
                 Spacer(modifier = Modifier.height(25.dp))
@@ -155,5 +158,13 @@ fun LoginScreen(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewLoginScreen() {
+    PocketDishesTheme() {
+    LoginScreen({},{})
     }
 }

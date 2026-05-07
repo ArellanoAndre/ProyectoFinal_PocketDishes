@@ -38,9 +38,9 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(80.dp)
             .background(LightGreenMenu)
-            .padding(top=35.dp, start = 20.dp, end = 20.dp)
+            .padding(top=30.dp, start = 30.dp, end = 30.dp)
             ,horizontalArrangement = Arrangement.SpaceBetween
     )
 

@@ -105,7 +105,7 @@ fun homescreen(navController: NavController) {
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = "Explore recipes",
-                        color = typoColorBrown,
+                        color = MaterialTheme.colorScheme.outline,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         modifier = Modifier
