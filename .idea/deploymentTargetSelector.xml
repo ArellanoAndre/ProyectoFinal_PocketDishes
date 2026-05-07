@@ -4,17 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-<<<<<<< HEAD
         <DropdownSelection timestamp="2026-05-07T02:35:17.218728Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=/Users/abrilislas/.android/avd/Pixel_9.avd" />
-=======
-        <DropdownSelection timestamp="2026-05-07T07:34:00.803818Z">
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Arell\.android\avd\Pixel_9_Pro.avd" />
->>>>>>> AddRecipe_Arell
             </handle>
           </Target>
         </DropdownSelection>

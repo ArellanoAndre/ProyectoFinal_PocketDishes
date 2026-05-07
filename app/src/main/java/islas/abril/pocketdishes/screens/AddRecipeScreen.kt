@@ -1,27 +1,46 @@
 package islas.abril.pocketdishes.screens
-
-import android.net.Uri
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.TextField
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
-<<<<<<< HEAD
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.combobox
 import islas.abril.pocketdishes.components.headerV2
@@ -35,394 +54,116 @@ import islas.abril.pocketdishes.ui.theme.lightOrange
 import islas.abril.pocketdishes.ui.theme.lightPeach
 import islas.abril.pocketdishes.ui.theme.mainOrange
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
-=======
-import islas.abril.pocketdishes.components.*
-import islas.abril.pocketdishes.data.*
-import islas.abril.pocketdishes.data.dummies.IngredientList
-
->>>>>>> AddRecipe_Arell
 @Composable
-fun AddRecipeScreen(navController: NavController) {
-
-    val context = LocalContext.current
-
-    // 🔥 IMAGE
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri -> imageUri = uri }
-
-    // 🔥 BASIC INFO
-    var recipeName by remember { mutableStateOf("") }
-    var recipeDescription by remember { mutableStateOf("") }
-    var prepTime by remember { mutableStateOf("") }
-
-    // 🔥 TAGS
-    val selectedTags = remember { mutableStateListOf<Tag>() }
-    var selectedTagName by remember { mutableStateOf("") }
-    val tagNames = RecipeTags.map { it.name }
-
-    // 🔥 INGREDIENTS
-    val ingredientsList = remember { mutableStateListOf<Ingredients>() }
-    var selectedIngredient by remember { mutableStateOf<Ingredients?>(null) }
-    var ingredientAmount by remember { mutableStateOf("") }
-    var expandedIngredient by remember { mutableStateOf(false) }
-
-    // 🔥 STEPS (STRING)
-    val stepsList = remember { mutableStateListOf<String>() }
-    var showStepDialog by remember { mutableStateOf(false) }
-    var stepTitle by remember { mutableStateOf("") }
-    var stepDescription by remember { mutableStateOf("") }
-
-    Scaffold(
-        topBar = { headerV2() },
-        bottomBar = { BottomNavigationMenu(navController = navController) }
-    ) { padding ->
+fun addRecipeScreen(navController: NavController) {
+    androidx.compose.material3.Scaffold(
+        topBar = {
+            headerV2()
+        },
+        bottomBar = {
+            // LO PUSE ADENTRO DE UN BOX CON NAVIGATION BARS PADDING PARA QUE NO CHOQUE CON EL MENU DEL TELEFONO
+            Box(
+                modifier = Modifier
+                    .background(LightGreenMenu)
+                    .fillMaxWidth()
+            ) {
+                Box(modifier = Modifier.navigationBarsPadding()) {
+                    BottomNavigationMenu(navController = navController)
+                }
+            }
+        }
+    ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(innerPadding)
                 .background(
                     Brush.verticalGradient(
-<<<<<<< HEAD
                         colors = listOf(MaterialTheme.colorScheme.background, mainOrange)
-=======
-                        listOf(
-                            Color(0xFFFFE0C2),
-                            Color(0xFFFF9A4D)
-                        )
->>>>>>> AddRecipe_Arell
                     )
                 )
-                .padding(16.dp)
+                //.verticalScroll(scrollState)
+                .padding(20.dp)
         ) {
 
             Text(
-                "Add a recipe",
-                color = Color(0xFFFF7A00),
-                style = MaterialTheme.typography.titleLarge
+                text = "Add a recipe",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 🔶 MAIN CARD
             Card(
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(Color(0xFFFFE9D6))
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
             ) {
+                Column(modifier = Modifier.padding(16.dp)) {
 
-                Column(Modifier.padding(16.dp)) {
+                    textField("Name", "", {}, "")
+                    textField("Description", "", {}, "")
 
-                    textField("Name", recipeName, { recipeName = it }, "Homemade Pizza")
-                    textField("Description", recipeDescription, { recipeDescription = it }, "Write a description")
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text("Upload a picture", color = Color.Gray)
-
+                    Text(
+                        "Upload a picture", color = typoColorBrown,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(
+                            start = 10.dp,
+                            top = 5.dp,
+                            bottom = 10.dp
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(150.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .clickable { launcher.launch("image/*") }
+                            .height(120.dp)
+                            .clickable {}
+                            .background(backgroundOrange, RoundedCornerShape(12.dp)),
+                        contentAlignment = Alignment.Center
                     ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_add_recipe),
+                            contentDescription = "Add"
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
 
-                        if (imageUri != null) {
-                            AsyncImage(
-                                model = imageUri,
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            Image(
-                                painter = painterResource(R.drawable.pizza),
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
+                    combobox(
+                        "Categories",
+                        recipeCategories,
+                        "",
+                        {}
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                    Row {
-
-                        Column(Modifier.weight(1f)) {
-                            Text("Prep time", color = Color.Gray)
-                            textField("", prepTime, { prepTime = it }, "30 min")
-                        }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        Column(Modifier.weight(1f)) {
-                            Text("Tags", color = Color.Gray)
-
-                            combobox("Select tag", tagNames, selectedTagName) {
-                                selectedTagName = it
-
-                                val tag = RecipeTags.find { it.name == selectedTagName }
-
-                                if (tag != null && !selectedTags.contains(tag)) {
-                                    selectedTags.add(tag)
-                                }
-                            }
-                        }
-                    }
+                    Text(
+                        text = "Ingredients",
+                        fontWeight = FontWeight.Bold
+                    )
 
                     Spacer(modifier = Modifier.height(10.dp))
-
-                    recipeTags(selectedTags)
                 }
+
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // 🔶 INGREDIENTS
-            Text("Ingredients", color = Color.White)
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Card(
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(Color(0xFFFFA85A))
-            ) {
-
-                Column(Modifier.padding(12.dp)) {
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-
-                        Box(Modifier.weight(1f)) {
-
-                            Text(
-                                selectedIngredient?.name ?: "Select",
-                                modifier = Modifier
-                                    .background(Color.White, RoundedCornerShape(12.dp))
-                                    .padding(12.dp)
-                                    .fillMaxWidth()
-                                    .clickable { expandedIngredient = !expandedIngredient }
-                            )
-
-                            DropdownMenu(
-                                expanded = expandedIngredient,
-                                onDismissRequest = { expandedIngredient = false }
-                            ) {
-                                IngredientList.forEach { ingredient ->
-                                    DropdownMenuItem(
-                                        text = { Text(ingredient.name) },
-                                        onClick = {
-                                            selectedIngredient = ingredient
-                                            expandedIngredient = false
-                                        }
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.width(6.dp))
-
-                        TextField(
-                            value = ingredientAmount,
-                            onValueChange = { ingredientAmount = it },
-                            placeholder = { Text("0") },
-                            modifier = Modifier.width(70.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(6.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .background(Color.White, RoundedCornerShape(10.dp))
-                                .padding(8.dp)
-                        ) {
-                            Text(selectedIngredient?.unit?.name ?: "GR")
-                        }
-
-                        Spacer(modifier = Modifier.width(6.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .background(Color(0xFF00C853), RoundedCornerShape(10.dp))
-                                .clickable {
-
-                                    val amount = ingredientAmount.toIntOrNull()
-
-                                    if (selectedIngredient != null && amount != null) {
-
-                                        ingredientsList.add(
-                                            Ingredients(
-                                                name = selectedIngredient!!.name,
-                                                image = selectedIngredient!!.image,
-                                                amount = amount,
-                                                unit = selectedIngredient!!.unit
-                                            )
-                                        )
-
-                                        ingredientAmount = ""
-                                        selectedIngredient = null
-                                    }
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("✔", color = Color.White)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    ingredientsList.forEachIndexed { index, ingredient ->
-
-                        Box {
-                            IngredientCard(ingredient)
-
-                            Text(
-                                "✕",
-                                color = Color.Red,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(6.dp)
-                                    .clickable {
-                                        ingredientsList.removeAt(index)
-                                    }
-                            )
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // 🔶 STEPS
-            Row(verticalAlignment = Alignment.CenterVertically) {
-
-                Text(
-                    "Steps",
-                    color = Color.White
-                )
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Box(
-                    modifier = Modifier
-                        .size(26.dp)
-                        .background(Color(0xFFFF7A00), RoundedCornerShape(6.dp))
-                        .clickable { showStepDialog = true },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("+", color = Color.White)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            stepsList.forEachIndexed { index, step ->
-
-                InstructionStepItem(
-                    index = index,
-                    step = step,
-                    onDelete = {
-                        stepsList.removeAt(index)
-                    }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // 🔶 SAVE BUTTON
-            Button(
-                onClick = {
-                    Toast.makeText(context, "Recipe Saved", Toast.LENGTH_SHORT).show()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF5A2D1B)
-                )
-            ) {
-                Text("SAVE", color = Color.White)
-            }
-
-            Spacer(modifier = Modifier.height(100.dp))
         }
     }
+}
 
-    // 🔥 POPUP (FIGMA STYLE)
-    if (showStepDialog) {
-        AlertDialog(
-            onDismissRequest = { showStepDialog = false },
-            containerColor = Color(0xFFF5F5F5),
-            shape = RoundedCornerShape(20.dp),
 
-            title = {
-                Text(
-                    text = "Add a new step",
-                    color = Color(0xFFFF7A00)
-                )
-            },
-
-            text = {
-                Column {
-
-                    OutlinedTextField(
-                        value = stepTitle,
-                        onValueChange = { stepTitle = it },
-                        placeholder = { Text("Title") },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.LightGray,
-                            focusedBorderColor = Color.LightGray
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    OutlinedTextField(
-                        value = stepDescription,
-                        onValueChange = { stepDescription = it },
-                        placeholder = { Text("Insert a description here") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.LightGray,
-                            focusedBorderColor = Color.LightGray
-                        )
-                    )
-                }
-            },
-
-            confirmButton = {
-                Button(
-                    onClick = {
-                        if (stepDescription.isNotBlank()) {
-                            stepsList.add(
-                                "$stepTitle|$stepDescription"
-                            )
-                            stepTitle = ""
-                            stepDescription = ""
-                            showStepDialog = false
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-
-                    shape = RoundedCornerShape(12.dp),
-
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF5A2D1B)
-                    )
-                ) {
-                    Text("SAVE", color = Color.White)
-                }
-            },
-
-            dismissButton = {}
-        )
+@Preview(showBackground = true)
+@Composable
+fun addRecipePreview(){
+    PocketDishesTheme {
+        val navController = rememberNavController()
+        addRecipeScreen(navController = navController)
     }
 }

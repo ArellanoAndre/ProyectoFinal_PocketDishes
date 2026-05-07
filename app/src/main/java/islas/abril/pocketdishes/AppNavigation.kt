@@ -5,20 +5,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.data.dummies.returnProfile
-import islas.abril.pocketdishes.screens.*
+import islas.abril.pocketdishes.screens.ExploreScreen
+import islas.abril.pocketdishes.screens.LoginScreen
+import islas.abril.pocketdishes.screens.ProfileScreen
+import islas.abril.pocketdishes.screens.RecipeDetailScreen
+import islas.abril.pocketdishes.screens.RegisterScreen
+import islas.abril.pocketdishes.screens.homescreen
 import returnRecipes
 
 @Composable
-fun AppNavigation() {
-
+fun AppNavigation(
+) {
     val navController = rememberNavController()
     val allRecipes = returnRecipes()
 
-    NavHost(
-        navController = navController,
-        startDestination = "login"
-    ) {
-
+    NavHost(navController = navController, startDestination = "login") {
+        // --- LOGIN ---
         composable("login") {
             LoginScreen(
                 onLoginSuccess = {
@@ -26,16 +28,16 @@ fun AppNavigation() {
                         popUpTo("login") { inclusive = true }
                     }
                 },
-                onNavigateToRegister = {
-                    navController.navigate("register")
-                }
+                onNavigateToRegister = { navController.navigate("register") }
             )
         }
 
+        // --- HOME ---
         composable("home") {
             homescreen(navController)
         }
 
+        // --- REGISTER ---
         composable("register") {
             RegisterScreen(
                 onRegisterSuccess = {
@@ -47,7 +49,9 @@ fun AppNavigation() {
             )
         }
 
+        // --- PROFILE ---
         composable("profile") {
+            // Obtenemos los datos mock
             val userProfile = returnProfile()
 
             ProfileScreen(
@@ -56,11 +60,13 @@ fun AppNavigation() {
                 onLogout = {
                     navController.navigate("login") {
                         popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             )
         }
 
+        // --- EXPLORE ---
         composable("explore") {
             ExploreScreen(
                 recipeList = allRecipes,
@@ -68,6 +74,7 @@ fun AppNavigation() {
             )
         }
 
+        // --- DETAIL ---
         composable("detail/{recipeTitle}") { backStackEntry ->
             val title = backStackEntry.arguments?.getString("recipeTitle")
             val selectedRecipe = allRecipes.find { it.name == title }
@@ -81,11 +88,6 @@ fun AppNavigation() {
                     navController = navController
                 )
             }
-        }
-
-        // 🔥 ESTA ES LA CLAVE
-        composable("add_recipe") {
-            AddRecipeScreen(navController = navController)
         }
     }
 }
