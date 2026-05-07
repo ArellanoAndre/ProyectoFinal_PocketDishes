@@ -19,13 +19,19 @@ fun InstructionStepItem(
     onDelete: (() -> Unit)? = null
 ) {
 
+    // 🔥 SEPARAR TÍTULO Y DESCRIPCIÓN
+    val stepParts = step.split("|", limit = 2)
+
+    val title = stepParts.getOrNull(0) ?: ""
+    val description = stepParts.getOrNull(1) ?: ""
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
     ) {
 
-        // 🔹 TÍTULO (barra gris como figma)
+        // 🔹 TÍTULO
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -33,7 +39,7 @@ fun InstructionStepItem(
                 .padding(vertical = 6.dp, horizontal = 10.dp)
         ) {
             Text(
-                text = "${index + 1}. Step ${index + 1}",
+                text = "${index + 1}. $title",
                 fontWeight = FontWeight.Bold,
                 color = Color.DarkGray
             )
@@ -41,7 +47,7 @@ fun InstructionStepItem(
 
         Spacer(modifier = Modifier.height(6.dp))
 
-        // 🔹 DESCRIPCIÓN (caja grande)
+        // 🔹 DESCRIPCIÓN
         Box {
 
             Box(
@@ -51,7 +57,7 @@ fun InstructionStepItem(
                     .padding(12.dp)
             ) {
                 Text(
-                    text = step,
+                    text = description,
                     color = Color(0xFF6E6E6E)
                 )
             }

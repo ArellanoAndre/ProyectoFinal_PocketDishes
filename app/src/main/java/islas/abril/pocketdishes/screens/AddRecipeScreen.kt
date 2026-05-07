@@ -207,7 +207,7 @@ fun AddRecipeScreen(navController: NavController) {
                         TextField(
                             value = ingredientAmount,
                             onValueChange = { ingredientAmount = it },
-                            placeholder = { Text("1") },
+                            placeholder = { Text("0") },
                             modifier = Modifier.width(70.dp)
                         )
 
@@ -380,7 +380,9 @@ fun AddRecipeScreen(navController: NavController) {
                 Button(
                     onClick = {
                         if (stepDescription.isNotBlank()) {
-                            stepsList.add(stepDescription)
+                            stepsList.add(
+                                "$stepTitle|$stepDescription"
+                            )
                             stepTitle = ""
                             stepDescription = ""
                             showStepDialog = false
