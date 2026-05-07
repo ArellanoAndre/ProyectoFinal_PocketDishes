@@ -1,92 +1,73 @@
 package islas.abril.pocketdishes.components
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import islas.abril.pocketdishes.data.Ingredients
-import islas.abril.pocketdishes.ui.theme.lightIndigo
-import islas.abril.pocketdishes.ui.theme.tertiaryIndigo
 
 @Composable
-fun IngredientCard(
-    ingredient: Ingredients
-) {
-    Card (
+fun IngredientCard(ingredient: Ingredients) {
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 2.dp, vertical = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = lightIndigo
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 7.dp
-        )
+            .background(Color(0xFFFFD6A0), RoundedCornerShape(12.dp))
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+
+        // 🔥 IMAGEN (SIN NULLABLE)
+        Box(
             modifier = Modifier
-                .padding(15.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .size(50.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.White)
         ) {
-            // Imagen del ingrediente
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White)
-            ) {
-                ingredient.image?.let {
-                    Image(
-                        painter = painterResource(id = it),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
+            Image(
+                painter = painterResource(id = ingredient.image),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
 
-            Spacer(modifier = Modifier.width(15.dp))
+        Spacer(modifier = Modifier.width(10.dp))
 
-            // Textos
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    text = ingredient.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = tertiaryIndigo
-                )
-                Text(
-                    text = "${ingredient.amount} - ${ingredient.unit}",
-                    fontSize = 14.sp,
-                    color = Color.DarkGray
-                )
-            }
+        // 🔹 NOMBRE
+        Text(
+            text = ingredient.name,
+            modifier = Modifier.weight(1f),
+            fontSize = 14.sp
+        )
+
+        // 🔹 CANTIDAD
+        Box(
+            modifier = Modifier
+                .background(Color.White, RoundedCornerShape(8.dp))
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        ) {
+            Text("${ingredient.amount}")
+        }
+
+        Spacer(modifier = Modifier.width(5.dp))
+
+        // 🔹 UNIDAD
+        Box(
+            modifier = Modifier
+                .background(Color.White, RoundedCornerShape(8.dp))
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        ) {
+            Text(ingredient.unit.name)
         }
     }
 }
