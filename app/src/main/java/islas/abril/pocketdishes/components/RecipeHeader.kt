@@ -89,14 +89,16 @@ fun RecipeHeader(
                 .clip(CircleShape)
                 .clickable { onBackClick() }
                 .align(Alignment.TopStart),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
+
         ) {
             //flecha
             Icon(
                 painter = painterResource(id = R.drawable.return_arrow),
                 contentDescription = "goback",
                 tint = darkGray,
-                modifier = Modifier.size(24.dp) // tamaño de la flecha
+                modifier = Modifier.size(24.dp)
+                    .padding(bottom = 2.dp)// tamaño de la flecha
             )
         }
 

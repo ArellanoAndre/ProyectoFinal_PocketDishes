@@ -33,22 +33,35 @@ import androidx.compose.ui.unit.sp
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
+import islas.abril.pocketdishes.ui.theme.backgroundDarkTheme
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
+import islas.abril.pocketdishes.ui.theme.brightIndigo
 import islas.abril.pocketdishes.ui.theme.darkGray
 import islas.abril.pocketdishes.ui.theme.mainOrange
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
+import islas.abril.pocketdishes.ui.theme.tertiaryIndigoDT
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import islas.abril.pocketdishes.ui.theme.typoColorLightBrown
 import returnRandomRecipe
 
 @Composable
-fun favouriteRecipeCard(recipe: Recipe, onCardClick: () -> Unit){
+fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit){
 
+    var fontColor = MaterialTheme.colorScheme.outline
+    var subtitleColor = typoColorLightBrown
+    var borderColor = mainOrange
+
+
+    if(cardColor.equals(brightIndigo)){
+         fontColor = backgroundDarkTheme
+         subtitleColor = tertiaryIndigoDT
+         borderColor = tertiaryIndigoDT
+    }
     Card(
         elevation = CardDefaults.cardElevation(7.dp),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = backgroundOrange,
+            containerColor = cardColor,
 
         ),
         modifier = Modifier
@@ -67,7 +80,7 @@ fun favouriteRecipeCard(recipe: Recipe, onCardClick: () -> Unit){
                 modifier = Modifier
                     .size(70.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .border(3.dp, color = mainOrange, shape = RoundedCornerShape(12.dp)),
+                    .border(3.dp, color = borderColor, shape = RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
 
             )
@@ -78,14 +91,14 @@ fun favouriteRecipeCard(recipe: Recipe, onCardClick: () -> Unit){
             ){
                 Text(
                     text=recipe.name,
-                    color = MaterialTheme.colorScheme.outline,
+                    color = fontColor,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 2.dp)
                 )
                 Text(
                     text= recipe.category.random(),
-                    color = typoColorLightBrown,
+                    color = subtitleColor,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
 
@@ -111,6 +124,7 @@ fun previewCard(){
     PocketDishesTheme {
         favouriteRecipeCard(
             recipe = returnRandomRecipe(),
+            backgroundOrange,
             onCardClick = {}
         )
 

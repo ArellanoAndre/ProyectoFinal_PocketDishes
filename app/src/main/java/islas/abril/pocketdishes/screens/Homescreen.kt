@@ -38,7 +38,7 @@ import islas.abril.pocketdishes.components.favouriteRecipeCard
 import islas.abril.pocketdishes.components.header
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
-import islas.abril.pocketdishes.ui.theme.typoColorBrown
+import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import returnRecipes
 
 @Composable
@@ -51,7 +51,7 @@ fun homescreen(navController: NavController) {
             // LO PUSE ADENTRO DE UN BOX CON NAVIGATION BARS PADDING PARA QUE NO CHOQUE CON EL MENU DEL TELEFONO
             Box(
                 modifier = Modifier
-                    .background(LightGreenMenu)
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
                     .fillMaxWidth()
             ) {
                 Box(modifier = Modifier.navigationBarsPadding()) {
@@ -68,7 +68,7 @@ fun homescreen(navController: NavController) {
         ) {
             Column(
                 modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp)
+                    .padding(start = 30.dp, end = 30.dp)
             ) {
                 Text(
                     text = "New Recipes, \neveryday.",
@@ -152,6 +152,7 @@ fun homescreen(navController: NavController) {
                     items(recipes) { recipe ->
                         favouriteRecipeCard(
                             recipe = recipe,
+                            backgroundOrange,
                             onCardClick = {
                                 navController.navigate("detail/${recipe.name}")
                             }

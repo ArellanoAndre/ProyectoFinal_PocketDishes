@@ -22,7 +22,7 @@ import islas.abril.pocketdishes.ui.theme.darkGray
 fun headerV2(){
     Row(
         modifier = Modifier
-            .padding(top = 30.dp, start =16.dp,end = 16.dp, bottom = 30.dp)
+            .padding(top = 55.dp, start =16.dp,end = 16.dp, bottom = 30.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

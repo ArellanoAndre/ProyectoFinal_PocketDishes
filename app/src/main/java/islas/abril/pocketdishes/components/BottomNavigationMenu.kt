@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,21 +29,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
+import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
 
 
 @Composable
 fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavController){
+    val navBackStackEntry = navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry.value?.destination?.route
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
-            .background(LightGreenMenu)
-            .padding(top=30.dp, start = 30.dp, end = 30.dp)
-            ,horizontalArrangement = Arrangement.SpaceBetween
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(top=10.dp, start = 30.dp, end = 30.dp)
+            ,horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     )
 
     {
@@ -53,7 +60,7 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
                     modifier = Modifier
                         .size(30.dp)
                         .background(
-                            color = Color(0xFFB3DAB0),
+                            MaterialTheme.colorScheme.secondaryContainer,
                             shape = RoundedCornerShape(5.dp)
                         ),
                     contentAlignment = Alignment.Center
@@ -72,45 +79,85 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
 
             Text(
                 text="New recipe",
-                color= secondaryGreen,
+                color= MaterialTheme.colorScheme.onSecondaryContainer,
                 fontSize = 25.sp,
                 fontWeight = FontWeight.SemiBold
             )
         }
 
-        Spacer(modifier = Modifier.width(60.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
-        Icon(
-            painter = painterResource(id = R.drawable.ic_explore),
+        NavItem(
+            iconRes = R.drawable.ic_explore,
             contentDescription = "Explore recipes",
-            tint = secondaryGreen,
-            modifier = Modifier.size(35.dp)
-            .clickable { navigateTo(navController, "explore") }
+            route = "explore",
+            currentRoute = currentRoute,
+            navController = navController
         )
-        Icon(
-            painter = painterResource(id = R.drawable.home_24px),
+        Spacer(Modifier.padding(start = 10.dp))
+        NavItem(
+            iconRes = R.drawable.home_24px,
             contentDescription = "Home button",
-            tint = secondaryGreen,
-            modifier = Modifier.size(35.dp)
-                .clickable { navigateTo(navController, "home") }
+            route = "home",
+            currentRoute = currentRoute,
+            navController = navController
         )
-        Icon(
-            painter = painterResource(id = R.drawable.ic_profile),
+        Spacer(Modifier.padding(start = 10.dp))
+
+        NavItem(
+            iconRes = R.drawable.ic_profile,
             contentDescription = "User profile",
-            tint = secondaryGreen,
-            modifier = Modifier.size(35.dp)
-            .clickable { navigateTo(navController, "profile") }
+            route = "profile",
+            currentRoute = currentRoute,
+            navController = navController
         )
 
 
     }
 
 }
+@Composable
+fun NavigationItem(
+    iconRes: Int,
+    contentDescription: String,
+    route: String,
+    currentRoute: String?,
+    navController: NavController
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-/**
- * Funcion auxiliar para navegar de forma limpia
- * Evita duplicar pantallas en la pila de navegacion.
- */
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            tint = if (currentRoute == route)
+                secondaryGreen
+            else
+                MaterialTheme.colorScheme.onSecondaryContainer,
+
+            modifier = Modifier
+                .size(35.dp)
+                .clickable {
+                    navigateTo(navController, route)
+                }
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        if (currentRoute == route) {
+            Box(
+                modifier = Modifier
+                    .size(6.dp)
+                    .background(
+                        secondaryGreen,
+                        shape = RoundedCornerShape(50)
+                    )
+            )
+        }
+    }
+}
+
 private fun navigateTo(navController: NavController, route: String) {
     navController.navigate(route) {
         // Evita multiples copias de la misma pantalla
@@ -125,6 +172,50 @@ private fun navigateTo(navController: NavController, route: String) {
 @Preview(showBackground = true)
 @Composable
 fun previewMenu(){
-    val navController = rememberNavController()
-    BottomNavigationMenu(navController = navController)
+    PocketDishesTheme() {
+        val navController = rememberNavController()
+        BottomNavigationMenu(navController = navController)
+    }
+}
+
+@Composable
+fun NavItem(
+    iconRes: Int,
+    contentDescription: String,
+    route: String,
+    currentRoute: String?,
+    navController: NavController
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            tint = if (currentRoute == route)
+                secondaryGreen
+            else
+                MaterialTheme.colorScheme.onSecondaryContainer,
+
+            modifier = Modifier
+                .size(40.dp)
+                .clickable {
+                    navigateTo(navController, route)
+                }
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        if (currentRoute == route) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .background(
+                        secondaryGreen,
+                        shape = RoundedCornerShape(50)
+                    )
+            )
+        }
+    }
 }

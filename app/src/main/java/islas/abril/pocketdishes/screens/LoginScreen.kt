@@ -34,9 +34,6 @@ import androidx.compose.ui.unit.sp
 import islas.abril.pocketdishes.components.LoginTextField
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.darkBrown
-import islas.abril.pocketdishes.ui.theme.gradientEnd
-import islas.abril.pocketdishes.ui.theme.gradientStart
-import islas.abril.pocketdishes.ui.theme.lightPeach
 import islas.abril.pocketdishes.ui.theme.mainOrange
 import islas.abril.pocketdishes.ui.theme.orangeButton
 

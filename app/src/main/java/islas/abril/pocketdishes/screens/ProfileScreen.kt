@@ -23,6 +23,7 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,8 +50,6 @@ import islas.abril.pocketdishes.data.Profile
 import islas.abril.pocketdishes.data.dummies.returnProfile
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 import islas.abril.pocketdishes.ui.theme.darkBrown
-import islas.abril.pocketdishes.ui.theme.gradientEnd
-import islas.abril.pocketdishes.ui.theme.gradientStart
 import islas.abril.pocketdishes.ui.theme.mainOrange
 import islas.abril.pocketdishes.ui.theme.orangeButton
 
@@ -65,7 +64,7 @@ fun ProfileScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = Brush.verticalGradient(colors = listOf(gradientStart, gradientEnd)))
+            .background(brush = Brush.verticalGradient(colors = listOf(MaterialTheme.colorScheme.background, mainOrange)))
     ) {
         Column(
             modifier = Modifier

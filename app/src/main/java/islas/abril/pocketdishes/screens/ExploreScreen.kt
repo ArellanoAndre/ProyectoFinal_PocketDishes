@@ -52,7 +52,7 @@ fun ExploreScreen(recipeList: List<Recipe>, navController: NavController) {
             // LO PUSE ADENTRO DE UN BOX CON NAVIGATION BARS PADDING PARA QUE NO CHOQUE CON EL MENU DEL TELEFONO
             Box(
                 modifier = Modifier
-                    .background(LightGreenMenu)
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
                     .fillMaxWidth()
             ) {
                 Box(modifier = Modifier.navigationBarsPadding()) {

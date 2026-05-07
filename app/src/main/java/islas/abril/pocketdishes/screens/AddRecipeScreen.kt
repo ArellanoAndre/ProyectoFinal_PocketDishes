@@ -50,10 +50,9 @@ import islas.abril.pocketdishes.data.recipeCategories
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
-import islas.abril.pocketdishes.ui.theme.gradientEnd
-import islas.abril.pocketdishes.ui.theme.gradientStart
 import islas.abril.pocketdishes.ui.theme.lightOrange
 import islas.abril.pocketdishes.ui.theme.lightPeach
+import islas.abril.pocketdishes.ui.theme.mainOrange
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
 @Composable
 fun addRecipeScreen(navController: NavController) {
@@ -81,7 +80,7 @@ fun addRecipeScreen(navController: NavController) {
                 .padding(innerPadding)
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(gradientStart, gradientEnd)
+                        colors = listOf(MaterialTheme.colorScheme.background, mainOrange)
                     )
                 )
                 //.verticalScroll(scrollState)

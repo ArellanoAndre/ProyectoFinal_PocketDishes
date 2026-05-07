@@ -40,11 +40,7 @@ import islas.abril.pocketdishes.components.LoginTextField
 import islas.abril.pocketdishes.components.showDatePicker
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.darkBrown
-import islas.abril.pocketdishes.ui.theme.gradientEnd
-import islas.abril.pocketdishes.ui.theme.gradientStart
-import islas.abril.pocketdishes.ui.theme.lightPeach
 import islas.abril.pocketdishes.ui.theme.mainOrange
-import islas.abril.pocketdishes.ui.theme.orangeButton
 
 @Composable
 fun RegisterScreen(
@@ -203,7 +199,7 @@ fun RegisterScreen(
                 // Boton para volver al Login si ya tiene cuenta
                 Text(
                     text = "Already have an account? Log In",
-                    color = mainOrange.copy(alpha = 0.6f),
+                    color = mainOrange,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable() { onBackToLogin() }
                 )

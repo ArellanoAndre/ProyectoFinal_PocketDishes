@@ -262,7 +262,7 @@ fun InputField(
         singleLine = true,
         textStyle = TextStyle(
             fontSize = 12.sp,
-            color = typoColorBrown
+            color = mainOrange
         ),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = lightPeach,
