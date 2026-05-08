@@ -11,7 +11,7 @@ composeBom = "2024.09.00"
 uiText = "1.10.6"
 navigationCompose = "2.9.7"
 ksp = "2.0.21-1.0.28"
-room = "2.6.1"
+room = "2.7.1"
 coroutines = "1.7.3"
 
 [libraries]
