@@ -20,29 +20,36 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.favouriteRecipeCard
 import islas.abril.pocketdishes.components.header
-import islas.abril.pocketdishes.ui.theme.LightGreenMenu
-import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
+import islas.abril.pocketdishes.data.room.toRecipe
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
-import returnRecipes
+import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 
 @Composable
-fun homescreen(navController: NavController) {
+fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
+
+    val userRecipes by viewModel.userRecipes.collectAsState()
+    val context = LocalContext.current
+    // Convierte la lista de RecipeEntity a Recipe para reusar los componentes existentes
+    val displayRecipes = remember(userRecipes) { userRecipes.map { it.toRecipe(context) } }
+
     androidx.compose.material3.Scaffold(
         topBar = {
             header()
@@ -139,35 +146,42 @@ fun homescreen(navController: NavController) {
                             .clickable { /* navigate */ }
                     )
                 }
-                val recipes = returnRecipes()
-
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(
-                        top = 8.dp,
-                        bottom = 100.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(recipes) { recipe ->
-                        favouriteRecipeCard(
-                            recipe = recipe,
-                            backgroundOrange,
-                            onCardClick = {
-                                navController.navigate("detail/${recipe.name}")
-                            }
-                        )
+                if (displayRecipes.isEmpty()) {
+                    Text(
+                        text = "No tienes recetas aún.\nAgrega tu primer receta!.",
+                        color = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.padding(top = 24.dp)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        contentPadding = PaddingValues(
+                            top = 8.dp,
+                            bottom = 100.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(displayRecipes) { recipe ->
+                            favouriteRecipeCard(
+                                recipe = recipe,
+                                cardColor = backgroundOrange,
+                                onCardClick = {
+                                    navController.navigate("detail/${recipe.name}")
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun homescreenPreview(){
-    PocketDishesTheme {
-        val navController = rememberNavController()
-        homescreen(navController = navController)
-    }
-}
+
+// @Preview(showBackground = true)
+// @Composable
+// fun homescreenPreview(){
+//     PocketDishesTheme {
+//         val navController = rememberNavController()
+//         homescreen(navController = navController, viewModel = ...)
+//     }
+// }

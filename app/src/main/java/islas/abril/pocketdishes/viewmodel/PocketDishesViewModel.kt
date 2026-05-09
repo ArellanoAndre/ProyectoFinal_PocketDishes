@@ -17,6 +17,10 @@ import kotlinx.coroutines.launch
 
 class PocketDishesViewModel(private val repository: PocketDishesRepository) : ViewModel() {
 
+    init {
+        viewModelScope.launch { insertarDatosMock() }
+    }
+
     // Usuario actual
 
     private val _currentUser = MutableStateFlow<UserEntity?>(null)
@@ -119,6 +123,59 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
             repository.getSecretRecipes(userId).collect {
                 _secretRecipes.value = it
             }
+        }
+    }
+
+    // Datos mock
+
+    private suspend fun insertarDatosMock() {
+        val existing = repository.getUserByEmail("test")
+        if (existing == null) {
+            val userId = repository.registerUser(
+                UserEntity(
+                    name = "jorge",
+                    email = "test",
+                    birthday = "01/01/2000",
+                    gender = "Male",
+                    password = "1234"
+                )
+            ).toInt()
+            repository.insertRecipe(
+                RecipeEntity(
+                    name = "Chicken Teriyaki",
+                    description = "Sweet and savory chicken with rice and veggies.",
+                    author = userId,
+                    source = "",
+                    image = "chicken_teriyaki",
+                    tags = listOf("Quick", "Dinner"),
+                    category = "Asian Food",
+                    isPublic = true
+                )
+            )
+            repository.insertRecipe(
+                RecipeEntity(
+                    name = "Vegetarian Curry",
+                    description = "Japanese curry with vegetables and rice.",
+                    author = userId,
+                    source = "",
+                    image = "curry",
+                    tags = listOf("Vegetarian", "Dinner"),
+                    category = "Asian Food",
+                    isPublic = true
+                )
+            )
+            repository.insertRecipe(
+                RecipeEntity(
+                    name = "Classic Cheeseburger",
+                    description = "Juicy beef burger with melted cheese.",
+                    author = userId,
+                    source = "",
+                    image = "cheeseburger",
+                    tags = listOf("Dinner"),
+                    category = "Fast Food",
+                    isPublic = true
+                )
+            )
         }
     }
 

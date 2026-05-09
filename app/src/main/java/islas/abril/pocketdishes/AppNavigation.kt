@@ -36,7 +36,7 @@ fun AppNavigation(
 
         // --- HOME ---
         composable("home") {
-            homescreen(navController)
+            homescreen(navController = navController, viewModel = viewModel)
         }
 
         // --- REGISTER ---
