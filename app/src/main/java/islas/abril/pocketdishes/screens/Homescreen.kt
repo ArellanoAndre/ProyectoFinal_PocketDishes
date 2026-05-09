@@ -47,8 +47,10 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
 
     val userRecipes by viewModel.userRecipes.collectAsState()
     val context = LocalContext.current
-    // Convierte la lista de RecipeEntity a Recipe para reusar los componentes existentes
-    val displayRecipes = remember(userRecipes) { userRecipes.map { it.toRecipe(context) } }
+    // Solo muestra recetas NO secretas en "My Recipes" - las secretas van a su propia seccion
+    val displayRecipes = remember(userRecipes) {
+        userRecipes.filter { !it.isSecret }.map { it.toRecipe(context) }
+    }
 
     androidx.compose.material3.Scaffold(
         topBar = {

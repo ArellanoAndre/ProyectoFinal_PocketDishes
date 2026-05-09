@@ -2,6 +2,7 @@ package islas.abril.pocketdishes.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import coil.compose.AsyncImage
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,14 +51,25 @@ fun RecipePreviewCard(recipe: Recipe, navController: NavController) {
             modifier = Modifier
             .fillMaxSize()
         ){
-            Image(
-                painter = painterResource(recipe.image),
-                contentDescription = recipe.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .size( 100.dp),
-                contentScale = ContentScale.FillWidth
-            )
+            if (recipe.imageUri.isNotEmpty()) {
+                AsyncImage(
+                    model              = recipe.imageUri,
+                    contentDescription = recipe.name,
+                    modifier           = Modifier
+                        .fillMaxWidth()
+                        .size(100.dp),
+                    contentScale       = ContentScale.FillWidth
+                )
+            } else {
+                Image(
+                    painter            = painterResource(recipe.image),
+                    contentDescription = recipe.name,
+                    modifier           = Modifier
+                        .fillMaxWidth()
+                        .size(100.dp),
+                    contentScale       = ContentScale.FillWidth
+                )
+            }
 
             Text(
                 text= recipe.name,

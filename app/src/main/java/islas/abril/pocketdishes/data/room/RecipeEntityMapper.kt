@@ -10,11 +10,18 @@ import islas.abril.pocketdishes.data.room.entities.RecipeEntity
 // Convierte un RecipeEntity (Room) al modelo Recipe usado por los componentes de UI
 fun RecipeEntity.toRecipe(context: Context): Recipe {
 
-    // Resuelve el nombre de imagen guardado en BD al drawable resource ID aqui como tal consigue la imagen segun el nombre
-    // cambiar si hay tiempo**
-    val imageId = if (image.isNotEmpty()) {
-        context.resources.getIdentifier(image, "drawable", context.packageName)
-    } else 0
+    // Detecta si la imagen guardada es una URI de galería (content:// o file://)
+    // o el nombre de un drawable (e.g. "chicken_teriyaki")
+    val isUri = image.startsWith("content://") || image.startsWith("file://")
+
+    val imageId = when {
+        isUri       -> R.drawable.cheese   // placeholder; la imagen real se carga con imageUri
+        image.isNotEmpty() -> {
+            val id = context.resources.getIdentifier(image, "drawable", context.packageName)
+            if (id != 0) id else R.drawable.cheese
+        }
+        else        -> R.drawable.cheese
+    }
 
     // Mapea los nombres de tags (String) a objetos Tag con color
     val mapeoTags = tags.mapNotNull { tagName ->
@@ -22,30 +29,32 @@ fun RecipeEntity.toRecipe(context: Context): Recipe {
     }
 
     return Recipe(
-        name = name,
+        name        = name,
         description = description,
-        author = "",
-        source = source,
-        image = if (imageId != 0) imageId else R.drawable.cheese,
-        prepTime = prepTime,
-        tags = mapeoTags,
+        author      = "",
+        source      = source,
+        image       = imageId,
+        imageUri    = if (isUri) image else "",  // URI de galería pasada directo a AsyncImage
+        prepTime    = prepTime,
+        tags        = mapeoTags,
         ingredients = emptyList(),
-        steps = emptyList(),
-        category = listOf(category),
+        steps       = emptyList(),
+        category    = listOf(category),
         secretRecipe = isSecret,
-        rating = rating
+        rating      = rating
     )
 }
 
 // Convierte un IngredientWithAmount (resultado de JOIN en Room) al modelo Ingredients de UI
 fun IngredientWithAmount.toIngredients(context: Context): Ingredients {
     val imageId = if (image.isNotEmpty()) {
-        context.resources.getIdentifier(image, "drawable", context.packageName)
-    } else 0
+        val id = context.resources.getIdentifier(image, "drawable", context.packageName)
+        if (id != 0) id else R.drawable.cheese
+    } else R.drawable.cheese
     return Ingredients(
-        name = name,
-        image = if (imageId != 0) imageId else R.drawable.cheese,
+        name   = name,
+        image  = imageId,
         amount = amount.toInt(),
-        unit = unit
+        unit   = unit
     )
 }
