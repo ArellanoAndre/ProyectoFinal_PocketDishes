@@ -51,7 +51,8 @@ fun Preview() {
 @Composable
 fun RecipeHeader(
     recipe: Recipe,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    authorName: String = recipe.author   // nombre real del autor (override del mapper)
 ) {
     //tamaño del header
     Box(
@@ -185,7 +186,7 @@ fun RecipeHeader(
             }
             // AUTOR
             Text(
-                "By ${recipe.author}",
+                "By $authorName",
                 color = Color.White.copy(0.8f) // para transparentar un poco el texto
             )
 

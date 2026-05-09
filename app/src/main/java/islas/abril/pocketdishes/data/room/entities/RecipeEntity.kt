@@ -30,5 +30,6 @@ data class RecipeEntity(
     val isSecret: Boolean = false,
     val isPublic: Boolean = true,
     val isFavorite: Boolean = false,
-    val rating: Float = 0f
+    val rating: Float = 0f,
+    val prepTime: Int = 0
 )

@@ -53,6 +53,7 @@ fun RecipeDetailScreen(
 
     val activeIngredients by viewModel.activeIngredients.collectAsState()
     val activeSteps by viewModel.activeSteps.collectAsState()
+    val activeRecipeAuthorName by viewModel.activeRecipeAuthorName.collectAsState()
 
     // Convierte datos de BD para poder mostrarse en la screen
     val displayIngredients = remember(activeIngredients) {
@@ -77,8 +78,9 @@ fun RecipeDetailScreen(
 
             //HEADER
             RecipeHeader(
-                recipe,
-                onBackClick
+                recipe = recipe,
+                onBackClick = onBackClick,
+                authorName = activeRecipeAuthorName.ifEmpty { recipe.author }
             )
 
             Spacer(modifier = Modifier.height(5.dp))
