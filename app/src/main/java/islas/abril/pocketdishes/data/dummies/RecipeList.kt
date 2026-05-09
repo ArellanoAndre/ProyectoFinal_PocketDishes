@@ -7,6 +7,7 @@ import islas.abril.pocketdishes.data.getTag
 val DummyRecipes = listOf(
 
     Recipe(
+        id=230,
         name = "Chicken Teriyaki",
         description = "Sweet and savory chicken with rice and veggies.",
         author= "Adrián Macías",
@@ -28,10 +29,12 @@ val DummyRecipes = listOf(
         ),
         category = listOf("Dinner", "Asian Food"),
         secretRecipe = false,
-        rating = 3.0f
+        rating = 3.0f,
+        isFavorite = true
     ),
 
     Recipe(
+        id=333,
         name = "Vegetarian Curry",
         description = "Sweet and savory japanese curry with rice and veggies.",
         author= "Abril Islas",
@@ -54,10 +57,12 @@ val DummyRecipes = listOf(
         ),
         category = listOf("Dinner", "Asian Food"),
         secretRecipe = false,
-        rating = 4.0f
+        rating = 4.0f,
+        isFavorite = false
     ),
 
     Recipe(
+        id=99,
         name = "Classic Cheeseburger",
         description = "Juicy beef burger with melted cheese.",
         author= "Jorge Cuevas",
@@ -79,7 +84,8 @@ val DummyRecipes = listOf(
         ),
         category = listOf("Fast Food", "Dinner"),
         secretRecipe = true,
-        rating = 1.0f
+        rating = 1.0f,
+        isFavorite = false
     ),
 )
 

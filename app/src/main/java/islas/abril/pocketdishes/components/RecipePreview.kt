@@ -27,13 +27,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
+import islas.abril.pocketdishes.ui.theme.favorite
 import islas.abril.pocketdishes.ui.theme.lightPeach
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import returnRandomRecipe
 
 @Composable
-fun RecipePreviewCard(recipe: Recipe, navController: NavController) {
+fun RecipePreviewCard(recipe: Recipe, navController: NavController, onFavoriteClick: () -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(6.dp),
         shape = RoundedCornerShape(20.dp),
@@ -76,11 +77,22 @@ fun RecipePreviewCard(recipe: Recipe, navController: NavController) {
                 Spacer(modifier = Modifier.weight(1f))
                 Row() {
                     Icon(
-                        painter = painterResource(id = R.drawable.favorite_24px),
+                        painter = painterResource(
+                            id = if (recipe.isFavorite)
+                                R.drawable.favoritefilled_24
+                            else
+                                R.drawable.favorite_24px
+                        ),
                         contentDescription = "Favorite",
-                        tint = secondaryGreen,
+                        tint = if (recipe.isFavorite)
+                            favorite
+                        else
+                            secondaryGreen
+                           ,
                         modifier = Modifier.size(30.dp)
-                            .clickable { /* navigate */ }
+                            .clickable {
+                                onFavoriteClick()
+                            }
                     )
 
                     Icon(
@@ -104,6 +116,6 @@ fun RecipePreviewCard(recipe: Recipe, navController: NavController) {
 fun RecipePreview(){
     val navController = rememberNavController()
     RecipePreviewCard(
-        returnRandomRecipe(), navController
+        returnRandomRecipe(), navController,{}
     )
 }

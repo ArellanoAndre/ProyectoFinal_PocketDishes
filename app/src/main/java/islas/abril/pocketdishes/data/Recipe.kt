@@ -1,6 +1,7 @@
 package islas.abril.pocketdishes.data
 
 data class Recipe(
+    val id: Int,
     var name: String,
     var description: String,
     var author: String,
@@ -12,5 +13,6 @@ data class Recipe(
     var steps: List<String>,
     var category: List<String>,
     var secretRecipe: Boolean,
-    var rating: Float
+    var rating: Float,
+    var isFavorite:Boolean
 )

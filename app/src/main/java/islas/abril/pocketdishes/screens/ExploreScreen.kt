@@ -34,6 +34,7 @@ import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.RecipePreviewCard
 import islas.abril.pocketdishes.components.header
+import islas.abril.pocketdishes.components.selectionBar
 import islas.abril.pocketdishes.data.recipeCategories
 import islas.abril.pocketdishes.data.room.toRecipe
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
@@ -90,34 +91,9 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                     modifier = Modifier.padding(start = 20.dp)
                 )
                 Row(
-                    modifier = Modifier.padding(top = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(start = 20.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Filters",
-                            color = MaterialTheme.colorScheme.secondary,
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.filter_alt_24px),
-                            contentDescription = "more",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.size(35.dp)
-                        )
-                    }
-                    Icon(
-                        painter = painterResource(id = R.drawable.favorite_24px),
-                        contentDescription = "more",
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier
-                            .size(35.dp)
-                            .clickable { /* navigate */ }
-                    )
+                    modifier = Modifier.padding(start=20.dp)){
+                    selectionBar("Filters", {
+                    })
                 }
 
                 if (activeCategories.isEmpty()) {
@@ -160,9 +136,19 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                                     ) {
                                         items(recipesInCategory) { recipe ->
-                                            RecipePreviewCard(recipe, navController)
+                                            RecipePreviewCard(
+                                                recipe, navController,
+                                                onFavoriteClick = {
+                                                    viewModel.updateFavorite(
+                                                        recipeId = recipe.id,
+                                                        isFavorite = !recipe.isFavorite
+                                                    )
+                                                }
+                                            )
+
                                         }
                                     }
+
                                 }
                             }
                             Spacer(modifier = Modifier.padding(10.dp))

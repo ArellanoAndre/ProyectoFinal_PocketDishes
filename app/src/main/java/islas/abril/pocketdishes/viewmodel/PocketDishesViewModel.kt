@@ -52,6 +52,7 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
     private val _secretRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
     val secretRecipes: StateFlow<List<RecipeEntity>> = _secretRecipes.asStateFlow()
 
+
     // ── Busqueda ──────────────────────────────────────────────────────────────
 
     private val _searchResults = MutableStateFlow<List<RecipeEntity>>(emptyList())

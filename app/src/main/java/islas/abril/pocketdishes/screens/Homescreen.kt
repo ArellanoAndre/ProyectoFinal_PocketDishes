@@ -32,12 +32,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.favouriteRecipeCard
 import islas.abril.pocketdishes.components.header
+import islas.abril.pocketdishes.components.selectionBar
 import islas.abril.pocketdishes.data.room.toRecipe
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
@@ -45,10 +48,16 @@ import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 @Composable
 fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
 
+    var showFavorites by remember { mutableStateOf(false) }
     val userRecipes by viewModel.userRecipes.collectAsState()
+    val favoriteRecipes by viewModel.favoriteRecipes.collectAsState()
     val context = LocalContext.current
     // Convierte la lista de RecipeEntity a Recipe para reusar los componentes existentes
-    val displayRecipes = remember(userRecipes) { userRecipes.map { it.toRecipe(context) } }
+    val displayRecipes = if (showFavorites) {
+        favoriteRecipes.map { it.toRecipe(context) }
+    } else {
+        userRecipes.map { it.toRecipe(context) }
+    }
 
     androidx.compose.material3.Scaffold(
         topBar = {
@@ -119,32 +128,14 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                         .clickable{ navController.navigate("explore") }
                     )
                 }
-                Row(
-                    modifier = Modifier
-                        .padding(bottom = 15.dp),
-                    verticalAlignment = Alignment.CenterVertically,
 
-                ) {
-                    Text(
-                        text = "My recipes",
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.filter_alt_24px),
-                        contentDescription = "more",
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(35.dp)
-                            .clickable { /* navigate */ }
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.favorite_24px),
-                        contentDescription = "more",
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(35.dp)
-                            .clickable { /* navigate */ }
-                    )
-                }
+                selectionBar(
+                    "My recipes",
+                    onFavoriteClick = {
+                        showFavorites = !showFavorites
+                    }
+                )
+
                 if (displayRecipes.isEmpty()) {
                     Text(
                         text = "No tienes recetas aún.\nAgrega tu primer receta!.",

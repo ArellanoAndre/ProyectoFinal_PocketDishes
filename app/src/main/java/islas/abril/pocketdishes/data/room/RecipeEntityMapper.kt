@@ -22,6 +22,7 @@ fun RecipeEntity.toRecipe(context: Context): Recipe {
     }
 
     return Recipe(
+        id= idRecipe,
         name = name,
         description = description,
         author = "",
@@ -33,7 +34,8 @@ fun RecipeEntity.toRecipe(context: Context): Recipe {
         steps = emptyList(),
         category = listOf(category),
         secretRecipe = isSecret,
-        rating = rating
+        rating = rating,
+        isFavorite=isFavorite
     )
 }
 

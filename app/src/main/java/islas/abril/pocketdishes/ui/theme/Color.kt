@@ -50,5 +50,7 @@ val darkBrown = Color(0xFF422B1E)
 
 val brightIndigo = Color(0xFF6075FF)
 
+val favorite = Color(0xFFFF1751)
+
 
 
