@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import islas.abril.pocketdishes.data.dummies.returnProfile
 import islas.abril.pocketdishes.screens.ExploreScreen
 import islas.abril.pocketdishes.screens.LoginScreen
 import islas.abril.pocketdishes.screens.ProfileScreen
@@ -56,10 +55,8 @@ fun AppNavigation(
 
         // --- PROFILE ---
         composable("profile") {
-            val userProfile = returnProfile()
-
             ProfileScreen(
-                profile = userProfile,
+                viewModel = viewModel,
                 navController = navController,
                 onLogout = {
                     viewModel.logout()

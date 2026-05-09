@@ -24,9 +24,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,30 +37,27 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.ReadOnlyProfileField
-import islas.abril.pocketdishes.components.header
 import islas.abril.pocketdishes.components.showDatePicker
-import islas.abril.pocketdishes.data.Profile
-import islas.abril.pocketdishes.data.dummies.returnProfile
 import islas.abril.pocketdishes.ui.theme.LightGreenMenu
 import islas.abril.pocketdishes.ui.theme.darkBrown
 import islas.abril.pocketdishes.ui.theme.mainOrange
 import islas.abril.pocketdishes.ui.theme.orangeButton
+import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 
 @Composable
 fun ProfileScreen(
-    profile: Profile,
+    viewModel: PocketDishesViewModel,
     navController: NavController,
     onLogout: () -> Unit
 ) {
     val context = LocalContext.current
+    val currentUser by viewModel.currentUser.collectAsState()
     // background con gradient
     Box(
         modifier = Modifier
@@ -82,7 +80,7 @@ fun ProfileScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Welcome,\n${profile.name}.",
+                    text = "Welcome,\n${currentUser?.name ?: ""}.",
                     fontSize = 36.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = mainOrange,
@@ -123,7 +121,7 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(id = profile.imageRes),
+                    painter = painterResource(id = R.drawable.profilepicture),
                     contentDescription = "Profile Picture",
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
@@ -160,12 +158,12 @@ fun ProfileScreen(
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 Box(modifier = Modifier.weight(1.5f)) {
-                    ReadOnlyProfileField(label = "Name", value = profile.name)
+                    ReadOnlyProfileField(label = "Name", value = currentUser?.name ?: "")
                 }
                 Box(modifier = Modifier.weight(1f)) {
                     ReadOnlyProfileField(
                         label = "Birth date",
-                        value = profile.birthDate,
+                        value = currentUser?.birthday ?: "",
                         modifier = Modifier.clickable {
                             showDatePicker(context) { nuevaFecha ->
                                 // Accion
@@ -193,7 +191,7 @@ fun ProfileScreen(
                     Text(text = "Monthly statistics...", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = orangeButton)
                     Spacer(modifier = Modifier.height(15.dp))
                     Image(
-                        painter = painterResource(id = profile.statsGraphRes),
+                        painter = painterResource(id = R.drawable.graph),
                         contentDescription = "Stats Graph",
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.FillWidth
@@ -218,12 +216,12 @@ fun ProfileScreen(
     }
 }
 
-@Preview (showBackground = true)
-@Composable
-fun previewProfile(){
-    ProfileScreen(
-            profile = returnProfile(),
-            navController = rememberNavController(),
-            onLogout = {}
-        )
-}
+// @Preview (showBackground = true)
+// @Composable
+// fun previewProfile(){
+//     ProfileScreen(
+//             viewModel = ...,
+//             navController = rememberNavController(),
+//             onLogout = {}
+//         )
+// }
