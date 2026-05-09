@@ -1,5 +1,6 @@
 package islas.abril.pocketdishes.components
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,11 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.ui.theme.darkGray
 
 @Composable
-fun headerV2(){
+fun headerV2(navController: NavController){
     Row(
         modifier = Modifier
             .padding(top = 55.dp, start =16.dp,end = 16.dp, bottom = 30.dp)
@@ -32,7 +34,7 @@ fun headerV2(){
             contentDescription = "goback",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
-            .clickable{}
+            .clickable{navController.popBackStack() }
         )
 
         Icon(
@@ -46,9 +48,9 @@ fun headerV2(){
     }
 }
 
-@Preview
-@Composable
-fun headerV2Preview(){
-    headerV2()
-}
+//@Preview
+//@Composable
+//fun headerV2Preview(){
+//    headerV2()
+//}
 

@@ -95,7 +95,6 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                 ) {
                     Row(
                         modifier = Modifier
-                            .clickable { /* navigate */ }
                             .padding(start = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -108,7 +107,7 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                             painter = painterResource(id = R.drawable.filter_alt_24px),
                             contentDescription = "more",
                             tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.size(23.dp)
+                            modifier = Modifier.size(35.dp)
                         )
                     }
                     Icon(
@@ -116,18 +115,10 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                         contentDescription = "more",
                         tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier
-                            .size(23.dp)
+                            .size(35.dp)
                             .clickable { /* navigate */ }
                     )
                 }
-                Spacer(modifier = Modifier.padding(15.dp))
-                Text(
-                    text = "All categories",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier.padding(start = 20.dp)
-                )
 
                 if (activeCategories.isEmpty()) {
                     Text(
@@ -139,6 +130,16 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                     LazyColumn(
                         modifier = Modifier.padding(top = 15.dp)
                     ) {
+                        item {
+                            Spacer(modifier = Modifier.padding(15.dp))
+                            Text(
+                                text = "All categories",
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                modifier = Modifier.padding(start = 20.dp)
+                            )
+                        }
                         items(activeCategories) { category ->
                             val recipesInCategory = recipesByCategory[category] ?: emptyList()
                             Row(

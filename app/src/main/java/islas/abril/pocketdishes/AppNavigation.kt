@@ -14,6 +14,7 @@ import islas.abril.pocketdishes.screens.LoginScreen
 import islas.abril.pocketdishes.screens.ProfileScreen
 import islas.abril.pocketdishes.screens.RecipeDetailScreen
 import islas.abril.pocketdishes.screens.RegisterScreen
+import islas.abril.pocketdishes.screens.SecretRecipeScreen
 import islas.abril.pocketdishes.screens.homescreen
 import returnRecipes
 
@@ -85,6 +86,14 @@ fun AppNavigation(
                         launchSingleTop = true
                     }
                 }
+            )
+        }
+
+        // --- SECRET RECIPES ---
+        composable("secretrecipes") {
+            SecretRecipeScreen(
+                viewModel = viewModel,
+                navController = navController,
             )
         }
 

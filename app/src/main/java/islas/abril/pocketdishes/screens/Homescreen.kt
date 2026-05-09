@@ -122,27 +122,26 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                 Row(
                     modifier = Modifier
                         .padding(bottom = 15.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
 
                 ) {
                     Text(
                         text = "My recipes",
                         color = MaterialTheme.colorScheme.secondary,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 25.sp
+                        style = MaterialTheme.typography.labelMedium
                     )
                     Icon(
                         painter = painterResource(id = R.drawable.filter_alt_24px),
                         contentDescription = "more",
                         tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(27.dp)
+                        modifier = Modifier.size(35.dp)
                             .clickable { /* navigate */ }
                     )
                     Icon(
                         painter = painterResource(id = R.drawable.favorite_24px),
                         contentDescription = "more",
                         tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(27.dp)
+                        modifier = Modifier.size(35.dp)
                             .clickable { /* navigate */ }
                     )
                 }

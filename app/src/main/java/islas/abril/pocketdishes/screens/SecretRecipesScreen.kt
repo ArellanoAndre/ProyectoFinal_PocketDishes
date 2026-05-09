@@ -1,7 +1,6 @@
 package islas.abril.pocketdishes.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,33 +18,32 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.favouriteRecipeCard
 import islas.abril.pocketdishes.components.headerV2
-import islas.abril.pocketdishes.ui.theme.LightGreenMenu
-import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.ui.theme.backgroundDarkTheme
 import islas.abril.pocketdishes.ui.theme.brightIndigo
+import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 import returnRecipes
 
 @Composable
-fun SecretRecipeScreen(navController: NavController){
+fun SecretRecipeScreen(navController: NavController,  viewModel: PocketDishesViewModel,){
     androidx.compose.material3.Scaffold(
         topBar = {
-            headerV2()
+            headerV2(navController)
         },
         bottomBar = {
             // LO PUSE ADENTRO DE UN BOX CON NAVIGATION BARS PADDING PARA QUE NO CHOQUE CON EL MENU DEL TELEFONO
@@ -61,6 +59,9 @@ fun SecretRecipeScreen(navController: NavController){
         }
     ) { innerPadding ->
 
+        val context = LocalContext.current
+        val currentUser by viewModel.currentUser.collectAsState()
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,7 +73,7 @@ fun SecretRecipeScreen(navController: NavController){
                     .padding(start = 30.dp, end = 30.dp, bottom = 0.dp)
                 ) {
                     Text(
-                        text = "Abri's \nSecret Recipes",
+                        text = "${currentUser?.name ?: ""}\nSecret recipes",
                         style = MaterialTheme.typography.titleLarge,
                         color = brightIndigo
                     )
@@ -149,11 +150,11 @@ fun SecretRecipeScreen(navController: NavController){
         }
     }
 
-@Preview (showBackground = true)
-@Composable
-fun prevSecretRecipeScreen(){
-    val navController = rememberNavController()
-    PocketDishesTheme() {
-        SecretRecipeScreen(navController)
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun prevSecretRecipeScreen() {
+//    val navController = rememberNavController()
+//    PocketDishesTheme() {
+//        SecretRecipeScreen(navController)
+//    }
+//}

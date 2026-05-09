@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -37,17 +37,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.ReadOnlyProfileField
+import islas.abril.pocketdishes.components.headerV2
 import islas.abril.pocketdishes.components.showDatePicker
-import islas.abril.pocketdishes.ui.theme.LightGreenMenu
-import islas.abril.pocketdishes.ui.theme.darkBrown
 import islas.abril.pocketdishes.ui.theme.mainOrange
 import islas.abril.pocketdishes.ui.theme.orangeButton
+import islas.abril.pocketdishes.ui.theme.white
 import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 
 @Composable
@@ -56,172 +59,206 @@ fun ProfileScreen(
     navController: NavController,
     onLogout: () -> Unit
 ) {
-    val context = LocalContext.current
-    val currentUser by viewModel.currentUser.collectAsState()
-    // background con gradient
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brush = Brush.verticalGradient(colors = listOf(MaterialTheme.colorScheme.background, mainOrange)))
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 35.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Spacer(modifier = Modifier.statusBarsPadding())
-            Spacer(modifier = Modifier.height(20.dp))
-
-            //  Encabezado
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+    androidx.compose.material3.Scaffold(
+        topBar = {
+            headerV2(navController)
+        },
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .fillMaxWidth()
             ) {
-                Text(
-                    text = "Welcome,\n${currentUser?.name ?: ""}.",
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = mainOrange,
-                    lineHeight = 36.sp,
-                    modifier = Modifier.weight(1f)
-                )
-
-                // Contenedor para los iconos a la derecha
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(15.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_lock),
-                        contentDescription = "Lock",
-                        tint = orangeButton,
-                        modifier = Modifier
-                            .size(35.dp)
-                            .clickable { /* Sin funcion por ahora (Recetas Secreta) */ }
-                    )
-
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                        contentDescription = "Logout",
-                        tint = orangeButton,
-                        modifier = Modifier
-                            .size(35.dp)
-                            .clickable { onLogout() }
-                    )
+                Box(modifier = Modifier.navigationBarsPadding()) {
+                    BottomNavigationMenu(navController = navController)
                 }
             }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            // pfp
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.profilepicture),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(30.dp)),
-                    contentScale = ContentScale.Fit
-                )
-                Text(
-                    text = "Update profile picture",
-                    color = orangeButton,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .clickable { /* Accion */ }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(25.dp))
-
-            // Info
-            Text(
-                text = "Account info",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = orangeButton
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(15.dp)
-            ) {
-                Box(modifier = Modifier.weight(1.5f)) {
-                    ReadOnlyProfileField(label = "Name", value = currentUser?.name ?: "")
-                }
-                Box(modifier = Modifier.weight(1f)) {
-                    ReadOnlyProfileField(
-                        label = "Birth date",
-                        value = currentUser?.birthday ?: "",
-                        modifier = Modifier.clickable {
-                            showDatePicker(context) { nuevaFecha ->
-                                // Accion
-                            }
-                        }
-                    )
-                }
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_edit),
-                    contentDescription = "Edit info",
-                    tint = darkBrown,
-                    modifier = Modifier.size(24.dp).clickable { }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            // Estadisticas
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(25.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    Text(text = "Monthly statistics...", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = orangeButton)
-                    Spacer(modifier = Modifier.height(15.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.graph),
-                        contentDescription = "Stats Graph",
-                        modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.FillWidth
-                    )
-                }
-            }
-
-            // Spacer (para que se pueda hacer scroll)
-            Spacer(modifier = Modifier.height(160.dp))
         }
+    ) { innerPadding ->
 
-        // Menu de navegacion
+        val context = LocalContext.current
+        val currentUser by viewModel.currentUser.collectAsState()
         Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(LightGreenMenu)
-                .navigationBarsPadding()
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            BottomNavigationMenu(navController = navController)
-        }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 35.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+
+                //  Encabezado
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    //verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Welcome,\n${currentUser?.name ?: "User"}.",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    // Contenedor para los iconos a la derecha
+                    Row(
+                        modifier = Modifier.padding(top=10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(15.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(mainOrange)
+                                .clickable { navController.navigate("secretrecipes")},
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_lock),
+                                contentDescription = "Lock",
+                                tint = white,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(mainOrange)
+                                .clickable { onLogout() },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                contentDescription = "Logout",
+                                tint = white,
+                                modifier = Modifier
+                                    .size(30.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                // pfp
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    AsyncImage(
+                        model = currentUser?.profilePicture,
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(210.dp)
+                            .clip(RoundedCornerShape(30.dp)),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(R.drawable.profilepicture),
+                        error = painterResource(R.drawable.profilepicture)
+                    )
+                    Text(
+                        text = "Update profile picture",
+                        color = orangeButton,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clickable { /* Accion */ }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(25.dp))
+
+                // Info
+                Text(
+                    text = "Account info",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = mainOrange
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Box(modifier = Modifier.weight(1.5f)) {
+                        ReadOnlyProfileField(label = "Name", value = "Jorge")
+                        ReadOnlyProfileField(label = "Name", value = currentUser?.name ?: "")
+                    }
+                    Box(modifier = Modifier.weight(1f)) {
+                        ReadOnlyProfileField(
+                            label = "Birth date",
+                            value = currentUser?.birthday ?: "",
+                            modifier = Modifier.clickable {
+                                showDatePicker(context) { nuevaFecha ->
+                                    // Accion
+                                }
+                            }
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(mainOrange)
+                            .clickable {
+                                //
+                            },
+                        contentAlignment = Alignment.Center
+                    ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_edit),
+                        contentDescription = "Edit info",
+                        tint = white,
+                        modifier = Modifier.size(30.dp).clickable { }
+                    )
+                        }
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                // Estadisticas
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(25.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Text(text = "Monthly statistics...", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = orangeButton)
+                        Spacer(modifier = Modifier.height(15.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.graph),
+                            contentDescription = "Stats Graph",
+                            modifier = Modifier.fillMaxWidth(),
+                            contentScale = ContentScale.FillWidth
+                        )
+                    }
+                }
+
+                // Spacer (para que se pueda hacer scroll)
+                Spacer(modifier = Modifier.height(160.dp))
+            }
+    }
     }
 }
 
-// @Preview (showBackground = true)
-// @Composable
-// fun previewProfile(){
-//     ProfileScreen(
-//             viewModel = ...,
-//             navController = rememberNavController(),
-//             onLogout = {}
-//         )
-// }
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewProfileScreen() {
+//    PocketDishesTheme() {
+//        ProfileScreen(
+//            navController = rememberNavController(),
+//            onLogout = {}
+//        )
+//    }
+//}
