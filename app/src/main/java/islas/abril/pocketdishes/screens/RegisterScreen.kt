@@ -26,6 +26,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import islas.abril.pocketdishes.data.room.entities.UserEntity
+import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -44,6 +46,7 @@ import islas.abril.pocketdishes.ui.theme.mainOrange
 
 @Composable
 fun RegisterScreen(
+    viewModel: PocketDishesViewModel,
     onRegisterSuccess: () -> Unit,
     onBackToLogin: () -> Unit
 ) {
@@ -54,6 +57,7 @@ fun RegisterScreen(
     var gender by remember { mutableStateOf("Female") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var registerError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
     Box(
@@ -76,9 +80,8 @@ fun RegisterScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(horizontal = 40.dp)
-                    .verticalScroll(rememberScrollState()), //para que quepan todos los campos
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(40.dp))
@@ -128,7 +131,7 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(15.dp))
 
-                // fila fecha (actualmente lo deje como string cambiar a algo mejor) y genero
+                // fila fecha y genero
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(15.dp)
@@ -184,9 +187,41 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
+                // mensaje de error
+                if (registerError != null) {
+                    Text(
+                        text = registerError!!,
+                        color = Color.Red,
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
+
                 // boton crear cuenta
                 Button(
-                    onClick = { onRegisterSuccess() },
+                    onClick = {
+                        // Validaciones locales
+                        when {
+                            name.isBlank() || email.isBlank() || birthDate.isBlank() || password.isBlank() ->
+                                registerError = "Por favor llena todos los campos"
+                            password != confirmPassword ->
+                                registerError = "Las contraseñas no coinciden"
+                            else -> {
+                                registerError = null
+                                viewModel.register(
+                                    user = UserEntity(
+                                        name = name,
+                                        email = email,
+                                        birthday = birthDate,
+                                        gender = gender,
+                                        password = password
+                                    ),
+                                    onSuccess = { onRegisterSuccess() },
+                                    onError = { registerError = it }
+                                )
+                            }
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth().height(55.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = darkBrown),
                     shape = RoundedCornerShape(12.dp)
@@ -214,6 +249,6 @@ fun RegisterScreen(
 @Composable
 fun previewRegister(){
     PocketDishesTheme() {
-    RegisterScreen({},{})
+        //RegisterScreen({},{})
     }
 }

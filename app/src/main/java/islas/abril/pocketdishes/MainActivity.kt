@@ -4,29 +4,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import islas.abril.pocketdishes.auth.LoginScreen
-import islas.abril.pocketdishes.auth.RegisterScreen
-import islas.abril.pocketdishes.auth.UserProfileScreen
+import androidx.activity.viewModels
+import islas.abril.pocketdishes.data.room.AppDatabase
+import islas.abril.pocketdishes.data.room.PocketDishesRepository
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
+import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: PocketDishesViewModel by viewModels {
+        PocketDishesViewModel.factory(
+            PocketDishesRepository(AppDatabase.getDatabase(this))
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
             PocketDishesTheme {
-                AppNavigation()
+                AppNavigation(viewModel = viewModel)
             }
         }
     }
-}
-
-@Composable
-fun PocketDishesApp() {
-
 }

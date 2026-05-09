@@ -18,10 +18,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -38,14 +41,22 @@ import islas.abril.pocketdishes.ui.theme.mainOrange
 import islas.abril.pocketdishes.ui.theme.orangeButton
 
 // PANTALLA LOGIN
-// **PENDIENTE AGREGAR SHARED PREFERENCES PARA PERMANECER LOGEADO Y ASI**
 @Composable
 fun LoginScreen(
+    viewModel: PocketDishesViewModel,
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val currentUser by viewModel.currentUser.collectAsState()
+    val loginError by viewModel.loginError.collectAsState()
+
+    // Navegar automaticamente cuando el login es exitoso
+    LaunchedEffect(currentUser) {
+        if (currentUser != null) onLoginSuccess()
+    }
 
     // background (gradient)
     Box(
@@ -120,9 +131,20 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
+                // mensaje de error
+                if (loginError != null) {
+                    Text(
+                        text = loginError!!,
+                        color = Color.Red,
+                        fontSize = 13.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
+
                 // boton login
                 Button(
-                    onClick = { onLoginSuccess() },
+                    onClick = { viewModel.login(email, password) },
                     modifier = Modifier.fillMaxWidth().height(55.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = orangeButton),
                     shape = RoundedCornerShape(12.dp)
@@ -160,8 +182,8 @@ fun LoginScreen(
 
 @Preview
 @Composable
-fun PreviewLoginScreen() {
+fun previewLogin(){
     PocketDishesTheme() {
-    LoginScreen({},{})
+        //LoginScreen({},{})
     }
 }

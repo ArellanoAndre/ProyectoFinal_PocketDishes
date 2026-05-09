@@ -15,6 +15,7 @@ import returnRecipes
 
 @Composable
 fun AppNavigation(
+    viewModel: islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 ) {
     val navController = rememberNavController()
     val allRecipes = returnRecipes()
@@ -23,6 +24,7 @@ fun AppNavigation(
         // --- LOGIN ---
         composable("login") {
             LoginScreen(
+                viewModel = viewModel,
                 onLoginSuccess = {
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
@@ -40,8 +42,11 @@ fun AppNavigation(
         // --- REGISTER ---
         composable("register") {
             RegisterScreen(
+                viewModel = viewModel,
                 onRegisterSuccess = {
-                    navController.navigate("login")
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
                 },
                 onBackToLogin = {
                     navController.popBackStack()
@@ -51,13 +56,13 @@ fun AppNavigation(
 
         // --- PROFILE ---
         composable("profile") {
-            // Obtenemos los datos mock
             val userProfile = returnProfile()
 
             ProfileScreen(
                 profile = userProfile,
                 navController = navController,
                 onLogout = {
+                    viewModel.logout()
                     navController.navigate("login") {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
