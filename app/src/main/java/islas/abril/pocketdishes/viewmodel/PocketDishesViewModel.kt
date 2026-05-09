@@ -3,11 +3,14 @@ package islas.abril.pocketdishes.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import islas.abril.pocketdishes.data.room.IngredientWithAmount
 import islas.abril.pocketdishes.data.room.PocketDishesRepository
+import islas.abril.pocketdishes.data.room.entities.IngredientEntity
 import islas.abril.pocketdishes.data.room.entities.IngredientRecipeEntity
 import islas.abril.pocketdishes.data.room.entities.RecipeEntity
 import islas.abril.pocketdishes.data.room.entities.RecipeStepEntity
 import islas.abril.pocketdishes.data.room.entities.UserEntity
+import islas.abril.pocketdishes.data.enums.Units
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -53,8 +56,8 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
 
     // Detalle de receta activa
 
-    private val _activeIngredients = MutableStateFlow<List<IngredientRecipeEntity>>(emptyList())
-    val activeIngredients: StateFlow<List<IngredientRecipeEntity>> = _activeIngredients.asStateFlow()
+    private val _activeIngredients = MutableStateFlow<List<IngredientWithAmount>>(emptyList())
+    val activeIngredients: StateFlow<List<IngredientWithAmount>> = _activeIngredients.asStateFlow()
 
     private val _activeSteps = MutableStateFlow<List<RecipeStepEntity>>(emptyList())
     val activeSteps: StateFlow<List<RecipeStepEntity>> = _activeSteps.asStateFlow()
@@ -129,51 +132,101 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
     // Datos mock
 
     private suspend fun insertarDatosMock() {
-        val existing = repository.getUserByEmail("test")
+        val existing = repository.getUserByEmail("testv2")
         if (existing == null) {
             val userId = repository.registerUser(
                 UserEntity(
                     name = "jorge",
-                    email = "test",
+                    email = "testv2",
                     birthday = "01/01/2000",
                     gender = "Male",
                     password = "1234"
                 )
             ).toInt()
-            repository.insertRecipe(
+
+            // Chicken Teriyaki
+            val idTeriyaki = repository.insertRecipe(
                 RecipeEntity(
                     name = "Chicken Teriyaki",
                     description = "Sweet and savory chicken with rice and veggies.",
-                    author = userId,
-                    source = "",
-                    image = "chicken_teriyaki",
-                    tags = listOf("Quick", "Dinner"),
-                    category = "Asian Food",
-                    isPublic = true
+                    author = userId, source = "", image = "chicken_teriyaki",
+                    tags = listOf("Quick", "Dinner"), category = "Asian Food", isPublic = true
                 )
-            )
-            repository.insertRecipe(
+            ).toInt()
+            listOf("Cook the rice.", "Grill chicken and slice it.",
+                   "Steam broccoli.", "Mix everything with teriyaki sauce.")
+                .forEachIndexed { i, step ->
+                    repository.insertStep(RecipeStepEntity(idRecipe = idTeriyaki, stepNumber = i + 1, description = step))
+                }
+            seedIngredients(idTeriyaki, listOf(
+                Triple("Chicken Breast", "chicken",  Pair(200f, Units.GR)),
+                Triple("Rice",           "rice",     Pair(1f,   Units.CUPS)),
+                Triple("Broccoli",       "broccoli", Pair(1f,   Units.CUPS)),
+                Triple("Teriyaki Sauce", "teriyaki", Pair(3f,   Units.TBSP))
+            ))
+
+            // Vegetarian Curry
+            val idCurry = repository.insertRecipe(
                 RecipeEntity(
                     name = "Vegetarian Curry",
                     description = "Japanese curry with vegetables and rice.",
-                    author = userId,
-                    source = "",
-                    image = "curry",
-                    tags = listOf("Vegetarian", "Dinner"),
-                    category = "Asian Food",
-                    isPublic = true
+                    author = userId, source = "", image = "curry",
+                    tags = listOf("Vegetarian", "Dinner"), category = "Asian Food", isPublic = true
                 )
-            )
-            repository.insertRecipe(
+            ).toInt()
+            listOf("Cook the rice.", "Boil potatoes and carrots.",
+                   "Mix vegetables with curry paste.", "Serve hot over rice.")
+                .forEachIndexed { i, step ->
+                    repository.insertStep(RecipeStepEntity(idRecipe = idCurry, stepNumber = i + 1, description = step))
+                }
+            seedIngredients(idCurry, listOf(
+                Triple("Lentils",     "lentils",    Pair(200f, Units.GR)),
+                Triple("Rice",        "rice",       Pair(1f,   Units.CUPS)),
+                Triple("Potatoes",    "potatoes",   Pair(2f,   Units.PCS)),
+                Triple("Carrots",     "carrots",    Pair(2f,   Units.PCS)),
+                Triple("Curry Paste", "currypaste", Pair(100f, Units.GR))
+            ))
+
+            // Classic Cheeseburger
+            val idBurger = repository.insertRecipe(
                 RecipeEntity(
                     name = "Classic Cheeseburger",
                     description = "Juicy beef burger with melted cheese.",
-                    author = userId,
-                    source = "",
-                    image = "cheeseburger",
-                    tags = listOf("Dinner"),
-                    category = "Fast Food",
-                    isPublic = true
+                    author = userId, source = "", image = "cheeseburger",
+                    tags = listOf("Dinner"), category = "Fast Food", isPublic = true
+                )
+            ).toInt()
+            listOf("Form beef patty.", "Cook on grill or pan.",
+                   "Assemble burger with ingredients.", "Serve hot.")
+                .forEachIndexed { i, step ->
+                    repository.insertStep(RecipeStepEntity(idRecipe = idBurger, stepNumber = i + 1, description = step))
+                }
+            seedIngredients(idBurger, listOf(
+                Triple("Ground Beef", "beef",    Pair(150f, Units.GR)),
+                Triple("Burger Bun",  "bun",     Pair(1f,   Units.PCS)),
+                Triple("Cheese",      "cheese",  Pair(1f,   Units.PCS)),
+                Triple("Lettuce",     "lettuce", Pair(1f,   Units.PCS))
+            ))
+        }
+    }
+
+    // Inserta ingredientes para una receta reutilizando el ingrediente si ya existe
+    private suspend fun seedIngredients(
+        recipeId: Int,
+        items: List<Triple<String, String, Pair<Float, Units>>>
+    ) {
+        items.forEach { (name, image, amountUnit) ->
+            val insertedId = repository.insertIngredient(
+                IngredientEntity(name = name, image = image)
+            ).toInt()
+            val ingredientId = if (insertedId != -1) insertedId
+                               else repository.getIngredientByName(name)?.idIngredient ?: return@forEach
+            repository.insertIngredientRecipe(
+                IngredientRecipeEntity(
+                    idRecipe = recipeId,
+                    idIngredient = ingredientId,
+                    amount = amountUnit.first,
+                    unit = amountUnit.second
                 )
             )
         }
@@ -215,7 +268,7 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
 
     fun loadRecipeDetail(recipeId: Int) {
         viewModelScope.launch {
-            repository.getIngredientsByRecipe(recipeId).collect {
+            repository.getIngredientDetailsForRecipe(recipeId).collect {
                 _activeIngredients.value = it
             }
         }
@@ -223,6 +276,22 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
             repository.getStepsByRecipe(recipeId).collect {
                 _activeSteps.value = it
             }
+        }
+    }
+
+    fun loadRecipeDetailByName(name: String) {
+        viewModelScope.launch {
+            // Busca primero la receta del usuario logueado para evitar
+            // colisiones de nombre entre usuarios distintos (LIMIT 1 sin filtro
+            // devuelve la primera receta con ese nombre en toda la BD aguas
+            val authorId = _currentUser.value?.idUser
+            val recipe = if (authorId != null) {
+                repository.getRecipeByNameAndAuthor(name, authorId)
+                    ?: repository.getRecipeByName(name)
+            } else {
+                repository.getRecipeByName(name)
+            }
+            if (recipe != null) loadRecipeDetail(recipe.idRecipe)
         }
     }
 

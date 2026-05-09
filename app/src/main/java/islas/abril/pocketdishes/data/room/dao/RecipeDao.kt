@@ -24,6 +24,12 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes WHERE idRecipe = :id")
     suspend fun getRecipeById(id: Int): RecipeEntity?
 
+    @Query("SELECT * FROM recipes WHERE name = :name LIMIT 1")
+    suspend fun getRecipeByName(name: String): RecipeEntity?
+
+    @Query("SELECT * FROM recipes WHERE name = :name AND author = :authorId LIMIT 1")
+    suspend fun getRecipeByNameAndAuthor(name: String, authorId: Int): RecipeEntity?
+
     @Query("SELECT * FROM recipes WHERE isPublic = 1 AND isSecret = 0")
     fun getPublicRecipes(): Flow<List<RecipeEntity>>
 

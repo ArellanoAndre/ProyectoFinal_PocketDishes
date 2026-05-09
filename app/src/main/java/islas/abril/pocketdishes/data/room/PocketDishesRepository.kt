@@ -5,6 +5,7 @@ import islas.abril.pocketdishes.data.room.entities.IngredientRecipeEntity
 import islas.abril.pocketdishes.data.room.entities.RecipeEntity
 import islas.abril.pocketdishes.data.room.entities.RecipeStepEntity
 import islas.abril.pocketdishes.data.room.entities.UserEntity
+import islas.abril.pocketdishes.data.room.IngredientWithAmount
 
 class PocketDishesRepository(database: AppDatabase) {
 
@@ -47,6 +48,12 @@ class PocketDishesRepository(database: AppDatabase) {
     suspend fun getRecipeById(id: Int): RecipeEntity? =
         recipeDao.getRecipeById(id)
 
+    suspend fun getRecipeByName(name: String): RecipeEntity? =
+        recipeDao.getRecipeByName(name)
+
+    suspend fun getRecipeByNameAndAuthor(name: String, authorId: Int): RecipeEntity? =
+        recipeDao.getRecipeByNameAndAuthor(name, authorId)
+
     fun getPublicRecipes() = recipeDao.getPublicRecipes()
 
     fun getRecipesByAuthor(userId: Int) = recipeDao.getRecipesByAuthor(userId)
@@ -79,6 +86,9 @@ class PocketDishesRepository(database: AppDatabase) {
 
     fun getIngredientsByRecipe(recipeId: Int) =
         ingredientRecipeDao.getIngredientsByRecipe(recipeId)
+
+    fun getIngredientDetailsForRecipe(recipeId: Int): kotlinx.coroutines.flow.Flow<List<IngredientWithAmount>> =
+        ingredientRecipeDao.getIngredientDetailsForRecipe(recipeId)
 
     suspend fun deleteAllIngredientsFromRecipe(recipeId: Int) =
         ingredientRecipeDao.deleteAllIngredientsFromRecipe(recipeId)

@@ -2,6 +2,7 @@ package islas.abril.pocketdishes.data.room
 
 import android.content.Context
 import islas.abril.pocketdishes.R
+import islas.abril.pocketdishes.data.Ingredients
 import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.data.RecipeTags
 import islas.abril.pocketdishes.data.room.entities.RecipeEntity
@@ -32,5 +33,18 @@ fun RecipeEntity.toRecipe(context: Context): Recipe {
         category = listOf(category),
         secretRecipe = isSecret,
         rating = rating
+    )
+}
+
+// Convierte un IngredientWithAmount (resultado de JOIN en Room) al modelo Ingredients de UI
+fun IngredientWithAmount.toIngredients(context: Context): Ingredients {
+    val imageId = if (image.isNotEmpty()) {
+        context.resources.getIdentifier(image, "drawable", context.packageName)
+    } else 0
+    return Ingredients(
+        name = name,
+        image = if (imageId != 0) imageId else R.drawable.sushi,
+        amount = amount.toInt(),
+        unit = unit
     )
 }

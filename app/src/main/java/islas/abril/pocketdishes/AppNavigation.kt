@@ -87,6 +87,7 @@ fun AppNavigation(
             if (selectedRecipe != null) {
                 RecipeDetailScreen(
                     recipe = selectedRecipe,
+                    viewModel = viewModel,
                     onBackClick = {
                         navController.popBackStack()
                     },
