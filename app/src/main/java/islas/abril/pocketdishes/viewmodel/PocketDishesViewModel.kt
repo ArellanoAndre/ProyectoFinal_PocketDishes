@@ -250,15 +250,21 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
 
     // Operaciones de recetas
 
-    fun insertRecipe(
+
+    // Inserta una receta completa desde AddRecipeScreen.
+    fun insertRecipeComplete(
         recipe: RecipeEntity,
-        steps: List<RecipeStepEntity>,
-        ingredients: List<IngredientRecipeEntity>
+        steps: List<String>,
+        ingredients: List<Triple<String, String, Pair<Float, Units>>>
     ) {
         viewModelScope.launch {
             val recipeId = repository.insertRecipe(recipe).toInt()
-            steps.forEach { repository.insertStep(it.copy(idRecipe = recipeId)) }
-            ingredients.forEach { repository.insertIngredientRecipe(it.copy(idRecipe = recipeId)) }
+            steps.forEachIndexed { i, step ->
+                repository.insertStep(
+                    RecipeStepEntity(idRecipe = recipeId, stepNumber = i + 1, description = step)
+                )
+            }
+            seedIngredients(recipeId, ingredients)
         }
     }
 

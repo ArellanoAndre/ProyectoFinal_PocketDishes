@@ -2,6 +2,7 @@ package islas.abril.pocketdishes.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import coil.compose.AsyncImage
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -74,16 +75,27 @@ fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit)
             .fillMaxSize(),
         ){
 
-            Image(
-                painter = painterResource(recipe.image),
-                contentDescription = recipe.name,
-                modifier = Modifier
-                    .size(70.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .border(3.dp, color = borderColor, shape = RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-
-            )
+            if (recipe.imageUri.isNotEmpty()) {
+                AsyncImage(
+                    model              = recipe.imageUri,
+                    contentDescription = recipe.name,
+                    modifier           = Modifier
+                        .size(70.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(3.dp, color = borderColor, shape = RoundedCornerShape(12.dp)),
+                    contentScale       = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter            = painterResource(recipe.image),
+                    contentDescription = recipe.name,
+                    modifier           = Modifier
+                        .size(70.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(3.dp, color = borderColor, shape = RoundedCornerShape(12.dp)),
+                    contentScale       = ContentScale.Crop
+                )
+            }
             Spacer(modifier= Modifier.size(16.dp))
             Column(
                 modifier = Modifier.weight(1f)

@@ -3,6 +3,7 @@ package islas.abril.pocketdishes.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import coil.compose.AsyncImage
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -69,12 +70,23 @@ fun RecipeHeader(
     ) {
 
         //imagen de fondo
-        Image(
-            painter = painterResource(recipe.image),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        if (recipe.imageUri.isNotEmpty()) {
+            // imagen seleccionada de galería (URI persistente)
+            AsyncImage(
+                model              = recipe.imageUri,
+                contentDescription = null,
+                contentScale       = ContentScale.Crop,
+                modifier           = Modifier.fillMaxSize()
+            )
+        } else {
+            // imagen drawable del proyecto
+            Image(
+                painter            = painterResource(recipe.image),
+                contentDescription = null,
+                contentScale       = ContentScale.Crop,
+                modifier           = Modifier.fillMaxSize()
+            )
+        }
 
         // overlay para hacer mas oscura la imagen de fondo
         Box(

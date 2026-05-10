@@ -53,7 +53,7 @@ fun BottomNavigationMenu(modifier: Modifier = Modifier, navController: NavContro
 
     {
         Row(
-            modifier = Modifier.clickable { /* AGREGAR RECETA */ },
+            modifier = Modifier.clickable { navigateTo(navController, "add_recipe") },
             verticalAlignment = Alignment.CenterVertically
         ){
                 Box(

@@ -13,6 +13,7 @@ import islas.abril.pocketdishes.screens.ExploreScreen
 import islas.abril.pocketdishes.screens.LoginScreen
 import islas.abril.pocketdishes.screens.ProfileScreen
 import islas.abril.pocketdishes.screens.RecipeDetailScreen
+import islas.abril.pocketdishes.screens.AddRecipeScreen
 import islas.abril.pocketdishes.screens.RegisterScreen
 import islas.abril.pocketdishes.screens.SecretRecipeScreen
 import islas.abril.pocketdishes.screens.homescreen
@@ -100,6 +101,14 @@ fun AppNavigation(
         // --- EXPLORE ---
         composable("explore") {
             ExploreScreen(
+                viewModel = viewModel,
+                navController = navController
+            )
+        }
+
+        // --- ADD RECIPE ---
+        composable("add_recipe") {
+            AddRecipeScreen(
                 viewModel = viewModel,
                 navController = navController
             )
