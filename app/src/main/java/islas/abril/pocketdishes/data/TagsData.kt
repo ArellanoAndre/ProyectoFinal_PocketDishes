@@ -31,7 +31,7 @@ val RecipeTags  = listOf(
 )
 
 fun getTag(index:Int):Tag{
-    if(index<=RecipeTags.size){
+    if(index<RecipeTags.size){
         return RecipeTags[index]
     }
     else{

@@ -36,9 +36,10 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
+import islas.abril.pocketdishes.components.SelectionBar
 import islas.abril.pocketdishes.components.favouriteRecipeCard
 import islas.abril.pocketdishes.components.header
-import islas.abril.pocketdishes.components.selectionBar
+import islas.abril.pocketdishes.data.Tag
 import islas.abril.pocketdishes.data.room.toRecipe
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
@@ -48,7 +49,9 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
 
     var showFavorites by remember { mutableStateOf(false) }
     var showCategories by remember { mutableStateOf(false) }
+    var showTagFilter by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf("") }
+    var selectedTag by remember { mutableStateOf<Tag?>(null) }
 
     val userRecipes by viewModel.userRecipes.collectAsState()
     val favoriteRecipes by viewModel.favoriteRecipes.collectAsState()
@@ -64,6 +67,12 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
             userRecipes.filter { !it.isSecret }
                 .map { it.toRecipe(context) }
                 .filter { it.category.contains(selectedCategory) }
+        }
+        showTagFilter -> {
+            userRecipes
+                .filter { !it.isSecret }
+                .map { it.toRecipe(context) }
+                .filter { it.tags.contains(selectedTag) }
         }
         else -> {
             userRecipes.filter { !it.isSecret }.map { it.toRecipe(context) }
@@ -140,13 +149,12 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                     )
                 }
 
-                selectionBar(
+                SelectionBar(
                     "My recipes",
                     showFavorites,
                     onFavoriteClick = {
                         showFavorites = !showFavorites
                         showCategories = false
-
                     },
                     onCategorySelection={   category->
                         if (category == null) {
@@ -157,6 +165,19 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                             showCategories = true
                             showFavorites = false
                         }
+                    },
+                    onTagSelection = { tag ->
+                        if(tag == null){
+                            selectedTag = null
+                            showTagFilter = false
+                        }
+                        else{
+                            selectedTag = tag
+                            showTagFilter = true
+                            showFavorites = false
+                            showCategories = false
+                        }
+
                     }
                 )
 

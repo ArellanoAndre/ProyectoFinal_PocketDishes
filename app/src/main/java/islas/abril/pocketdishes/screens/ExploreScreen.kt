@@ -32,11 +32,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.RecipePreviewCard
+import islas.abril.pocketdishes.components.SelectionBar
 import islas.abril.pocketdishes.components.header
-import islas.abril.pocketdishes.components.selectionBar
+import islas.abril.pocketdishes.data.Tag
 import islas.abril.pocketdishes.data.recipeCategories
 import islas.abril.pocketdishes.data.room.toRecipe
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
@@ -50,7 +50,10 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
     val context = LocalContext.current
     var showOnlyFavorites by remember { mutableStateOf(false) }
     var showCategories by remember { mutableStateOf(false) }
+    var showTagFilter by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf("") }
+    var selectedTag by remember { mutableStateOf<Tag?>(null) }
+
 
     // Recetas publicas desde la BD
     val publicRecipesEntities by viewModel.publicRecipes.collectAsState()
@@ -70,6 +73,11 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                 it.category.contains(selectedCategory)
             }
         }
+        showTagFilter -> {
+            displayRecipes
+                .filter { it.tags.contains(selectedTag) }
+        }
+
         else -> {
             displayRecipes
         }
@@ -113,7 +121,7 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                 )
                 Row(
                     modifier = Modifier.padding(start=20.dp)){
-                    selectionBar(
+                    SelectionBar(
                         "Filters",
                         showOnlyFavorites,
 
@@ -125,12 +133,27 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                                 if (category == null) {
                                     selectedCategory = ""
                                     showCategories = false
+                                    showTagFilter = false
+
                                 } else {
                                     selectedCategory = category
                                     showCategories = true
                                     showOnlyFavorites = false
+                                    showTagFilter = false
                                 }
+                            },
+                        onTagSelection = { tag->
+                            if(tag==null){
+                                selectedTag = null
+                                showTagFilter = false
+                            }else{
+                                selectedTag= tag
+                                showTagFilter = true
+                                showOnlyFavorites = false
+                                showCategories = false
                             }
+
+                        }
                     )
                 }
 

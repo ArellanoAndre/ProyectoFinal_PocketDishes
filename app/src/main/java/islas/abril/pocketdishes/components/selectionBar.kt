@@ -1,6 +1,7 @@
 package islas.abril.pocketdishes.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -21,28 +22,35 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import islas.abril.pocketdishes.R
+import islas.abril.pocketdishes.data.RecipeTags
+import islas.abril.pocketdishes.data.Tag
 import islas.abril.pocketdishes.data.recipeCategories
 import islas.abril.pocketdishes.ui.theme.mainOrange
 
 @Composable
-fun selectionBar(text:String, showOnlyFavorites: Boolean, onFavoriteClick: () -> Unit,onCategorySelection:(String?)-> Unit) {
-    val context = LocalContext.current
+fun SelectionBar(text:String, showOnlyFavorites: Boolean, onFavoriteClick: () -> Unit,onCategorySelection:(String?)-> Unit,onTagSelection:(Tag?)-> Unit) {
     var showFiltersDialog by remember { mutableStateOf(false) }
+    var showTagDialog by remember { mutableStateOf(false) }
     var selectedCategory  by remember { mutableStateOf("") }
+    var selectedTag by remember { mutableStateOf<Tag?>(null) }
 
     Row(
         modifier = Modifier.padding(top = 5.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = text,
+            text = if(showOnlyFavorites)
+                    "Favorites"
+                else
+                    text,
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.labelMedium
         )
+
         Icon(
             painter = painterResource(
                 id =
@@ -81,7 +89,31 @@ fun selectionBar(text:String, showOnlyFavorites: Boolean, onFavoriteClick: () ->
                     onFavoriteClick()
                 }
         )
+
+        Icon(
+            painter = painterResource(
+                id =
+                    if (selectedTag==null)
+                        R.drawable.label_24px
+                    else
+                        R.drawable.label_off_24px
+            ),
+            contentDescription = "tag",
+            tint = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier
+                .size(35.dp)
+                .clickable {
+                    if(selectedTag != null){
+                        selectedTag = null
+                        onTagSelection(null)
+                    }
+                    else{
+                        showTagDialog = true
+                    }
+                }
+        )
     }
+
     if (showFiltersDialog) {
 
         val categories = recipeCategories
@@ -126,6 +158,60 @@ fun selectionBar(text:String, showOnlyFavorites: Boolean, onFavoriteClick: () ->
                 },
             confirmButton = {}
             )
-
         }
+    // TAG DIALOG
+    if (showTagDialog) {
+
+        AlertDialog(
+            onDismissRequest  = { showTagDialog = false },
+            containerColor    = MaterialTheme.colorScheme.background,
+            shape             = RoundedCornerShape(20.dp),
+
+            title = {
+                Text("Select a tag", color = mainOrange)
+            },
+
+            text = {
+
+                LazyColumn(
+                    modifier = Modifier.heightIn(max = 300.dp)
+                ) {
+
+                    items(RecipeTags) { tag ->
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+
+                                    selectedTag = tag
+                                    onTagSelection(tag)
+                                    showTagDialog = false
+                                }
+                                .padding(vertical = 12.dp),
+
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            RadioButton(
+                                selected = selectedTag == tag,
+                                onClick = {
+
+                                    selectedTag = tag
+                                    onTagSelection(tag)
+                                    showTagDialog = false
+                                }
+                            )
+
+                            Text(
+                                text = tag.name,
+                                color = tag.color
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {}
+        )
+    }
 }
