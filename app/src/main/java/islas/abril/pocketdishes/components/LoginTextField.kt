@@ -51,7 +51,9 @@ fun LoginTextField(
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledContainerColor = Color.White,
                 disabledIndicatorColor = Color.Transparent,
-                disabledTextColor = Color.Black
+                disabledTextColor = Color.Black,
+                focusedTextColor = darkBrown,
+                unfocusedTextColor = darkBrown
             )
         )
     }

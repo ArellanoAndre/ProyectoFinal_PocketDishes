@@ -20,7 +20,6 @@ val IngredientList = listOf(
     Ingredients(name = "Lentils",          image = R.drawable.lentils,          amount = 0, unit = Units.GR),
     Ingredients(name = "Lettuce",          image = R.drawable.lettuce,          amount = 0, unit = Units.GR),
     Ingredients(name = "Macarons",         image = R.drawable.macarons,         amount = 0, unit = Units.PCS),
-    Ingredients(name = "Pizza",            image = R.drawable.pizza,            amount = 0, unit = Units.DISH),
     Ingredients(name = "Potatoes",         image = R.drawable.potatoes,         amount = 0, unit = Units.GR),
     Ingredients(name = "Rice",             image = R.drawable.rice,             amount = 0, unit = Units.GR),
     Ingredients(name = "Teriyaki Sauce",   image = R.drawable.teriyaki,         amount = 0, unit = Units.TBSP),

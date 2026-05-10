@@ -105,20 +105,19 @@ fun combobox(
     Column {
         Text(
             text = label,
-            color = typoColorBrown,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(start = 10.dp, top = 5.dp, bottom = 10.dp)
+            color = MaterialTheme.colorScheme.outline,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(bottom = 5.dp)
         )
 
         Box {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .clip(RoundedCornerShape(20.dp))
                     .border(
-                        width = 1.dp,
+                        width = 0.dp,
                         color = Color.LightGray,
                         shape = RoundedCornerShape(12.dp)
                     )
@@ -130,10 +129,10 @@ fun combobox(
                     Text(
                         text = if (selectedOption.isEmpty()) "Select option"
                         else selectedOption,
-                        color = if (selectedOption.isEmpty()) typoColorBeige else typoColorBrown,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.weight(1f)
+                        color = MaterialTheme.colorScheme.outline,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(bottom = 5.dp)
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.ic_add_recipe),
@@ -155,8 +154,10 @@ fun combobox(
                         text = {
                             Text(
                                 text = option,
-                                fontSize = 18.sp,
-                                color = typoColorBrown
+                                color = typoColorBrown,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(bottom = 5.dp)
                             )
                         },
                         onClick = {

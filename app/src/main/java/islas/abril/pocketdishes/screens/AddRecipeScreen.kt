@@ -50,12 +50,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.InstructionStepItem
 import islas.abril.pocketdishes.components.IngredientCard
+import islas.abril.pocketdishes.components.LoginTextField
 import islas.abril.pocketdishes.components.combobox
 import islas.abril.pocketdishes.components.headerV2
 import islas.abril.pocketdishes.components.recipeTags
@@ -67,6 +70,8 @@ import islas.abril.pocketdishes.data.dummies.IngredientList
 import islas.abril.pocketdishes.data.enums.Units
 import islas.abril.pocketdishes.data.recipeCategories
 import islas.abril.pocketdishes.data.room.entities.RecipeEntity
+import islas.abril.pocketdishes.ui.theme.mainOrange
+import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 
 @Composable
@@ -140,15 +145,13 @@ fun AddRecipeScreen(
                 .padding(padding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .background(
-                    Brush.verticalGradient(listOf(Color(0xFFFFE0C2), Color(0xFFFF9A4D)))
-                )
+                .background(brush=Brush.verticalGradient(colors=listOf(MaterialTheme.colorScheme.background,mainOrange)))
                 .padding(16.dp)
         ) {
 
             Text(
                 "Add a recipe",
-                color = Color(0xFFFF7A00),
+                color = mainOrange,
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -157,17 +160,18 @@ fun AddRecipeScreen(
             // Card principal
             Card(
                 shape  = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(Color(0xFFFFE9D6))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+
             ) {
                 Column(Modifier.padding(16.dp)) {
 
-                    textField("Name", recipeName, { recipeName = it }, "Homemade Pizza")
-                    textField("Description", recipeDescription, { recipeDescription = it }, "Write a description")
+                    LoginTextField("Name", recipeName, { recipeName = it }, "Homemade Pizza")
+                    LoginTextField("Description", recipeDescription, { recipeDescription = it }, "Write a description")
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // Imagen
-                    Text("Upload a picture", color = Color.Gray)
+                    Text("Upload a picture", color = MaterialTheme.colorScheme.outline)
                     Spacer(modifier = Modifier.height(6.dp))
                     Box(
                         modifier = Modifier
@@ -200,12 +204,23 @@ fun AddRecipeScreen(
                     // Prep time + Tags
                     Row {
                         Column(Modifier.weight(1f)) {
-                            Text("Prep time (min)", color = Color.Gray)
-                            textField("", prepTime, { prepTime = it }, "30")
+                            Text(
+                                "Prep time (min)",
+                                color = MaterialTheme.colorScheme.outline,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(bottom = 5.dp)
+                            )
+                            LoginTextField("", prepTime, { prepTime = it }, "30")
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                         Column(Modifier.weight(1f)) {
-                            Text("Tags", color = Color.Gray)
+                            Text(
+                                text = "",
+                                color = MaterialTheme.colorScheme.outline,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(bottom = 5.dp))
                             combobox("Select tag", tagNames, selectedTagName) { name ->
                                 selectedTagName = name
                                 val tag = RecipeTags.find { it.name == name }
@@ -222,7 +237,13 @@ fun AddRecipeScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // Categoría
-                    Text("Category", color = Color.Gray)
+                    Text(
+                        text = "Category",
+                        color = MaterialTheme.colorScheme.outline,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(bottom = 5.dp)
+                    )
                     combobox("Select category", recipeCategories, selectedCategory) {
                         selectedCategory = it
                     }
@@ -247,7 +268,13 @@ fun AddRecipeScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             // Ingredientes
-            Text("Ingredients", color = Color.White, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Ingredients",
+                color = MaterialTheme.colorScheme.outline,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 5.dp)
+            )
             Spacer(modifier = Modifier.height(10.dp))
 
             Card(
@@ -288,11 +315,14 @@ fun AddRecipeScreen(
                         Spacer(modifier = Modifier.width(6.dp))
 
                         // Cantidad
-                        TextField(
-                            value         = ingredientAmount,
+                        LoginTextField(
+                            label = "",
+                            value = ingredientAmount,
                             onValueChange = { ingredientAmount = it },
-                            placeholder   = { Text("0") },
-                            modifier      = Modifier.width(70.dp)
+                            placeholder = "0",
+                            isPassword = false,
+                            enabled = true,
+                            modifier = Modifier.width(70.dp)
                         )
 
                         Spacer(modifier = Modifier.width(6.dp))
@@ -329,7 +359,7 @@ fun AddRecipeScreen(
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color(0xFF00C853), RoundedCornerShape(10.dp))
+                                .background(MaterialTheme.colorScheme.secondaryContainer)
                                 .clickable {
                                     val amount = ingredientAmount.toIntOrNull()
                                     if (selectedIngredient != null && amount != null && amount > 0) {
@@ -374,7 +404,12 @@ fun AddRecipeScreen(
 
             // Pasos
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Steps", color = Color.White, style = MaterialTheme.typography.titleMedium)
+               Text( text = "Steps",
+                color = MaterialTheme.colorScheme.outline,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 5.dp)
+               )
                 Spacer(modifier = Modifier.width(10.dp))
                 Box(
                     modifier = Modifier
@@ -488,7 +523,7 @@ fun AddRecipeScreen(
             containerColor    = Color(0xFFF5F5F5),
             shape             = RoundedCornerShape(20.dp),
             title = {
-                Text("Add a new step", color = Color(0xFFFF7A00))
+                Text("Add a new step", color = mainOrange)
             },
             text = {
                 Column {
@@ -499,7 +534,7 @@ fun AddRecipeScreen(
                         modifier      = Modifier.fillMaxWidth(),
                         shape         = RoundedCornerShape(12.dp),
                         colors        = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.LightGray,
+                            unfocusedBorderColor = typoColorBrown,
                             focusedBorderColor   = Color.LightGray
                         )
                     )
@@ -523,25 +558,35 @@ fun AddRecipeScreen(
                 Button(
                     onClick = {
                         if (stepDescription.isNotBlank()) {
-                            // Formato: "titulo|descripcion" o solo "descripcion"
-                            val step = if (stepTitle.isNotBlank()) "$stepTitle|$stepDescription"
-                                       else stepDescription
+
+                            val step =
+                                if (stepTitle.isNotBlank())
+                                    "$stepTitle|$stepDescription"
+                                else stepDescription
+
                             stepsList.add(step)
-                            stepTitle       = ""
+
+                            stepTitle = ""
                             stepDescription = ""
-                            showStepDialog  = false
+                            showStepDialog = false
                         }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(55.dp)
                         .padding(horizontal = 16.dp),
-                    shape    = RoundedCornerShape(12.dp),
-                    colors   = ButtonDefaults.buttonColors(containerColor = Color(0xFF5A2D1B))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF5A2D1B)
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("SAVE", color = Color.White)
+                    Text(
+                        text = "SAVE",
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
                 }
-            },
-            dismissButton = {}
+            }
         )
     }
 }
