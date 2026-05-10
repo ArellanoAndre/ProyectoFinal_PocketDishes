@@ -47,15 +47,27 @@ import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
 
     var showFavorites by remember { mutableStateOf(false) }
+    var showCategories by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf("") }
+
     val userRecipes by viewModel.userRecipes.collectAsState()
     val favoriteRecipes by viewModel.favoriteRecipes.collectAsState()
 
     val context = LocalContext.current
     // Convierte la lista de RecipeEntity a Recipe para reusar los componentes existentes
-    val displayRecipes = if (showFavorites) {
-        favoriteRecipes.map { it.toRecipe(context) }
-    } else {
-        userRecipes.map { it.toRecipe(context) }
+
+    val displayRecipes = when {
+        showFavorites -> {
+            favoriteRecipes.filter {!it.isSecret}.map { it.toRecipe(context) }
+        }
+        showCategories -> {
+            userRecipes.filter { !it.isSecret }
+                .map { it.toRecipe(context) }
+                .filter { it.category.contains(selectedCategory) }
+        }
+        else -> {
+            userRecipes.filter { !it.isSecret }.map { it.toRecipe(context) }
+        }
     }
 
     androidx.compose.material3.Scaffold(
@@ -133,6 +145,18 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                     showFavorites,
                     onFavoriteClick = {
                         showFavorites = !showFavorites
+                        showCategories = false
+
+                    },
+                    onCategorySelection={   category->
+                        if (category == null) {
+                            selectedCategory = ""
+                            showCategories = false
+                        } else {
+                            selectedCategory = category
+                            showCategories = true
+                            showFavorites = false
+                        }
                     }
                 )
 

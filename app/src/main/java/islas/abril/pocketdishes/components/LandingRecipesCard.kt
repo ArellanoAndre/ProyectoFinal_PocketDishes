@@ -48,7 +48,7 @@ import returnRandomRecipe
 @Composable
 fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit){
 
-    var fontColor = MaterialTheme.colorScheme.outline
+    var fontColor = typoColorBrown
     var subtitleColor = typoColorLightBrown
     var borderColor = mainOrange
 

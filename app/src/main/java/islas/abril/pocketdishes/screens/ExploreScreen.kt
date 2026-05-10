@@ -49,6 +49,8 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
 
     val context = LocalContext.current
     var showOnlyFavorites by remember { mutableStateOf(false) }
+    var showCategories by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf("") }
 
     // Recetas publicas desde la BD
     val publicRecipesEntities by viewModel.publicRecipes.collectAsState()
@@ -59,10 +61,18 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
     val favoriteRecipes by viewModel.favoriteRecipes.collectAsState()
     val favoriteIds = favoriteRecipes.map { it.idRecipe }.toSet()
 
-    val filteredRecipes = if (showOnlyFavorites) {
-        displayRecipes.filter { it.id in favoriteIds }
-    } else {
-        displayRecipes
+    val filteredRecipes = when {
+        showOnlyFavorites -> {
+            displayRecipes.filter { it.id in favoriteIds }
+        }
+        showCategories -> {
+            displayRecipes.filter {
+                it.category.contains(selectedCategory)
+            }
+        }
+        else -> {
+            displayRecipes
+        }
     }
     // Agrupar por categoria y solo mostrar las que tienen al menos una receta
     val recipesByCategory = filteredRecipes.groupBy {
@@ -103,10 +113,25 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                 )
                 Row(
                     modifier = Modifier.padding(start=20.dp)){
-                    selectionBar("Filters",  showOnlyFavorites,
-                        {
-                        showOnlyFavorites = !showOnlyFavorites
-                    })
+                    selectionBar(
+                        "Filters",
+                        showOnlyFavorites,
+
+                        onFavoriteClick = {
+                            showOnlyFavorites = !showOnlyFavorites
+                            showCategories = false
+                        },
+                            onCategorySelection = { category->
+                                if (category == null) {
+                                    selectedCategory = ""
+                                    showCategories = false
+                                } else {
+                                    selectedCategory = category
+                                    showCategories = true
+                                    showOnlyFavorites = false
+                                }
+                            }
+                    )
                 }
 
                 if (activeCategories.isEmpty()) {
@@ -120,7 +145,6 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                         modifier = Modifier.padding(top = 15.dp)
                     ) {
                         item {
-                            Spacer(modifier = Modifier.padding(15.dp))
                             Text(
                                 text = "All categories",
                                 fontSize = 30.sp,
@@ -128,6 +152,8 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                                 color = MaterialTheme.colorScheme.tertiary,
                                 modifier = Modifier.padding(start = 20.dp)
                             )
+                            Spacer(modifier = Modifier.padding(15.dp))
+
                         }
                         items(activeCategories) { category ->
                             val recipesInCategory = recipesByCategory[category] ?: emptyList()
