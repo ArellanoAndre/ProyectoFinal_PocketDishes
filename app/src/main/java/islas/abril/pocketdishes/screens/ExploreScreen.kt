@@ -21,7 +21,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,16 +48,25 @@ import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController) {
 
     val context = LocalContext.current
+    var showOnlyFavorites by remember { mutableStateOf(false) }
 
     // Recetas publicas desde la BD
     val publicRecipesEntities by viewModel.publicRecipes.collectAsState()
     val displayRecipes = remember(publicRecipesEntities) {
         publicRecipesEntities.map { it.toRecipe(context) }
     }
+    //favoritas
+    val favoriteRecipes by viewModel.favoriteRecipes.collectAsState()
+    val favoriteIds = favoriteRecipes.map { it.idRecipe }.toSet()
 
+    val filteredRecipes = if (showOnlyFavorites) {
+        displayRecipes.filter { it.id in favoriteIds }
+    } else {
+        displayRecipes
+    }
     // Agrupar por categoria y solo mostrar las que tienen al menos una receta
-    val recipesByCategory = remember(displayRecipes) {
-        displayRecipes.groupBy { it.category.firstOrNull() ?: "" }
+    val recipesByCategory = filteredRecipes.groupBy {
+        it.category.firstOrNull() ?: ""
     }
     val activeCategories = remember(recipesByCategory) {
         recipeCategories.filter { category -> recipesByCategory.containsKey(category) }
@@ -92,7 +103,9 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                 )
                 Row(
                     modifier = Modifier.padding(start=20.dp)){
-                    selectionBar("Filters", {
+                    selectionBar("Filters",  showOnlyFavorites,
+                        {
+                        showOnlyFavorites = !showOnlyFavorites
                     })
                 }
 
@@ -136,17 +149,17 @@ fun ExploreScreen(viewModel: PocketDishesViewModel, navController: NavController
                                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                                     ) {
                                         items(recipesInCategory) { recipe ->
-                                            RecipePreviewCard(
-                                                recipe, navController,
-                                                onFavoriteClick = {
-                                                    viewModel.updateFavorite(
-                                                        recipeId = recipe.id,
-                                                        isFavorite = !recipe.isFavorite
-                                                    )
-                                                }
-                                            )
-
-                                        }
+                                                RecipePreviewCard(
+                                                    recipe = recipe,
+                                                    navController = navController,
+                                                    isFavorite = recipe.id in favoriteIds,
+                                                    onFavoriteClick = {
+                                                        viewModel.updateFavorite(
+                                                            recipeId = recipe.id
+                                                        )
+                                                    }
+                                                )
+                                            }
                                     }
 
                                 }

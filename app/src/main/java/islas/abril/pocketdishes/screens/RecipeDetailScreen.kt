@@ -66,6 +66,10 @@ fun RecipeDetailScreen(
     // para la funcionalidad de los tabs entre ingredientes y instrucciones
     var selectedTab by remember { mutableStateOf(0) }
 
+    // favoritas
+    val favoriteRecipes by viewModel.favoriteRecipes.collectAsState()
+    val favoriteIds = favoriteRecipes.map { it.idRecipe }.toSet()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -80,8 +84,13 @@ fun RecipeDetailScreen(
             RecipeHeader(
                 recipe = recipe,
                 onBackClick = onBackClick,
-                authorName = activeRecipeAuthorName.ifEmpty { recipe.author }
-            )
+                authorName = activeRecipeAuthorName.ifEmpty { recipe.author },
+                isFavorite=recipe.id in favoriteIds,
+                onFavoriteClick = {
+                    viewModel.updateFavorite(recipe.id)
+                }
+
+                )
 
             Spacer(modifier = Modifier.height(5.dp))
 

@@ -5,11 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import islas.abril.pocketdishes.data.room.dao.FavoriteRecipeDao
 import islas.abril.pocketdishes.data.room.dao.IngredientDao
 import islas.abril.pocketdishes.data.room.dao.IngredientRecipeDao
 import islas.abril.pocketdishes.data.room.dao.RecipeDao
 import islas.abril.pocketdishes.data.room.dao.RecipeStepDao
 import islas.abril.pocketdishes.data.room.dao.UserDao
+import islas.abril.pocketdishes.data.room.entities.FavoriteRecipeEntity
 import islas.abril.pocketdishes.data.room.entities.IngredientEntity
 import islas.abril.pocketdishes.data.room.entities.IngredientRecipeEntity
 import islas.abril.pocketdishes.data.room.entities.RecipeEntity
@@ -22,7 +24,8 @@ import islas.abril.pocketdishes.data.room.entities.UserEntity
         RecipeEntity::class,
         IngredientEntity::class,
         IngredientRecipeEntity::class,
-        RecipeStepEntity::class
+        RecipeStepEntity::class,
+        FavoriteRecipeEntity::class
     ],
     version = 2,
     exportSchema = false
@@ -37,6 +40,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun ingredientDao(): IngredientDao
     abstract fun ingredientRecipeDao(): IngredientRecipeDao
     abstract fun recipeStepDao(): RecipeStepDao
+    abstract fun favoriteRecipe(): FavoriteRecipeDao
 
     companion object {
         @Volatile

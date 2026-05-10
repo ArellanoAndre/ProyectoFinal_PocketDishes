@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import islas.abril.pocketdishes.R
 
 @Composable
-fun selectionBar(text:String, onFavoriteClick: () -> Unit) {
+fun selectionBar(text:String, showOnlyFavorites: Boolean, onFavoriteClick: () -> Unit) {
     Row(
         modifier = Modifier.padding(top = 5.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -33,7 +33,13 @@ fun selectionBar(text:String, onFavoriteClick: () -> Unit) {
             )
 
             Icon(
-                painter = painterResource(id = R.drawable.favorite_24px),
+                painter = painterResource(
+                    id =
+                        if (showOnlyFavorites)
+                            R.drawable.favoritefilled_24
+                        else
+                            R.drawable.favorite_24px
+                ),
                 contentDescription = "heart",
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier

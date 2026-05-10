@@ -1,11 +1,11 @@
 package islas.abril.pocketdishes.data.room
 
+import islas.abril.pocketdishes.data.room.entities.FavoriteRecipeEntity
 import islas.abril.pocketdishes.data.room.entities.IngredientEntity
 import islas.abril.pocketdishes.data.room.entities.IngredientRecipeEntity
 import islas.abril.pocketdishes.data.room.entities.RecipeEntity
 import islas.abril.pocketdishes.data.room.entities.RecipeStepEntity
 import islas.abril.pocketdishes.data.room.entities.UserEntity
-import islas.abril.pocketdishes.data.room.IngredientWithAmount
 
 class PocketDishesRepository(database: AppDatabase) {
 
@@ -14,6 +14,7 @@ class PocketDishesRepository(database: AppDatabase) {
     private val ingredientDao = database.ingredientDao()
     private val ingredientRecipeDao = database.ingredientRecipeDao()
     private val recipeStepDao = database.recipeStepDao()
+    private val favoriteRecipesDao = database.favoriteRecipe()
 
     // ─── Usuarios ────────────────────────────────────────────────────────────
 
@@ -58,14 +59,27 @@ class PocketDishesRepository(database: AppDatabase) {
 
     fun getRecipesByAuthor(userId: Int) = recipeDao.getRecipesByAuthor(userId)
 
-    fun getFavoriteRecipes(userId: Int) = recipeDao.getFavoriteRecipes(userId)
-
     fun getSecretRecipes(userId: Int) = recipeDao.getSecretRecipes(userId)
 
     fun searchRecipes(query: String) = recipeDao.searchRecipes(query)
 
-    suspend fun updateFavorite(id: Int, isFavorite: Boolean) =
-        recipeDao.updateFavorite(id, isFavorite)
+    suspend fun updateFavorite(userId: Int, recipeId: Int) {
+        if (
+            favoriteRecipesDao.isFavorite(userId, recipeId)
+        ) {
+            favoriteRecipesDao.removeFavorite(userId, recipeId
+            )
+        } else {
+            favoriteRecipesDao.insertFavoriteRecipe(
+                FavoriteRecipeEntity(
+                    idRecipe = recipeId,
+                    idUser = userId
+                )
+            )
+        }
+    }
+    fun getFavoriteRecipes(userId: Int) =
+        favoriteRecipesDao.getFavoriteRecipes(userId)
 
     // ─── Ingredientes ─────────────────────────────────────────────────────────
 

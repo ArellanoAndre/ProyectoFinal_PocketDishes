@@ -30,6 +30,7 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
     // ── Usuario actual ────────────────────────────────────────────────────────
 
     private val _currentUser = MutableStateFlow<UserEntity?>(null)
+
     val currentUser: StateFlow<UserEntity?> = _currentUser.asStateFlow()
 
     private val _loginError = MutableStateFlow<String?>(null)
@@ -48,6 +49,8 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
 
     private val _favoriteRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
     val favoriteRecipes: StateFlow<List<RecipeEntity>> = _favoriteRecipes.asStateFlow()
+
+    val isFavorite = MutableStateFlow<Set<Int>>(emptySet())
 
     private val _secretRecipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
     val secretRecipes: StateFlow<List<RecipeEntity>> = _secretRecipes.asStateFlow()
@@ -259,9 +262,10 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
         }
     }
 
-    fun updateFavorite(recipeId: Int, isFavorite: Boolean) {
+    fun updateFavorite(recipeId: Int) {
         viewModelScope.launch {
-            repository.updateFavorite(recipeId, isFavorite)
+            val userId = _currentUser.value?.idUser ?: return@launch
+            repository.updateFavorite(userId, recipeId)
         }
     }
 

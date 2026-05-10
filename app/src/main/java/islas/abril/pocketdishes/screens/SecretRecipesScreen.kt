@@ -20,6 +20,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +37,7 @@ import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
 import islas.abril.pocketdishes.components.favouriteRecipeCard
 import islas.abril.pocketdishes.components.headerV2
+import islas.abril.pocketdishes.data.room.toRecipe
 import islas.abril.pocketdishes.ui.theme.backgroundDarkTheme
 import islas.abril.pocketdishes.ui.theme.brightIndigo
 import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
@@ -41,6 +45,12 @@ import returnRecipes
 
 @Composable
 fun SecretRecipeScreen(navController: NavController,  viewModel: PocketDishesViewModel,){
+    var showFavorites by remember { mutableStateOf(false) }
+    val secretRecipes by viewModel.secretRecipes.collectAsState()
+    val context = LocalContext.current
+    // Convierte la lista de RecipeEntity a Recipe para reusar los componentes existentes
+    val secretRecipesDisplay = secretRecipes.map { it.toRecipe(context) }
+
     androidx.compose.material3.Scaffold(
         topBar = {
             headerV2(navController)
@@ -49,7 +59,7 @@ fun SecretRecipeScreen(navController: NavController,  viewModel: PocketDishesVie
             // LO PUSE ADENTRO DE UN BOX CON NAVIGATION BARS PADDING PARA QUE NO CHOQUE CON EL MENU DEL TELEFONO
             Box(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.onSecondaryContainer)
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
                     .fillMaxWidth()
             ) {
                 Box(modifier = Modifier.navigationBarsPadding()) {
@@ -120,9 +130,8 @@ fun SecretRecipeScreen(navController: NavController,  viewModel: PocketDishesVie
                         ),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        val recipes = returnRecipes()
 
-                        items(recipes) { recipe ->
+                        items(secretRecipesDisplay) { recipe ->
                             favouriteRecipeCard(
                                 recipe = recipe,
                                 brightIndigo,

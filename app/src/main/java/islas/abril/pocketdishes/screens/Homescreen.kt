@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.components.BottomNavigationMenu
@@ -51,6 +49,7 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
     var showFavorites by remember { mutableStateOf(false) }
     val userRecipes by viewModel.userRecipes.collectAsState()
     val favoriteRecipes by viewModel.favoriteRecipes.collectAsState()
+
     val context = LocalContext.current
     // Convierte la lista de RecipeEntity a Recipe para reusar los componentes existentes
     val displayRecipes = if (showFavorites) {
@@ -131,6 +130,7 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
 
                 selectionBar(
                     "My recipes",
+                    showFavorites,
                     onFavoriteClick = {
                         showFavorites = !showFavorites
                     }

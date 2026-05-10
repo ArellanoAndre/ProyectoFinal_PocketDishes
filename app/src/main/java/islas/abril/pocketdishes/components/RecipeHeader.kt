@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.viewmodel.compose.viewModel
 import islas.abril.pocketdishes.R
 import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
@@ -42,18 +45,22 @@ import kotlin.math.roundToInt
 
 
 //PREVIEW TEMPORAL CON DATOS MOCK
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    RecipeHeader(returnRandomRecipe(), onBackClick = { })
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun Preview() {
+//    RecipeHeader(returnRandomRecipe(), onBackClick = { })
+//}
 
 @Composable
 fun RecipeHeader(
     recipe: Recipe,
     onBackClick: () -> Unit,
-    authorName: String = recipe.author   // nombre real del autor (override del mapper)
-) {
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit,
+    authorName: String = recipe.author
+){
+
+
     //tamaño del header
     Box(
         modifier = Modifier
@@ -119,10 +126,20 @@ fun RecipeHeader(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.favorite_24px),
+                    painter = painterResource(
+                        id =
+                            if (isFavorite)
+                                R.drawable.favoritefilled_24
+                            else
+                                R.drawable.favorite_24px
+                    ),
                     contentDescription = "favorite",
                     tint = secondaryGreen,
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clickable {
+                            onFavoriteClick()
+                        }
                 )
             }
             // Boton tres puntos
@@ -136,7 +153,7 @@ fun RecipeHeader(
                     painter = painterResource(id = R.drawable.more_vert_24px),
                     contentDescription = "more",
                     tint = secondaryGreen,
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
         }

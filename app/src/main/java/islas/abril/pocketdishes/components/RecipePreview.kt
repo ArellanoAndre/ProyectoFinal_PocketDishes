@@ -34,7 +34,8 @@ import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import returnRandomRecipe
 
 @Composable
-fun RecipePreviewCard(recipe: Recipe, navController: NavController, onFavoriteClick: () -> Unit) {
+fun RecipePreviewCard(recipe: Recipe, navController: NavController, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
+
     Card(
         elevation = CardDefaults.cardElevation(6.dp),
         shape = RoundedCornerShape(20.dp),
@@ -78,18 +79,19 @@ fun RecipePreviewCard(recipe: Recipe, navController: NavController, onFavoriteCl
                 Row() {
                     Icon(
                         painter = painterResource(
-                            id = if (recipe.isFavorite)
+                            id = if (isFavorite)
                                 R.drawable.favoritefilled_24
                             else
                                 R.drawable.favorite_24px
                         ),
                         contentDescription = "Favorite",
-                        tint = if (recipe.isFavorite)
+                        tint = if (isFavorite)
                             favorite
                         else
-                            secondaryGreen
-                           ,
-                        modifier = Modifier.size(30.dp)
+                            secondaryGreen,
+
+                        modifier = Modifier
+                            .size(30.dp)
                             .clickable {
                                 onFavoriteClick()
                             }
@@ -111,11 +113,11 @@ fun RecipePreviewCard(recipe: Recipe, navController: NavController, onFavoriteCl
     }
 }
 
-@Preview (showBackground = false)
-@Composable
-fun RecipePreview(){
-    val navController = rememberNavController()
-    RecipePreviewCard(
-        returnRandomRecipe(), navController,{}
-    )
-}
+//@Preview (showBackground = false)
+//@Composable
+//fun RecipePreview(){
+//    val navController = rememberNavController()
+//    RecipePreviewCard(
+//        returnRandomRecipe(), navController,{}
+//    )
+//}
