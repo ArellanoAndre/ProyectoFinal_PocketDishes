@@ -53,10 +53,10 @@ fun LoginScreen(
     val currentUser by viewModel.currentUser.collectAsState()
     val loginError by viewModel.loginError.collectAsState()
 
-    // Navegar automaticamente cuando el login es exitoso
-    LaunchedEffect(currentUser) {
-        if (currentUser != null) onLoginSuccess()
-    }
+//    // Navegar automaticamente cuando el login es exitoso
+//    LaunchedEffect(currentUser) {
+//        if (currentUser != null) onLoginSuccess()
+//    }
 
     // background (gradient)
     Box(

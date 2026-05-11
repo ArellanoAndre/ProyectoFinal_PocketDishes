@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +18,7 @@ import islas.abril.pocketdishes.screens.AddRecipeScreen
 import islas.abril.pocketdishes.screens.RegisterScreen
 import islas.abril.pocketdishes.screens.SecretRecipeScreen
 import islas.abril.pocketdishes.screens.homescreen
+import kotlinx.coroutines.launch
 import returnRecipes
 
 @Composable
@@ -25,32 +27,35 @@ fun AppNavigation(
 ) {
     val navController = rememberNavController()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
-    // Lista hardcodeada original (datos mock de prueba)
     val allRecipes = returnRecipes()
 
-    // Recetas publicas de la BD mapeadas para cubrir las recetas del seeder
+   // observamos al el id de usuario
+    val userId by viewModel.loggedUserId.collectAsState()
+
+    if (userId == -2) {
+        return
+    }
+
     val publicRecipesEntities by viewModel.publicRecipes.collectAsState()
     val mappedPublicRecipes = remember(publicRecipesEntities) {
         publicRecipesEntities.map { it.toRecipe(context) }
     }
 
-    // Recetas del usuario logueado (cubre recetas privadas/secretas desde HomeScreen)
     val userRecipesEntities by viewModel.userRecipes.collectAsState()
     val mappedUserRecipes = remember(userRecipesEntities) {
         userRecipesEntities.map { it.toRecipe(context) }
     }
 
-    NavHost(navController = navController, startDestination = "login") {
-        // --- LOGIN ---
+    NavHost(
+        navController = navController,
+        startDestination = if (userId == -1) "login" else "home"
+    ) {
         composable("login") {
             LoginScreen(
                 viewModel = viewModel,
-                onLoginSuccess = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                },
+                onLoginSuccess = { },
                 onNavigateToRegister = { navController.navigate("register") }
             )
         }
@@ -81,7 +86,9 @@ fun AppNavigation(
                 viewModel = viewModel,
                 navController = navController,
                 onLogout = {
-                    viewModel.logout()
+                    scope.launch {
+                        viewModel.logout()
+                    }
                     navController.navigate("login") {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true

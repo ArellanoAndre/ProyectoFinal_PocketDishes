@@ -121,7 +121,7 @@ fun ProfileScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_lock),
                                 contentDescription = "Lock",
-                                tint = white,
+                                tint = MaterialTheme.colorScheme.outline,
                                 modifier = Modifier.size(30.dp)
                             )
                         }
@@ -137,7 +137,7 @@ fun ProfileScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                 contentDescription = "Logout",
-                                tint = white,
+                                tint = MaterialTheme.colorScheme.outline,
                                 modifier = Modifier
                                     .size(30.dp)
                             )
@@ -219,7 +219,7 @@ fun ProfileScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_edit),
                         contentDescription = "Edit info",
-                        tint = white,
+                        tint = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.size(30.dp).clickable { }
                     )
                         }

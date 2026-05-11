@@ -151,7 +151,18 @@ fun SecretRecipeScreen(navController: NavController, viewModel: PocketDishesView
                             favouriteRecipeCard(
                                 recipe = recipe,
                                 brightIndigo,
-                                onCardClick = { navController.navigate("detail/${recipe.name}") }
+                                onCardClick = { navController.navigate("detail/${recipe.name}") },
+                                viewModel = viewModel,
+                                onEdit = {
+                                    navController.navigate("editRecipeScreen/${recipe.name}")
+                                },
+                                onDelete = {
+                                    viewModel.deleteRecipe(recipe)
+                                    navController.popBackStack()
+                                },
+                                onShare = {
+                                    //nose
+                                }
                             )
                         }
                         item {

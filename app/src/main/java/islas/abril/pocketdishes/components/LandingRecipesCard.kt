@@ -53,16 +53,23 @@ import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 import returnRandomRecipe
 
 @Composable
-fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit) {
+fun favouriteRecipeCard(recipe: Recipe,
+                        cardColor:Color,onCardClick: () -> Unit,
+                        onEdit: () -> Unit = {},
+                        onDelete: () -> Unit = {},
+                        onShare: () -> Unit = {},
+                        viewModel: PocketDishesViewModel
+                        )
+{
 
     var fontColor = typoColorBrown
     var subtitleColor = typoColorLightBrown
     var borderColor = mainOrange
 
-    if (cardColor.equals(brightIndigo)) {
-        fontColor = backgroundDarkTheme
-        subtitleColor = tertiaryIndigoDT
-        borderColor = tertiaryIndigoDT
+    if(cardColor.equals(brightIndigo)){
+         fontColor = backgroundDarkTheme
+         subtitleColor = tertiaryIndigoDT
+         borderColor = tertiaryIndigoDT
     }
     Card(
         elevation = CardDefaults.cardElevation(7.dp),
@@ -70,10 +77,10 @@ fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit)
         colors = CardDefaults.cardColors(
             containerColor = cardColor,
 
-            ),
+        ),
         modifier = Modifier
             .fillMaxWidth()
-            .size(402.dp, 105.dp)
+            .size(402.dp,105.dp)
             .clickable { onCardClick() },
     )
     {
@@ -124,6 +131,16 @@ fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit)
                 )
                 recipeTags((recipe.tags))
             }
+            moreButton(
+                onEdit = {},
+                onDelete = {},
+                onShare = {},
+                recipe = recipe,
+                viewModel = viewModel,
+                size = 20,
+                color = typoColorBrown
+
+            )
         }
     }
 }

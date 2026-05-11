@@ -204,7 +204,17 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                                 cardColor = backgroundOrange,
                                 onCardClick = {
                                     navController.navigate("detail/${recipe.name}")
-                                }
+                                },
+                                viewModel = viewModel,
+
+                                onEdit = {
+                                    navController.navigate("editRecipeScreen/${recipe.name}")
+                                },
+                                onDelete = {
+                                    viewModel.deleteRecipe(recipe)
+                                    navController.popBackStack()
+                                },
+                                onShare = {}
                             )
                         }
                     }

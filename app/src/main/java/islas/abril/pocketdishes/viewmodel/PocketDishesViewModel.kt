@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import islas.abril.pocketdishes.data.Recipe
+import islas.abril.pocketdishes.data.datastore.UserPreferences
 import islas.abril.pocketdishes.data.room.IngredientWithAmount
 import islas.abril.pocketdishes.data.room.PocketDishesRepository
 import islas.abril.pocketdishes.data.room.entities.IngredientEntity
@@ -17,18 +18,33 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class PocketDishesViewModel(private val repository: PocketDishesRepository) : ViewModel() {
+class PocketDishesViewModel(private val repository: PocketDishesRepository, private val userPrefs: UserPreferences) : ViewModel() {
 
     init {
         viewModelScope.launch {
             insertarDatosMock()
             insertarPublicRecipes()
+
+            //--- inicio de sesion activo con el datastore
+            userPrefs.getUserId.collectLatest { id ->
+                if (id != -1) {
+                    val user = repository.getUserById(id)
+                    _currentUser.value = user
+                    if (user != null) loadUserData(user.idUser)
+                } else {
+                    logout()
+                }
+            }
         }
     }
 
+    //logica para el login (se inicia al usuario con un -2)
+    val loggedUserId: StateFlow<Int> = userPrefs.getUserId
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), -2)
     // ── Usuario actual ────────────────────────────────────────────────────────
 
     private val _currentUser = MutableStateFlow<UserEntity?>(null)
@@ -82,9 +98,9 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
         viewModelScope.launch {
             val user = repository.login(email, password)
             if (user != null) {
-                _currentUser.value = user
+                userPrefs.saveUserId(user.idUser)
+                userPrefs.saveUsername(user.name)
                 _loginError.value = null
-                loadUserData(user.idUser)
             } else {
                 _loginError.value = "Email o contraseña incorrectos"
             }
@@ -111,7 +127,8 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
         }
     }
 
-    fun logout() {
+    suspend fun logout() {
+        userPrefs.clearUserData()
         _currentUser.value = null
         _userRecipes.value = emptyList()
         _favoriteRecipes.value = emptyList()
@@ -557,11 +574,11 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
     // Factory
 
     companion object {
-        fun factory(repository: PocketDishesRepository): ViewModelProvider.Factory {
+        fun factory(repository: PocketDishesRepository, userPreferences: UserPreferences): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PocketDishesViewModel(repository) as T
+                    return PocketDishesViewModel(repository, userPreferences) as T
                 }
             }
         }
