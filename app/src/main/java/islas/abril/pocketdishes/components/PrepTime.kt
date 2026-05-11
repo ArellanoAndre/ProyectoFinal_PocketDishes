@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import islas.abril.pocketdishes.ui.theme.darkGray
 import islas.abril.pocketdishes.ui.theme.darkerGrey
+import islas.abril.pocketdishes.ui.theme.mainOrange
 
 @Composable
 fun PrepTime(time: Int) {
@@ -22,7 +23,7 @@ fun PrepTime(time: Int) {
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Prep time", fontSize = 20.sp,  color = darkerGrey)
+        Text("Prep time", fontSize = 25.sp,  color = mainOrange, fontWeight = FontWeight.Bold)
         Text("${time} minutes...", fontWeight = FontWeight.Bold, color = darkGray)
     }
 }

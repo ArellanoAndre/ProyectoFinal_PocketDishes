@@ -16,10 +16,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,20 +49,20 @@ import islas.abril.pocketdishes.ui.theme.secondaryGreen
 import islas.abril.pocketdishes.ui.theme.tertiaryIndigoDT
 import islas.abril.pocketdishes.ui.theme.typoColorBrown
 import islas.abril.pocketdishes.ui.theme.typoColorLightBrown
+import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 import returnRandomRecipe
 
 @Composable
-fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit){
+fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit) {
 
     var fontColor = typoColorBrown
     var subtitleColor = typoColorLightBrown
     var borderColor = mainOrange
 
-
-    if(cardColor.equals(brightIndigo)){
-         fontColor = backgroundDarkTheme
-         subtitleColor = tertiaryIndigoDT
-         borderColor = tertiaryIndigoDT
+    if (cardColor.equals(brightIndigo)) {
+        fontColor = backgroundDarkTheme
+        subtitleColor = tertiaryIndigoDT
+        borderColor = tertiaryIndigoDT
     }
     Card(
         elevation = CardDefaults.cardElevation(7.dp),
@@ -64,52 +70,53 @@ fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit)
         colors = CardDefaults.cardColors(
             containerColor = cardColor,
 
-        ),
+            ),
         modifier = Modifier
             .fillMaxWidth()
-            .size(402.dp,105.dp)
+            .size(402.dp, 105.dp)
             .clickable { onCardClick() },
     )
     {
-        Row( modifier = Modifier.padding(top=15.dp,start=15.dp, bottom=2.dp, end=15.dp)
-            .fillMaxSize(),
-        ){
+        Row(
+            modifier = Modifier.padding(top = 15.dp, start = 15.dp, bottom = 2.dp, end = 15.dp)
+                .fillMaxSize(),
+        ) {
 
             if (recipe.imageUri.isNotEmpty()) {
                 AsyncImage(
-                    model              = recipe.imageUri,
+                    model = recipe.imageUri,
                     contentDescription = recipe.name,
-                    modifier           = Modifier
+                    modifier = Modifier
                         .size(70.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .border(3.dp, color = borderColor, shape = RoundedCornerShape(12.dp)),
-                    contentScale       = ContentScale.Crop
+                    contentScale = ContentScale.Crop
                 )
             } else {
                 Image(
-                    painter            = painterResource(recipe.image),
+                    painter = painterResource(recipe.image),
                     contentDescription = recipe.name,
-                    modifier           = Modifier
+                    modifier = Modifier
                         .size(70.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .border(3.dp, color = borderColor, shape = RoundedCornerShape(12.dp)),
-                    contentScale       = ContentScale.Crop
+                    contentScale = ContentScale.Crop
                 )
             }
-            Spacer(modifier= Modifier.size(16.dp))
+            Spacer(modifier = Modifier.size(16.dp))
             Column(
                 modifier = Modifier.weight(1f)
 
-            ){
+            ) {
                 Text(
-                    text=recipe.name,
+                    text = recipe.name,
                     color = fontColor,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 2.dp)
                 )
                 Text(
-                    text= recipe.category.random(),
+                    text = recipe.category.random(),
                     color = subtitleColor,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
@@ -117,28 +124,19 @@ fun favouriteRecipeCard(recipe: Recipe, cardColor:Color,onCardClick: () -> Unit)
                 )
                 recipeTags((recipe.tags))
             }
-            Icon(
-                painter = painterResource(id = R.drawable.more_vert_24px),
-                contentDescription = "more",
-                tint = typoColorBrown,
-                modifier = Modifier.size(25.dp)
-                .clickable { /* navigate */ }
-            )
         }
-
-    }
-
-}
-
-@Preview (showBackground = false)
-@Composable
-fun previewCard(){
-    PocketDishesTheme {
-        favouriteRecipeCard(
-            recipe = returnRandomRecipe(),
-            backgroundOrange,
-            onCardClick = {}
-        )
-
     }
 }
+
+//@Preview (showBackground = false)
+//@Composable
+//fun previewCard(){
+//    PocketDishesTheme {
+//        favouriteRecipeCard(
+//            recipe = returnRandomRecipe(),
+//            backgroundOrange,
+//            onCardClick = {}
+//        )
+//
+//    }
+//}

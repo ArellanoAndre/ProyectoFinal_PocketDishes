@@ -3,6 +3,7 @@ package islas.abril.pocketdishes.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.data.room.IngredientWithAmount
 import islas.abril.pocketdishes.data.room.PocketDishesRepository
 import islas.abril.pocketdishes.data.room.entities.IngredientEntity
@@ -11,6 +12,7 @@ import islas.abril.pocketdishes.data.room.entities.RecipeEntity
 import islas.abril.pocketdishes.data.room.entities.RecipeStepEntity
 import islas.abril.pocketdishes.data.room.entities.UserEntity
 import islas.abril.pocketdishes.data.enums.Units
+import islas.abril.pocketdishes.data.room.toEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -275,9 +277,17 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository) : Vi
         }
     }
 
-    fun deleteRecipe(recipe: RecipeEntity) {
+    //Funciones para actualizar / borrar receta
+    fun deleteRecipe(recipe: Recipe) {
         viewModelScope.launch {
-            repository.deleteRecipe(recipe)
+            val currentAuthorId = currentUser.value?.idUser ?: 0
+            repository.deleteRecipe(recipe.toEntity(currentAuthorId))
+        }
+    }
+    fun updateRecipe(recipe: Recipe) {
+        viewModelScope.launch {
+            val currentAuthorId = currentUser.value?.idUser ?: 0
+            repository.updateRecipe(recipe.toEntity(currentAuthorId))
         }
     }
 

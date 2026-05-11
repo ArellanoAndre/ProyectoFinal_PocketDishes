@@ -51,3 +51,22 @@ fun IngredientWithAmount.toIngredients(context: Context): Ingredients {
         unit = unit
     )
 }
+
+// Convierte el modelo de UI (Recipe) de vuelta a RecipeEntity (Room)
+fun Recipe.toEntity(authorId: Int): RecipeEntity {
+    return RecipeEntity(
+        idRecipe = this.id,
+        name = this.name,
+        description = this.description,
+        author = authorId,
+        source = this.source,
+        image = this.imageUri.ifEmpty { "" },
+        tags = this.tags.map { it.name },
+        category = this.category.firstOrNull() ?: "General",
+        isSecret = this.secretRecipe,
+        isPublic = true,
+        isFavorite = this.isFavorite,
+        rating = this.rating,
+        prepTime = this.prepTime
+    )
+}

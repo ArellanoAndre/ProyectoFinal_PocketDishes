@@ -18,11 +18,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -41,6 +46,7 @@ import islas.abril.pocketdishes.data.Recipe
 import islas.abril.pocketdishes.ui.theme.backgroundOrange
 import islas.abril.pocketdishes.ui.theme.darkGray
 import islas.abril.pocketdishes.ui.theme.secondaryGreen
+import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
 import returnRandomRecipe
 import kotlin.math.roundToInt
 
@@ -58,10 +64,15 @@ fun RecipeHeader(
     onBackClick: () -> Unit,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
-    authorName: String = recipe.author
-){
+    authorName: String = recipe.author,
+    viewModel: PocketDishesViewModel,
+    onEdit: () -> Unit = {},
+    onDelete: () -> Unit = {},
+    onShare: () -> Unit = {},
+) {
 
-
+    //para ver el usuario actual
+    val currentUser by viewModel.currentUser.collectAsState()
     //tamaño del header
     Box(
         modifier = Modifier
@@ -73,18 +84,18 @@ fun RecipeHeader(
         if (recipe.imageUri.isNotEmpty()) {
             // imagen seleccionada de galería (URI persistente)
             AsyncImage(
-                model              = recipe.imageUri,
+                model = recipe.imageUri,
                 contentDescription = null,
-                contentScale       = ContentScale.Crop,
-                modifier           = Modifier.fillMaxSize()
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
         } else {
             // imagen drawable del proyecto
             Image(
-                painter            = painterResource(recipe.image),
+                painter = painterResource(recipe.image),
                 contentDescription = null,
-                contentScale       = ContentScale.Crop,
-                modifier           = Modifier.fillMaxSize()
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
         }
 
@@ -111,7 +122,7 @@ fun RecipeHeader(
                 .align(Alignment.TopStart),
             contentAlignment = Alignment.Center,
 
-        ) {
+            ) {
             //flecha
             Icon(
                 painter = painterResource(id = R.drawable.return_arrow),
@@ -137,131 +148,131 @@ fun RecipeHeader(
                     .clickable { /* navigate */ },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    painter = painterResource(
-                        id =
-                            if (isFavorite)
-                                R.drawable.favoritefilled_24
-                            else
-                                R.drawable.favorite_24px
-                    ),
-                    contentDescription = "favorite",
-                    tint = secondaryGreen,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable {
-                            onFavoriteClick()
-                        }
-                )
-            }
-            // Boton tres puntos
-            Box(
-                modifier = Modifier
-                    .size(42.dp)
-                    .clickable { /* navigate */ },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.more_vert_24px),
-                    contentDescription = "more",
-                    tint = secondaryGreen,
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-        }
-
-        // Titulo, autor, y rating
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // TITULO
-                Text(
-                    text = recipe.name,
-                    color = Color.White,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false)
-                )
-                //espacio para rating
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    //rating (texto)
-                    Text(
-                        text = recipe.rating.toString(),
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                    //icono estrella rellena
-                    Icon(
-                        painter = painterResource(id = R.drawable.star_filled),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(22.dp)
-                    )
+                currentUser?.let { user ->
+                    if (authorName != user.name) {
+                        Icon(
+                            painter = painterResource(
+                                id =
+                                    if (isFavorite)
+                                        R.drawable.favoritefilled_24
+                                    else
+                                        R.drawable.favorite_24px
+                            ),
+                            contentDescription = "favorite",
+                            tint = secondaryGreen,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clickable {
+                                    onFavoriteClick()
+                                }
+                        )
+                    }
                 }
             }
-            // AUTOR
-            Text(
-                "By $authorName",
-                color = Color.White.copy(0.8f) // para transparentar un poco el texto
+            moreButton(
+                onEdit = onEdit,
+                onDelete = onDelete,
+                onShare = onShare,
+                recipe = recipe,
+                authorName = authorName,
+                viewModel = viewModel,
+                color = secondaryGreen,
+                size = 32
             )
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                // Titulo, autor, y rating
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // TITULO
+                        Text(
+                            text = recipe.name,
+                            color = Color.White,
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        //espacio para rating
+                        Spacer(modifier = Modifier.width(12.dp))
 
-            // TAGS
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                recipeTags(recipe.tags)
-            }
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            // maximo de estrellas
-            val maxStars = 5
-            // numero de estrellas a llenar (segun el rating usando coerce in para verificar que este entre 0 y 5)
-            val filledStars = recipe.rating.coerceIn(0f, 5f).roundToInt()
-            // numero de estrellas vacias (se resta el numero de estrellas llenas al maximo de estrellas)
-            val emptyStars = maxStars - filledStars
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(
-                    -5.dp,
-                    Alignment.End
-                )
-            ) {
-                //estrellas llenas
-                repeat(filledStars) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.star_filled),
-                        contentDescription = null,
-                        tint = Color(0xFFFFA000),
-                        modifier = Modifier.size(28.dp)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            //rating (texto)
+                            Text(
+                                text = recipe.rating.toString(),
+                                color = Color.White,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            //icono estrella rellena
+                            Icon(
+                                painter = painterResource(id = R.drawable.star_filled),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    }
+                    // AUTOR
+                    Text(
+                        "By $authorName",
+                        color = Color.White.copy(0.8f) // para transparentar un poco el texto
                     )
-                }
 
-                //estrellas vacías
-                repeat(emptyStars) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.star_outlined),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // TAGS
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        recipeTags(recipe.tags)
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    // maximo de estrellas
+                    val maxStars = 5
+                    // numero de estrellas a llenar (segun el rating usando coerce in para verificar que este entre 0 y 5)
+                    val filledStars = recipe.rating.coerceIn(0f, 5f).roundToInt()
+                    // numero de estrellas vacias (se resta el numero de estrellas llenas al maximo de estrellas)
+                    val emptyStars = maxStars - filledStars
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            -5.dp,
+                            Alignment.End
+                        )
+                    ) {
+                        //estrellas llenas
+                        repeat(filledStars) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.star_filled),
+                                contentDescription = null,
+                                tint = Color(0xFFFFA000),
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+
+                        //estrellas vacías
+                        repeat(emptyStars) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.star_outlined),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
-}

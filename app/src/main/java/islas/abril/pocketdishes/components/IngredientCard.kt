@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,7 +42,7 @@ fun IngredientCard(
             .padding(horizontal = 2.dp, vertical = 4.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = lightIndigo
+            containerColor = MaterialTheme.colorScheme.onTertiary
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 7.dp
@@ -79,12 +80,12 @@ fun IngredientCard(
                     text = ingredient.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = tertiaryIndigo
+                    color = MaterialTheme.colorScheme.tertiary
                 )
                 Text(
                     text = "${ingredient.amount} - ${ingredient.unit}",
                     fontSize = 14.sp,
-                    color = Color.DarkGray
+                    color = MaterialTheme.colorScheme.outline
                 )
             }
         }

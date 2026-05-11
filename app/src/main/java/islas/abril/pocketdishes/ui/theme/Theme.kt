@@ -21,17 +21,19 @@ private val LightColorScheme = lightColorScheme(
     outline= darkBrown,
     tertiaryContainer = lightPeach,
     secondaryContainer = LightGreenMenu,
-    onSecondaryContainer = secondaryGreen
+    onSecondaryContainer = secondaryGreen,
+    onTertiary = lightIndigo
 
 )
 private val DarkColorScheme = darkColorScheme(
     primary = mainOrange,
     secondary = secondaryGreenDT,
-    tertiary = tertiaryIndigo,
+    tertiary = lightIndigo,
     background = backgroundDarkTheme,
     outline = lightPeach,
     secondaryContainer = darkGreen,
-    onSecondaryContainer = darkGreenTypo
+    onSecondaryContainer = darkGreenTypo,
+    onTertiary = tertiaryIndigoDT
 )
 
 @Composable

@@ -88,9 +88,20 @@ fun RecipeDetailScreen(
                 isFavorite=recipe.id in favoriteIds,
                 onFavoriteClick = {
                     viewModel.updateFavorite(recipe.id)
-                }
+                },
+                viewModel = viewModel,
 
-                )
+                onEdit = {
+                    navController.navigate("editRecipeScreen/${recipe.name}")
+                },
+                onDelete = {
+                    viewModel.deleteRecipe(recipe)
+                    onBackClick()
+                },
+                onShare = {
+                    //nose
+                }
+            )
 
             Spacer(modifier = Modifier.height(5.dp))
 
