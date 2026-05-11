@@ -9,8 +9,9 @@ import islas.abril.pocketdishes.data.room.AppDatabase
 import islas.abril.pocketdishes.data.room.PocketDishesRepository
 import islas.abril.pocketdishes.ui.theme.PocketDishesTheme
 import islas.abril.pocketdishes.viewmodel.PocketDishesViewModel
+import androidx.fragment.app.FragmentActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private val viewModel: PocketDishesViewModel by viewModels {
         PocketDishesViewModel.factory(

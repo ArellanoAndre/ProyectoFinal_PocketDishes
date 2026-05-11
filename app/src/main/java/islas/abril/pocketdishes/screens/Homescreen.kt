@@ -155,11 +155,13 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                     onFavoriteClick = {
                         showFavorites = !showFavorites
                         showCategories = false
+                        showTagFilter = false
                     },
                     onCategorySelection={   category->
                         if (category == null) {
                             selectedCategory = ""
                             showCategories = false
+                            showFavorites = false
                         } else {
                             selectedCategory = category
                             showCategories = true
