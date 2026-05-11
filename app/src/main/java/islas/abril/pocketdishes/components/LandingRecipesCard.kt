@@ -131,16 +131,16 @@ fun favouriteRecipeCard(recipe: Recipe,
                 )
                 recipeTags((recipe.tags))
             }
-            moreButton(
-                onEdit = {},
-                onDelete = {},
-                onShare = {},
-                recipe = recipe,
-                viewModel = viewModel,
-                size = 20,
-                color = typoColorBrown
-
-            )
+//            moreButton(
+//                onEdit = {},
+//                onDelete = {},
+//                onShare = {},
+//                recipe = recipe,
+//                viewModel = viewModel,
+//                size = 20,
+//                color = typoColorBrown
+//
+//            )
         }
     }
 }

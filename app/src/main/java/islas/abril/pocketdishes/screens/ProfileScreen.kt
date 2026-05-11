@@ -121,7 +121,7 @@ fun ProfileScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_lock),
                                 contentDescription = "Lock",
-                                tint = MaterialTheme.colorScheme.outline,
+                                tint = MaterialTheme.colorScheme.background,
                                 modifier = Modifier.size(30.dp)
                             )
                         }
@@ -137,7 +137,7 @@ fun ProfileScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                 contentDescription = "Logout",
-                                tint = MaterialTheme.colorScheme.outline,
+                                tint = MaterialTheme.colorScheme.background,
                                 modifier = Modifier
                                     .size(30.dp)
                             )
@@ -191,10 +191,6 @@ fun ProfileScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Box(modifier = Modifier.weight(1.5f)) {
-                        ReadOnlyProfileField(label = "Name", value = "Jorge")
-                        ReadOnlyProfileField(label = "Name", value = currentUser?.name ?: "")
-                    }
                     Box(modifier = Modifier.weight(1f)) {
                         ReadOnlyProfileField(
                             label = "Birth date",
@@ -205,6 +201,10 @@ fun ProfileScreen(
                                 }
                             }
                         )
+                    }
+                    Box(modifier = Modifier.weight(1f)) {
+                        ReadOnlyProfileField(label = "Name", value = "Jorge")
+                        ReadOnlyProfileField(label = "Name", value = currentUser?.name ?: "")
                     }
                     Box(
                         modifier = Modifier
@@ -219,7 +219,7 @@ fun ProfileScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_edit),
                         contentDescription = "Edit info",
-                        tint = MaterialTheme.colorScheme.outline,
+                        tint = MaterialTheme.colorScheme.background,
                         modifier = Modifier.size(30.dp).clickable { }
                     )
                         }

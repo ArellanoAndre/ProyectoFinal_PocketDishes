@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -159,11 +158,13 @@ fun NavigationItem(
 }
 
 private fun navigateTo(navController: NavController, route: String) {
+    if (navController.currentDestination?.route == route) return
+
     navController.navigate(route) {
-        // Evita multiples copias de la misma pantalla
         launchSingleTop = true
-        restoreState = true
-        popUpTo(navController.graph.findStartDestination().id) {
+        restoreState = (route != "home")
+
+        popUpTo("home") {
             saveState = true
         }
     }

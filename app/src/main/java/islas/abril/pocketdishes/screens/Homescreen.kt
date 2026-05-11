@@ -111,30 +111,42 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Row(
-                    modifier = Modifier
-                        .padding(start = 0.dp, top = 15.dp, end = 10.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.sushi),
-                        contentDescription = "imagen01",
+                Box(
+                    modifier = Modifier.clickable {
+                        navController.navigate("explore") {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo("home") { saveState = true }
+                        }
+                    }
+                )
+                {
+                    Row(
                         modifier = Modifier
-                            .size(260.dp, 180.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.FillWidth,
-                    )
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Spacer(modifier = Modifier.weight(1f))
+                            .padding(start = 0.dp, top = 15.dp, end = 10.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.sushi),
+                            contentDescription = "imagen01",
+                            modifier = Modifier
+                                .size(260.dp, 180.dp)
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.FillWidth,
+                        )
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        Spacer(modifier = Modifier.weight(1f))
 
-                    Image(
-                        painter = painterResource(id = R.drawable.macarons),
-                        contentDescription = "imagen01",
-                        modifier = Modifier
-                            .size(130.dp, 180.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.FillHeight,
-                    )
+                        Image(
+                            painter = painterResource(id = R.drawable.macarons),
+                            contentDescription = "imagen01",
+                            modifier = Modifier
+                                .size(130.dp, 180.dp)
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.FillHeight,
+                        )
+                    }
                 }
+
                 Row(
                     Modifier.padding(top = 7.dp, end = 15.dp)
                 ) {
@@ -144,8 +156,13 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                         color = MaterialTheme.colorScheme.outline,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
-                        modifier = Modifier
-                        .clickable{ navController.navigate("explore") }
+                        modifier = Modifier.clickable {
+                            navController.navigate("explore") {
+                                launchSingleTop = true
+                                restoreState = true
+                                popUpTo("home") { saveState = true }
+                            }
+                        }
                     )
                 }
 
@@ -157,7 +174,7 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                         showCategories = false
                         showTagFilter = false
                     },
-                    onCategorySelection={   category->
+                    onCategorySelection = { category ->
                         if (category == null) {
                             selectedCategory = ""
                             showCategories = false
@@ -169,11 +186,10 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                         }
                     },
                     onTagSelection = { tag ->
-                        if(tag == null){
+                        if (tag == null) {
                             selectedTag = null
                             showTagFilter = false
-                        }
-                        else{
+                        } else {
                             selectedTag = tag
                             showTagFilter = true
                             showFavorites = false
@@ -220,9 +236,9 @@ fun homescreen(navController: NavController, viewModel: PocketDishesViewModel) {
                     }
                 }
             }
+            }
         }
     }
-}
 
 // @Preview(showBackground = true)
 // @Composable

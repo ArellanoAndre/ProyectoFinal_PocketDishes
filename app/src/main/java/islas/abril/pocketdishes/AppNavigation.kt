@@ -52,10 +52,15 @@ fun AppNavigation(
         navController = navController,
         startDestination = if (userId == -1) "login" else "home"
     ) {
+        // --- LOGIN ---
         composable("login") {
             LoginScreen(
                 viewModel = viewModel,
-                onLoginSuccess = { },
+                onLoginSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
                 onNavigateToRegister = { navController.navigate("register") }
             )
         }
@@ -65,6 +70,21 @@ fun AppNavigation(
             homescreen(navController = navController, viewModel = viewModel)
         }
 
+        // --- PROFILE ---
+        composable("profile") {
+            ProfileScreen(
+                viewModel = viewModel,
+                navController = navController,
+                onLogout = {
+                    scope.launch {
+                        viewModel.logout()
+                        navController.navigate("login") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                }
+            )
+        }
         // --- REGISTER ---
         composable("register") {
             RegisterScreen(
@@ -76,23 +96,6 @@ fun AppNavigation(
                 },
                 onBackToLogin = {
                     navController.popBackStack()
-                }
-            )
-        }
-
-        // --- PROFILE ---
-        composable("profile") {
-            ProfileScreen(
-                viewModel = viewModel,
-                navController = navController,
-                onLogout = {
-                    scope.launch {
-                        viewModel.logout()
-                    }
-                    navController.navigate("login") {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
                 }
             )
         }

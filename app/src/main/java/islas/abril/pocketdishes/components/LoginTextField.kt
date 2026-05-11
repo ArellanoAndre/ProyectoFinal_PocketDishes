@@ -28,22 +28,25 @@ fun LoginTextField(
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = label,
-            color = MaterialTheme.colorScheme.outline,
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp,
-            modifier = Modifier.padding(bottom = 5.dp)
-        )
+    Column(modifier = modifier) {
+        if (label.isNotEmpty()) {
+            Text(
+                text = label,
+                color = MaterialTheme.colorScheme.outline,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 5.dp)
+            )
+        }
         TextField(
             value = value,
             onValueChange = onValueChange,
             enabled = enabled,
-            modifier = Modifier.fillMaxWidth(),
+            //modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(placeholder, color = Color.LightGray) },
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             shape = RoundedCornerShape(10.dp),
+            singleLine = true,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
