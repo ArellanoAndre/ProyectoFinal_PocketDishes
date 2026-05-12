@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.PocketDishes" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- DatePickerDialog -->
+    <style name="OrangeDatePickerTheme" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorPrimary">#F38E3A</item>
+        <item name="android:colorAccent">#F38E3A</item>
+        <item name="android:colorControlActivated">#F38E3A</item>
+    </style>
+
 </resources>
