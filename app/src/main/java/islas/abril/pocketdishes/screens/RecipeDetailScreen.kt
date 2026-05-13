@@ -66,6 +66,11 @@ fun RecipeDetailScreen(
     // para la funcionalidad de los tabs entre ingredientes y instrucciones
     var selectedTab by remember { mutableStateOf(0) }
 
+    // usuario actual (para saber si es el autor)
+    val currentUser by viewModel.currentUser.collectAsState()
+    val resolvedAuthorName = activeRecipeAuthorName.ifEmpty { recipe.author }
+    val isAuthor = currentUser?.name == resolvedAuthorName
+
     // favoritas
     val favoriteRecipes by viewModel.favoriteRecipes.collectAsState()
     val favoriteIds = favoriteRecipes.map { it.idRecipe }.toSet()
@@ -84,13 +89,15 @@ fun RecipeDetailScreen(
             RecipeHeader(
                 recipe = recipe,
                 onBackClick = onBackClick,
-                authorName = activeRecipeAuthorName.ifEmpty { recipe.author },
-                isFavorite=recipe.id in favoriteIds,
+                authorName = resolvedAuthorName,
+                isFavorite = recipe.id in favoriteIds,
                 onFavoriteClick = {
                     viewModel.updateFavorite(recipe.id)
                 },
                 viewModel = viewModel,
-
+                onRatingSelected = if (!isAuthor && currentUser != null) {
+                    { rating -> viewModel.updateRating(recipe.id, rating) }
+                } else null,
                 onEdit = {
                     navController.navigate("editRecipeScreen/${recipe.name}")
                 },

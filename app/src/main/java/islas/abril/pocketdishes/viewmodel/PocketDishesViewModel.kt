@@ -294,6 +294,12 @@ class PocketDishesViewModel(private val repository: PocketDishesRepository, priv
         }
     }
 
+    fun updateRating(recipeId: Int, rating: Float) {
+        viewModelScope.launch {
+            repository.updateRating(recipeId, rating)
+        }
+    }
+
     //Funciones para actualizar / borrar receta
     fun deleteRecipe(recipe: Recipe) {
         viewModelScope.launch {

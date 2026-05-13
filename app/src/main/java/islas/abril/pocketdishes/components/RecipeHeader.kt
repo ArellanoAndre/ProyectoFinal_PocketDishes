@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,6 +70,7 @@ fun RecipeHeader(
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {},
     onShare: () -> Unit = {},
+    onRatingSelected: ((Float) -> Unit)? = null,
 ) {
 
     //para ver el usuario actual
@@ -239,37 +241,33 @@ fun RecipeHeader(
 
                     Spacer(modifier = Modifier.height(6.dp))
 
-                    // maximo de estrellas
-                    val maxStars = 5
-                    // numero de estrellas a llenar (segun el rating usando coerce in para verificar que este entre 0 y 5)
-                    val filledStars = recipe.rating.coerceIn(0f, 5f).roundToInt()
-                    // numero de estrellas vacias (se resta el numero de estrellas llenas al maximo de estrellas)
-                    val emptyStars = maxStars - filledStars
+                    // Estado local del rating, se actualiza inmediatamente al tocar
+                    var localRating by remember(recipe.rating) {
+                        mutableIntStateOf(recipe.rating.coerceIn(0f, 5f).roundToInt())
+                    }
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(
-                            -5.dp,
-                            Alignment.End
-                        )
+                        horizontalArrangement = Arrangement.spacedBy(-5.dp, Alignment.End)
                     ) {
-                        //estrellas llenas
-                        repeat(filledStars) {
+                        (1..5).forEach { star ->
+                            val isFilled = star <= localRating
                             Icon(
-                                painter = painterResource(id = R.drawable.star_filled),
-                                contentDescription = null,
-                                tint = Color(0xFFFFA000),
-                                modifier = Modifier.size(28.dp)
-                            )
-                        }
-
-                        //estrellas vacías
-                        repeat(emptyStars) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.star_outlined),
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(28.dp)
+                                painter = painterResource(
+                                    id = if (isFilled) R.drawable.star_filled else R.drawable.star_outlined
+                                ),
+                                contentDescription = "$star estrellas",
+                                tint = if (isFilled) Color(0xFFFFA000) else Color.White,
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .then(
+                                        if (onRatingSelected != null)
+                                            Modifier.clickable {
+                                                localRating = star
+                                                onRatingSelected(star.toFloat())
+                                            }
+                                        else Modifier
+                                    )
                             )
                         }
                     }

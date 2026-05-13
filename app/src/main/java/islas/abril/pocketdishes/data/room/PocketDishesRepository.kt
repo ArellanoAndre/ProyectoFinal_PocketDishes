@@ -63,6 +63,9 @@ class PocketDishesRepository(database: AppDatabase) {
 
     fun searchRecipes(query: String) = recipeDao.searchRecipes(query)
 
+    suspend fun updateRating(recipeId: Int, rating: Float) =
+        recipeDao.updateRating(recipeId, rating)
+
     suspend fun updateFavorite(userId: Int, recipeId: Int) {
         if (
             favoriteRecipesDao.isFavorite(userId, recipeId)
